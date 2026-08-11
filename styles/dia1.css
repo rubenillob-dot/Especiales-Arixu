@@ -1,0 +1,646 @@
+/* ==========================================================================
+   DÍA 1: LA BOMBA DE TIEMPO COOPERATIVA - STYLES
+   ========================================================================== */
+
+/* Main Layout for Day 1 */
+.dia1-container {
+  min-height: calc(100vh - 80px);
+  padding: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+/* Day 1 Top Bar */
+.dia1-topbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  background: var(--bg-card);
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  backdrop-filter: blur(12px);
+}
+
+.btn-back-hub {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.btn-back-hub:hover {
+  color: var(--twitch-neon-cyan);
+  transform: translateX(-4px);
+}
+
+.dia1-status-pill {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--twitch-neon-yellow);
+  background: rgba(255, 209, 102, 0.1);
+  border: 1px solid rgba(255, 209, 102, 0.3);
+  padding: 5px 14px;
+  border-radius: var(--radius-pill);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dia1-status-pill.danger {
+  color: var(--twitch-red);
+  background: rgba(255, 51, 102, 0.15);
+  border-color: var(--twitch-red);
+  animation: pulse-red 1s infinite;
+}
+
+/* Audio & Mod Controls */
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-audio-toggle {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-color);
+  color: #FFF;
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+}
+
+.btn-audio-toggle:hover {
+  background: var(--twitch-purple-deep);
+  border-color: var(--twitch-purple);
+}
+
+/* Giant Bomb Reactor Centerpiece */
+.bomb-reactor-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 580px;
+  margin: 1rem auto 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Multi-Ring Energy Aura */
+.reactor-ring-outer {
+  position: relative;
+  width: 380px;
+  height: 380px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(145, 70, 255, 0.2) 0%, rgba(14, 14, 18, 0.9) 70%);
+  border: 4px dashed rgba(145, 70, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 50px rgba(145, 70, 255, 0.3), inset 0 0 30px rgba(145, 70, 255, 0.2);
+  animation: rotate-ring 30s linear infinite;
+  transition: all 0.5s ease;
+}
+
+@keyframes rotate-ring {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.reactor-ring-inner {
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  border: 2px solid var(--twitch-neon-cyan);
+  box-shadow: 0 0 20px rgba(0, 245, 212, 0.4);
+  animation: rotate-ring-reverse 15s linear infinite;
+}
+
+@keyframes rotate-ring-reverse {
+  0% { transform: rotate(360deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.bomb-core-image {
+  position: absolute;
+  width: 290px;
+  height: 290px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--twitch-purple);
+  filter: drop-shadow(0 0 25px rgba(145, 70, 255, 0.7));
+}
+
+/* Digital Canvas Overlay for Sparks */
+#particleCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Giant Timer Display HUD */
+.timer-hud-card {
+  position: relative;
+  z-index: 10;
+  background: rgba(10, 10, 15, 0.9);
+  border: 2px solid var(--twitch-purple);
+  border-radius: var(--radius-lg);
+  padding: 1.2rem 2.5rem;
+  margin-top: -60px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 25px var(--twitch-purple-glow);
+  backdrop-filter: blur(15px);
+  width: 340px;
+}
+
+.timer-hud-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--twitch-neon-cyan);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+}
+
+.timer-digits {
+  font-family: var(--font-mono);
+  font-size: 4.2rem;
+  font-weight: 900;
+  line-height: 1;
+  color: #FFF;
+  text-shadow: 0 0 20px var(--twitch-purple), 0 0 40px var(--twitch-purple);
+  letter-spacing: 2px;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.timer-digits.critical {
+  color: var(--twitch-red);
+  text-shadow: 0 0 25px var(--twitch-red), 0 0 50px var(--twitch-red);
+  animation: timer-flash 0.5s infinite alternate;
+}
+
+@keyframes timer-flash {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0.85; transform: scale(1.03); }
+}
+
+.timer-status-msg {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-top: 0.4rem;
+  letter-spacing: 1px;
+}
+
+/* Challenge Section & Progress Bar */
+.challenge-section {
+  width: 100%;
+  max-width: 900px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.challenge-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.challenge-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #FFF;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0.8rem;
+}
+
+.challenge-desc {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin-bottom: 1.2rem;
+}
+
+.challenge-target-box {
+  background: rgba(14, 14, 18, 0.7);
+  border: 1px solid var(--border-color);
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1rem;
+}
+
+.target-text {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--twitch-neon-yellow);
+}
+
+/* Animated Progress Bar */
+.defuse-progress-wrapper {
+  margin-bottom: 1.2rem;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+
+.progress-bar-track {
+  width: 100%;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  position: relative;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--twitch-purple) 0%, var(--twitch-neon-cyan) 100%);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 0 15px var(--twitch-neon-cyan);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Chat Input Simulation Form */
+.input-defuse-form {
+  display: flex;
+  gap: 8px;
+}
+
+.defuse-input {
+  flex: 1;
+  background: rgba(14, 14, 18, 0.9);
+  border: 1px solid var(--border-color);
+  color: #FFF;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.defuse-input:focus {
+  border-color: var(--twitch-purple);
+  box-shadow: 0 0 10px var(--twitch-purple-glow);
+}
+
+.btn-defuse-submit {
+  background: linear-gradient(135deg, var(--twitch-purple) 0%, var(--twitch-purple-dark) 100%);
+  color: #FFF;
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-defuse-submit:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 20px var(--twitch-purple-glow);
+}
+
+/* Simulated Twitch Chat Box */
+.chat-sim-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  height: 380px;
+}
+
+.chat-sim-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 0.8rem;
+}
+
+.chat-sim-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #FFF;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chat-messages-container {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-right: 5px;
+}
+
+.chat-msg-line {
+  font-size: 0.88rem;
+  line-height: 1.35;
+  background: rgba(14, 14, 18, 0.5);
+  padding: 6px 10px;
+  border-radius: 6px;
+  border-left: 3px solid var(--msg-color, var(--twitch-purple));
+  animation: fadeInMsg 0.25s ease-out;
+}
+
+@keyframes fadeInMsg {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.chat-username {
+  font-weight: 700;
+  color: var(--user-color, var(--twitch-neon-cyan));
+  margin-right: 6px;
+}
+
+.chat-badge-icon {
+  background: var(--twitch-purple-dark);
+  color: #FFF;
+  font-size: 0.65rem;
+  padding: 1px 5px;
+  border-radius: 3px;
+  margin-right: 4px;
+  font-weight: 800;
+}
+
+/* Streamer Control Panel (Mod Tools) */
+.streamer-control-panel {
+  width: 100%;
+  max-width: 900px;
+  background: rgba(14, 14, 20, 0.7);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.2rem 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.control-panel-title {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.control-btns-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-ctrl {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-main);
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-ctrl:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #FFF;
+  border-color: #FFF;
+}
+
+.btn-ctrl.primary {
+  background: var(--twitch-purple);
+  border-color: var(--twitch-purple);
+}
+
+.btn-ctrl.primary:hover {
+  background: #A96CFF;
+}
+
+.btn-ctrl.danger {
+  background: rgba(255, 51, 102, 0.2);
+  border-color: var(--twitch-red);
+  color: var(--twitch-red);
+}
+
+.btn-ctrl.danger:hover {
+  background: var(--twitch-red);
+  color: #FFF;
+}
+
+/* OVERLAY ALARM STATE (FLASHING RED EMERGENCY SCREEN) */
+body.alarm-active {
+  animation: alarm-bg-flash 0.8s infinite alternate;
+}
+
+body.alarm-active .reactor-ring-outer {
+  border-color: var(--twitch-red) !important;
+  box-shadow: 0 0 80px rgba(255, 51, 102, 0.8) !important;
+}
+
+body.alarm-active .bomb-core-image {
+  filter: drop-shadow(0 0 35px var(--twitch-red)) hue-rotate(-60deg) !important;
+}
+
+@keyframes alarm-bg-flash {
+  0% { background-color: #08080A; }
+  100% { background-color: #2A040D; }
+}
+
+/* BOOM EXPLOSION OVERLAY SCREEN */
+.boom-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(20, 0, 5, 0.95);
+  backdrop-filter: blur(15px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.boom-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+  animation: screenShake 0.6s ease-in-out;
+}
+
+@keyframes screenShake {
+  0%, 100% { transform: translate(0, 0); }
+  10%, 30%, 50%, 70%, 90% { transform: translate(-10px, 8px); }
+  20%, 40%, 60%, 80% { transform: translate(10px, -8px); }
+}
+
+.boom-card {
+  background: #140508;
+  border: 3px solid var(--twitch-red);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+  max-width: 650px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 0 80px rgba(255, 51, 102, 0.8);
+}
+
+.boom-icon-wrapper {
+  font-size: 4rem;
+  color: var(--twitch-red);
+  margin-bottom: 1rem;
+  animation: pulse-red 1s infinite;
+}
+
+.boom-title {
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--twitch-red);
+  letter-spacing: 3px;
+  text-shadow: 0 0 25px rgba(255, 51, 102, 0.8);
+  margin-bottom: 0.5rem;
+}
+
+.boom-penalty-box {
+  background: rgba(255, 51, 102, 0.12);
+  border: 2px dashed var(--twitch-red);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.penalty-label {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--twitch-neon-yellow);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 0.5rem;
+}
+
+.penalty-text {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #FFF;
+  line-height: 1.3;
+}
+
+/* DEFUSED SUCCESS OVERLAY SCREEN */
+.success-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(5, 20, 15, 0.93);
+  backdrop-filter: blur(15px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.success-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.success-card {
+  background: #061812;
+  border: 3px solid var(--twitch-green);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+  max-width: 620px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 0 80px rgba(0, 230, 118, 0.6);
+}
+
+.success-title {
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: var(--twitch-green);
+  letter-spacing: 2px;
+  text-shadow: 0 0 25px rgba(0, 230, 118, 0.8);
+  margin-bottom: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .challenge-section {
+    grid-template-columns: 1fr;
+  }
+  .reactor-ring-outer {
+    width: 290px;
+    height: 290px;
+  }
+  .reactor-ring-inner {
+    width: 240px;
+    height: 240px;
+  }
+  .bomb-core-image {
+    width: 220px;
+    height: 220px;
+  }
+  .timer-hud-card {
+    width: 280px;
+    padding: 1rem 1.5rem;
+  }
+  .timer-digits {
+    font-size: 3.2rem;
+  }
+}
