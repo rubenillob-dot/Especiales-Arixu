@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Día 1: La Bomba de Tiempo Cooperativa | Especiales ImArixu</title>
-  <meta name="description" content="Minijuego en vivo Día 1: La Bomba de Tiempo Cooperativa. El chat de ImArixu debe desactivar la bomba ingresando comandos en tiempo récord.">
+  <meta name="description" content="Día 1: La Bomba de Tiempo Cooperativa. Desactiva los 15 cables del reactor en vivo a través del chat de Twitch de ImArixu antes de que se agote el tiempo.">
   <link rel="stylesheet" href="styles/main.css">
   <link rel="stylesheet" href="styles/dia1.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
-<body>
+<body class="bomb-theme">
 
   <main class="container dia1-container">
 
@@ -20,142 +20,214 @@
       </a>
 
       <div class="dia1-status-pill" id="statusPill">
-        <span>⚡</span> SISTEMA NÚCLEO PREPARADO
+        <span class="status-led blink"></span>
+        <span id="statusPillText">SISTEMA NÚCLEO PREPARADO (10:00)</span>
       </div>
 
       <div class="topbar-actions">
-        <button class="btn-audio-toggle" id="btnAudioToggle">
+        <button class="btn-audio-toggle" id="btnAudioToggle" title="Activar/Desactivar sonido">
           <i class="fas fa-volume-up"></i> Audio: ON
         </button>
       </div>
     </header>
 
-    <!-- Giant Bomb / Energy Core Reactor Centerpiece -->
-    <section class="bomb-reactor-wrapper">
-      <div class="reactor-ring-outer">
-        <div class="reactor-ring-inner"></div>
-        <img src="assets/bomb_core.jpg" alt="Nuclear Energy Bomb Core" class="bomb-core-image">
-        <canvas id="particleCanvas"></canvas>
-      </div>
+    <!-- Main Layout Grid: 75% Left Main / 25% Right Live Chat Sidebar -->
+    <div class="dia1-layout-grid">
 
-      <!-- HUD Giant Digital Timer -->
-      <div class="timer-hud-card">
-        <div class="timer-hud-label">SISTEMA DE AUTODESTRUCCIÓN</div>
-        <div class="timer-digits" id="timerDigits">01:00</div>
-        <div class="timer-status-msg" id="timerStatus">PRESIONA INICIAR PARA COMENZAR</div>
-      </div>
-    </section>
+      <!-- LEFT / CENTER COLUMN (Reactor Core & 15 Cables Grid) -->
+      <div class="dia1-main-col">
 
-    <!-- Challenge Panel & Twitch Simulated Chat -->
-    <section class="challenge-section">
+        <!-- Instruction Panel Banner -->
+        <section class="instruction-banner-card">
+          <div class="instruction-icon-wrapper">
+            <i class="fas fa-biohazard"></i>
+          </div>
+          <div class="instruction-content">
+            <h2 class="instruction-title">
+              <i class="fas fa-shield-cat"></i> LA BOMBA DE TIEMPO COOPERATIVA
+            </h2>
+            <p class="instruction-text">
+              <span class="highlight-alert"><i class="fas fa-exclamation-triangle"></i> ¡ALERTA CRÍTICA!</span> 
+              El reactor colapsará en <strong>10 minutos</strong>. Resolved los <strong>10 acertijos</strong> en equipo para cortar los cables correctos. 
+              Para lograr desactivar cada módulo, tendréis que escribir la <span class="highlight-keyword">PALABRA EXACTA</span> como respuesta en el chat. 
+              <span class="highlight-penalty">¡Si fallamos la misión, ImArixu sufrirá un castigo en directo!</span>
+            </p>
+          </div>
+          <div class="instruction-counter-badge" id="cablesCounterBadge">
+            <span class="count-num" id="completedCablesCount">0</span> / 10
+            <span class="count-label">CABLES CORTADOS</span>
+          </div>
+        </section>
 
-      <!-- Challenge Card -->
-      <div class="challenge-card">
-        <div>
-          <h3 class="challenge-title">
-            <i class="fas fa-shield-alt" style="color: var(--twitch-neon-cyan);"></i> 
-            DESAFÍO ACTIVO DEL CHAT
-          </h3>
-          <p class="challenge-desc" id="challengeDesc">
-            Lograd que el chat o tú escriban la palabra clave <strong>'DEFUSE'</strong> para desactivar la bomba antes de que expire el tiempo.
-          </p>
+        <!-- Giant Bomb / Energy Core Reactor Centerpiece -->
+        <section class="bomb-reactor-wrapper">
+          <div class="circuit-backdrop-lines"></div>
 
-          <div class="challenge-target-box">
-            <div class="target-text" id="targetText">PALABRA CLAVE: DEFUSE</div>
+          <!-- Energy Core Visual -->
+          <div class="reactor-ring-outer" id="reactorRingOuter">
+            <div class="reactor-ring-inner"></div>
+            <img src="assets/bomb_core.jpg" alt="Nuclear Energy Bomb Core" class="bomb-core-image" id="bombCoreImg">
+            <canvas id="particleCanvas"></canvas>
           </div>
 
-          <!-- Animated Progress Bar -->
-          <div class="defuse-progress-wrapper">
-            <div class="progress-header">
-              <span>PROGRESO DE DESACTIVACIÓN</span>
-              <span id="defuseCountText">0 / 50 (0%)</span>
+          <!-- Giant Digital HUD Clock (Starts at 10:00) -->
+          <div class="timer-hud-card" id="timerHudCard">
+            <div class="timer-hud-header">
+              <span class="hud-led-dot"></span>
+              <span class="timer-hud-label">TIEMPO HASTA COLAPSO</span>
+              <span class="hud-led-dot"></span>
             </div>
-            <div class="progress-bar-track">
-              <div class="progress-bar-fill" id="defuseProgressFill"></div>
+            <div class="timer-digits" id="timerDigits">10:00</div>
+            <div class="timer-status-msg" id="timerStatus">PRESIONA INICIAR PARA COMENZAR LA CUENTA REGRESIVA</div>
+          </div>
+        </section>
+
+        <!-- 10 Cables / Modules Section Grid -->
+        <section class="cables-section">
+          <div class="cables-header">
+            <h3 class="cables-title">
+              <i class="fas fa-microchip" style="color: var(--twitch-purple);"></i> 
+              PANEL DE CABLES DEL REACTOR (10 MÓDULOS)
+            </h3>
+            <div class="cables-legend">
+              <span class="legend-item legend-pending"><span class="led-dot red"></span> Pendiente</span>
+              <span class="legend-item legend-cut"><span class="led-dot green"></span> Cortado (Éxito)</span>
             </div>
           </div>
-        </div>
 
-        <!-- Simulated Chat Input Form -->
-        <form class="input-defuse-form" id="defuseForm">
-          <input 
-            type="text" 
-            class="defuse-input" 
-            id="defuseInput" 
-            placeholder="Escribe DEFUSE aquí..." 
-            autocomplete="off"
-            required
-          >
-          <button type="submit" class="btn-defuse-submit">
-            <i class="fas fa-paper-plane"></i> ENVIAR
-          </button>
-        </form>
-      </div>
-
-      <!-- Simulated Real-time Twitch Chat Box -->
-      <div class="chat-sim-card">
-        <div class="chat-sim-header">
-          <div class="chat-sim-title">
-            <i class="fab fa-twitch" style="color: var(--twitch-purple);"></i> CHAT EN DIRECTO IMARIXU
+          <!-- Grid of 15 Modules (Hydrated by JS) -->
+          <div class="cables-grid" id="cablesGrid">
+            <!-- 15 Cable Modules rendered here dynamically -->
           </div>
-          <span style="font-size: 0.75rem; color: var(--twitch-neon-cyan); font-weight: 700;">● CONECTADO</span>
-        </div>
+        </section>
 
-        <div class="chat-messages-container" id="chatMessagesContainer">
-          <div class="chat-msg-line" style="--msg-color: #9146FF;">
-            <span class="chat-badge-icon">SYS</span>
-            <span class="chat-username" style="color: #9146FF;">Sistema:</span>
-            <span class="chat-text">¡Bienvenido a la Bomba de Tiempo Cooperativa! Escribid DEFUSE en el chat.</span>
+        <!-- Discrete Manual Command Form & Streamer Tools -->
+        <section class="manual-input-section">
+          <div class="chat-input-card">
+            <div class="chat-input-header">
+              <h4 class="chat-input-title">
+                <i class="fas fa-terminal"></i> CONSOLA MANUAL DE COMANDOS
+              </h4>
+              <span class="chat-status-indicator">● MODO PRUEBA / MANUAL</span>
+            </div>
+            <form class="defuse-form" id="defuseForm">
+              <div class="input-glow-wrapper">
+                <i class="fas fa-keyboard input-icon"></i>
+                <input 
+                  type="text" 
+                  class="defuse-input" 
+                  id="defuseInput" 
+                  placeholder="Escribe tu respuesta aquí (ej. secreto1, secreto2...)..." 
+                  autocomplete="off"
+                >
+              </div>
+              <button type="submit" class="btn-defuse-submit">
+                <i class="fas fa-cut"></i> CORTAR CABLE
+              </button>
+            </form>
+          </div>
+
+          <!-- Streamer & Moderator Controls -->
+          <div class="streamer-control-panel">
+            <div class="control-panel-title">
+              <i class="fas fa-sliders-h"></i> PANEL DE CONTROL DEL STREAMER / MODERADORES
+            </div>
+            <div class="control-btns-row">
+              <button class="btn-ctrl primary" id="btnStartTimer">
+                <i class="fas fa-play"></i> Iniciar Bomba (10:00)
+              </button>
+              <button class="btn-ctrl" id="btnPauseTimer">
+                <i class="fas fa-pause"></i> Pausar
+              </button>
+              <button class="btn-ctrl" id="btnResetTimer">
+                <i class="fas fa-redo"></i> Reiniciar Reactor
+              </button>
+              <button class="btn-ctrl" id="btnCutNext">
+                <i class="fas fa-bolt"></i> Simular 1 Cable Cortado
+              </button>
+              <button class="btn-ctrl success-btn" id="btnSimulateWin">
+                <i class="fas fa-check-double"></i> Simular Desactivado (Ganar)
+              </button>
+              <button class="btn-ctrl danger" id="btnSimulateBoom">
+                <i class="fas fa-bomb"></i> Simular Explosión (BOOOM)
+              </button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- RIGHT SIDEBAR COLUMN: MONITOR DE COMUNICACIONES (TWITCH WEBSOCKET CHAT) -->
+      <aside class="dia1-sidebar-col">
+        <div class="communications-monitor">
+          <div class="monitor-header">
+            <div class="monitor-title-box">
+              <span class="monitor-led" id="monitorLed"></span>
+              <div>
+                <h3 class="monitor-title">MONITOR DE COMUNICACIONES</h3>
+                <span class="monitor-subtitle">TWITCH CHAT EN DIRECTO (#imarixu)</span>
+              </div>
+            </div>
+            <span class="ws-badge" id="wsStatusBadge">CONECTANDO...</span>
+          </div>
+
+          <div class="terminal-info-bar">
+            <span>MODO: <strong style="color: var(--twitch-neon-cyan);">AUTO-LECTURA PRIVMSG</strong></span>
+            <span id="wsMsgCounter">0 MSGS</span>
+          </div>
+
+          <!-- Live Terminal Chat Feed -->
+          <div class="terminal-chat-messages" id="liveChatMessages">
+            <div class="terminal-line sys">
+              <span class="terminal-timestamp">[SIS]</span> Conectando con servidor de chat Twitch IRC...
+            </div>
+          </div>
+
+          <div class="terminal-footer">
+            <span class="terminal-status-text" id="terminalStatusText">
+              ⚠️ Inicia el temporizador para activar la lectura de comandos.
+            </span>
           </div>
         </div>
-      </div>
+      </aside>
 
-    </section>
-
-    <!-- Streamer & Moderator Control Tools Panel -->
-    <section class="streamer-control-panel">
-      <div class="control-panel-title">
-        <i class="fas fa-sliders-h"></i> PANEL DE CONTROL DEL STREAMER / MODS
-      </div>
-      <div class="control-btns-row">
-        <button class="btn-ctrl primary" id="btnStartTimer">
-          <i class="fas fa-play"></i> Iniciar Bomba (60s)
-        </button>
-        <button class="btn-ctrl" id="btnPauseTimer">
-          <i class="fas fa-pause"></i> Pausar
-        </button>
-        <button class="btn-ctrl" id="btnResetTimer">
-          <i class="fas fa-redo"></i> Reiniciar Core
-        </button>
-        <button class="btn-ctrl" id="btnAddTime">
-          <i class="fas fa-plus"></i> +15s (Sub Reward)
-        </button>
-        <button class="btn-ctrl" id="btnSpamChat">
-          <i class="fas fa-bolt"></i> Simular Spam Chat (+10)
-        </button>
-        <button class="btn-ctrl" id="btnToggleMath">
-          <i class="fas fa-calculator"></i> Modo Acertijo Matemático
-        </button>
-      </div>
-    </section>
+    </div>
 
   </main>
 
-  <!-- OVERLAY A: Defusal Success Overlay Screen -->
+  <!-- OVERLAY A: Defusal Success Overlay Screen (RNG Rewards & Hero Squad) -->
   <div class="success-overlay" id="successOverlay">
     <div class="success-card">
-      <div style="font-size: 3.5rem; color: var(--twitch-green); margin-bottom: 0.5rem;">
-        <i class="fas fa-check-circle"></i>
+      <div class="success-icon-wrapper">
+        <i class="fas fa-shield-check"></i>
       </div>
       <h1 class="success-title">¡BOMBA DESACTIVADA!</h1>
-      <p style="font-size: 1.2rem; color: #FFF; margin-bottom: 1.5rem;">
-        El chat ha demostrado una coordinación legendaria. ¡El directo de ImArixu está completamente a salvo!
+      <p class="success-subtitle">
+        ¡Los 15 cables han sido cortados con éxito! El chat de ImArixu ha salvado el directo en un tiempo récord.
       </p>
-      <div style="background: rgba(0, 230, 118, 0.1); border: 1px solid var(--twitch-green); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
-        <strong style="color: var(--twitch-green);">RECOMPENSA DE STREAM:</strong> +500 Bitz de la comunidad & Inmunidad de castigo por 1 hora.
+
+      <!-- Requirement 3: Random RNG Reward Box -->
+      <div class="rng-reward-box" id="rngRewardBox">
+        <div class="reward-tag-header" id="rngRewardTag">
+          <i class="fas fa-dice"></i> RECOMPENSA ALEATORIA OBTENIDA (RNG)
+        </div>
+        <div class="reward-main-text" id="rngRewardText">
+          🎁 Cargando recompensa aleatoria...
+        </div>
       </div>
-      <button class="btn-ctrl primary" id="btnResetFromSuccess" style="margin: 0 auto; padding: 12px 28px; font-size: 1rem;">
-        <i class="fas fa-redo"></i> Jugar Otra Ronda
+
+      <!-- Squad of Heroes List -->
+      <div class="heroes-squad-container">
+        <div class="squad-title">
+          <i class="fas fa-users-viewfinder"></i> ESCUADRÓN DE HÉROES (DESACTIVADORES)
+        </div>
+        <div class="heroes-chips-grid" id="heroesSquadList">
+          <!-- JS injects defuser heroes chips here -->
+        </div>
+      </div>
+
+      <button class="btn-ctrl primary" id="btnResetFromSuccess" style="margin: 1.5rem auto 0; padding: 12px 30px; font-size: 1rem;">
+        <i class="fas fa-redo"></i> Jugar Otra Ronda (10:00)
       </button>
     </div>
   </div>
@@ -167,23 +239,24 @@
         <i class="fas fa-bomb"></i>
       </div>
       <h1 class="boom-title">¡BOOOOOOM!</h1>
-      <p style="font-size: 1.1rem; color: #FFB3C1;">
-        El núcleo de energía ha colapsado. Se ha activado la penalización inmediata para la streamer.
+      <h2 class="boom-subtitle">CASTIGO ACTIVADO</h2>
+      <p style="font-size: 1.05rem; color: #FFB3C1; margin-bottom: 1.2rem;">
+        El tiempo de 10 minutos se ha agotado. El reactor colapsó antes de cortar los 15 cables.
       </p>
 
       <div class="boom-penalty-box">
-        <div class="penalty-label">PENALIZACIÓN ASIGNADA A IMARIXU</div>
+        <div class="penalty-label"><i class="fas fa-exclamation-triangle"></i> PENALIZACIÓN OBLIGATORIA PARA IMARIXU</div>
         <div class="penalty-text" id="penaltyText">
-          ¡BOOOM! Penalización activada: ImArixu debe tirar todo su inventario / Jugar sin sonido.
+          ¡BOOOM! ImArixu debe tirar todo su inventario o jugar sin sonido durante 15 minutos.
         </div>
       </div>
 
       <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
         <button class="btn-ctrl danger" id="btnRerollPenalty" style="padding: 10px 20px;">
-          <i class="fas fa-dice"></i> Cambiar Castigo (Ruleta)
+          <i class="fas fa-dice"></i> Girar Ruleta de Castigos
         </button>
         <button class="btn-ctrl primary" id="btnResetFromBoom" style="padding: 10px 20px;">
-          <i class="fas fa-redo"></i> Reiniciar Bomba
+          <i class="fas fa-redo"></i> Reiniciar Bomba (10:00)
         </button>
       </div>
     </div>

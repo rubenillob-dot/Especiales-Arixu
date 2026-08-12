@@ -1,64 +1,111 @@
 /* ==========================================================================
-   DÍA 1: LA BOMBA DE TIEMPO COOPERATIVA - ENGINE & AUDIO FX
+   DÍA 1: LA BOMBA DE TIEMPO COOPERATIVA - ENGINE & TWITCH WEBSOCKET ENGINE
+   Features:
+   1. Real-time Twitch IRC WebSocket (wss://irc-ws.chat.twitch.tv:443) -> #imarixu
+   2. 10-Minute Countdown & 05:00 Heartbeat Red Warning Alert
+   3. 10 Official Community Riddles
+   4. SEQUENTIAL DECRYPTION REVEAL SYSTEM (Cable #01 Active, Cables #02..#10 Encrypted,
+      3.0s Dramatic Keyframe Transition with Cyber Scan Sound)
+   5. Restrictive Validation: ONLY validates the currently active cable!
+   6. Random RNG Victory Reward System & Defusers Squad Roster
    ========================================================================== */
 
 class BombGameEngine {
   constructor() {
-    // Game State Config
-    this.totalTime = 60; // Default 60 seconds
-    this.remainingTime = 60;
-    this.targetDefuses = 50;
-    this.currentDefuses = 0;
+    // Timer Configuration (10 minutes = 600 seconds)
+    this.totalTime = 600; 
+    this.remainingTime = 600;
     this.timerInterval = null;
     this.isRunning = false;
     this.isMuted = false;
-    this.isMathMode = false;
-    this.currentMathAnswer = null;
+    this.warningAlertTriggered = false;
+
+    // Requirement 3: Active Cable Index (0 to 9)
+    this.activeModuleIndex = 0;
+    this.isDecrypting = false;
+
+    // Requirement 1: Array of 10 Official Community Modules (bombModules)
+    // Initially Cable #01 is 'activo', Cables #02..#10 are 'encriptado'
+    this.modulos = [
+      { id: 1,  cableNum: "CABLE #01", pregunta: "¿Cómo se llama el perro de Ari?", respuestas: ["simba"], estado: "activo", defuser: null, defuserKeyword: null },
+      { id: 2,  cableNum: "CABLE #02", pregunta: "¿Cuál es el código para la tienda de Fortnite / Epic?", respuestas: ["arixu"], estado: "encriptado", defuser: null, defuserKeyword: null },
+      { id: 3,  cableNum: "CABLE #03", pregunta: "¿Cuál es el número del cumpleaños de Ari?", respuestas: ["4"], estado: "encriptado", defuser: null, defuserKeyword: null },
+      { id: 4,  cableNum: "CABLE #04", pregunta: "Género que NO le gusta a Ari (Romántico, Anime, Histórico, Fantasía):", respuestas: ["anime"], estado: "encriptado", defuser: null, defuserKeyword: null },
+      { id: 5,  cableNum: "CABLE #05", pregunta: "¿Cómo se llama el máximo donador del canal?", respuestas: ["erick", "eriickwhiite"], estado: "encriptado", defuser: null, defuserKeyword: null },
+      { id: 6,  cableNum: "CABLE #06", pregunta: "¿Qué VIP fue expulsado por tocar los huevos?", respuestas: ["xeno", "el_xenomorfo_"], estado: "encriptado", defuser: null, defuserKeyword: null },
+      { id: 7,  cableNum: "CABLE #07", pregunta: "¿Qué es lo más picante que se ha comido Ari en directo?", respuestas: ["habanero"], estado: "encriptado", defuser: null, defuserKeyword: null },
+      { id: 8,  cableNum: "CABLE #08", pregunta: "Palabra exacta para decir que dejas la view de fondo:", respuestas: ["lurk"], estado: "encriptado", defuser: null, defuserKeyword: null },
+      { id: 9,  cableNum: "CABLE #09", pregunta: "¿A quién tuvimos que perdonar en un directo de Ari?", respuestas: ["piyu", "piyuyin6"], estado: "encriptado", defuser: null, defuserKeyword: null },
+      { id: 10, cableNum: "CABLE #10", pregunta: "¿Cuál es el número total de moderadores que hay en Twitch?", respuestas: ["3"], estado: "encriptado", defuser: null, defuserKeyword: null }
+    ];
+    window.bombModules = this.modulos;
+
+    // Array of Heroes (Users who cut cables)
+    this.heroesArray = [];
+
+    // Random RNG Victory Reward Options
+    this.rewardOptions = [
+      {
+        id: 1,
+        tag: "🎁 RECOMPENSA ALEATORIA: TICKET DORADO",
+        text: "🎁 Recompensa: ¡Todos los acertantes entran en una ruleta para ganar 1 participación extra para el Ticket Dorado del futuro!"
+      },
+      {
+        id: 2,
+        tag: "👻 RECOMPENSA ALEATORIA: REGALO DE ESPÍRITU",
+        text: "👻 Recompensa: ¡Ruleta de acertantes! El ganador elegirá un espíritu que Ari no tenga para regalárselo."
+      },
+      {
+        id: 3,
+        tag: "🛡️ RECOMPENSA ALEATORIA: SALVACIÓN DE ARI",
+        text: "🛡️ Recompensa: ¡Salvación! Ari se libra del castigo de hoy gracias a la comunidad."
+      }
+    ];
+
+    // Twitch IRC WebSocket State
+    this.ws = null;
+    this.channelName = "imarixu";
+    this.wsMsgCount = 0;
+
+    // DOM Elements
+    this.timerDigits = document.getElementById('timerDigits');
+    this.timerStatus = document.getElementById('timerStatus');
+    this.timerHudCard = document.getElementById('timerHudCard');
+    this.statusPill = document.getElementById('statusPill');
+    this.statusPillText = document.getElementById('statusPillText');
+    this.cablesGrid = document.getElementById('cablesGrid');
+    this.completedCablesCount = document.getElementById('completedCablesCount');
+    this.defuseInput = document.getElementById('defuseInput');
+    this.defuseForm = document.getElementById('defuseForm');
+    this.liveChatMessages = document.getElementById('liveChatMessages');
+    this.wsStatusBadge = document.getElementById('wsStatusBadge');
+    this.monitorLed = document.getElementById('monitorLed');
+    this.wsMsgCounter = document.getElementById('wsMsgCounter');
+    this.terminalStatusText = document.getElementById('terminalStatusText');
+    this.boomOverlay = document.getElementById('boomOverlay');
+    this.successOverlay = document.getElementById('successOverlay');
+    this.penaltyText = document.getElementById('penaltyText');
+    this.rngRewardTag = document.getElementById('rngRewardTag');
+    this.rngRewardText = document.getElementById('rngRewardText');
+    this.heroesSquadList = document.getElementById('heroesSquadList');
 
     // Canvas Particles
     this.canvas = document.getElementById('particleCanvas');
     this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
     this.particles = [];
 
-    // DOM Elements
-    this.timerDigits = document.getElementById('timerDigits');
-    this.timerStatus = document.getElementById('timerStatus');
-    this.defuseProgressFill = document.getElementById('defuseProgressFill');
-    this.defuseCountText = document.getElementById('defuseCountText');
-    this.defuseInput = document.getElementById('defuseInput');
-    this.defuseForm = document.getElementById('defuseForm');
-    this.chatMessages = document.getElementById('chatMessagesContainer');
-    this.boomOverlay = document.getElementById('boomOverlay');
-    this.successOverlay = document.getElementById('successOverlay');
-    this.penaltyText = document.getElementById('penaltyText');
-    this.statusPill = document.getElementById('statusPill');
-    this.challengeDesc = document.getElementById('challengeDesc');
-    this.targetText = document.getElementById('targetText');
-
-    // Audio Context (Web Audio API for real-time procedural sound effects)
+    // Web Audio Synthesizer
     this.audioCtx = null;
 
-    // Sample Chat Users & Emotes for Twitch Simulation
-    this.chatUsers = [
-      { name: "ArixuFan99", color: "#9146FF", badge: "SUB" },
-      { name: "GamerPro_ES", color: "#00F5D4", badge: "VIP" },
-      { name: "PogChamp_Bot", color: "#FF007A", badge: "MOD" },
-      { name: "RubiusFan", color: "#FFD166", badge: "SUB" },
-      { name: "TwitchLover_22", color: "#00E676", badge: "VIEWER" },
-      { name: "KnekroVibes", color: "#E1306C", badge: "SUB" },
-      { name: "ArixuArmy_Official", color: "#9146FF", badge: "VIP" },
-      { name: "StreamHero", color: "#00F5D4", badge: "SUB" }
-    ];
-
-    this.emotes = ["Pog", "DEFUSE!", "ArixuLove", "KEKW", "MonkaS", "Kappa", "ArixuHype"];
-
+    // Streamer Penalties List
     this.penalties = [
       "¡BOOOM! ImArixu debe tirar TODO su inventario actual en el juego.",
-      "¡BOOOM! ImArixu debe jugar los próximos 20 minutos SIN SONIDO en los cascos.",
+      "¡BOOOM! ImArixu debe jugar los próximos 15 minutos SIN SONIDO en los cascos.",
       "¡BOOOM! ImArixu debe comer una cucharada de salsa picante / chuche ácida en directo.",
-      "¡BOOOM! ImArixu debe realizar 20 flexiones / sentadillas inmediatamente.",
+      "¡BOOOM! ImArixu debe hacer 20 sentadillas / flexiones inmediatamente.",
       "¡BOOOM! ImArixu debe regalar 5 suscripciones a la comunidad de Twitch.",
-      "¡BOOOM! ImArixu debe hablar en modo ASMR (susurros) durante los próximos 15 minutos."
+      "¡BOOOM! ImArixu debe hablar en modo ASMR (susurros) durante los próximos 10 minutos.",
+      "¡BOOOM! ImArixu debe jugar la siguiente partida con la mano cambiada / controles invertidos."
     ];
 
     this.init();
@@ -67,14 +114,137 @@ class BombGameEngine {
   init() {
     this.initAudioContext();
     this.initCanvas();
+    this.renderCablesGrid();
+    this.initTwitchWebSocket();
     this.bindEvents();
-    this.startChatSimulation();
     this.updateHUD();
-    console.log('💣 Bomb Core Engine initialized successfully!');
+    console.log('💣 Bomb Core Engine with Sequential Decryption initialized!');
   }
 
   /* ==========================================================================
-     WEB AUDIO API SYNTHESIZER (PROCEDURAL SOUND FX)
+     TWITCH WEBSOCKET CONNECTION (wss://irc-ws.chat.twitch.tv:443)
+     ========================================================================== */
+  initTwitchWebSocket() {
+    try {
+      this.addTerminalLine("Conectando con WebSocket IRC de Twitch (wss://irc-ws.chat.twitch.tv:443)...", "sys");
+      this.ws = new WebSocket('wss://irc-ws.chat.twitch.tv:443');
+
+      this.ws.onopen = () => {
+        const anonymousNick = `justinfan${Math.floor(10000 + Math.random() * 90000)}`;
+        this.ws.send('CAP REQ :twitch.tv/tags twitch.tv/commands');
+        this.ws.send(`NICK ${anonymousNick}`);
+        this.ws.send(`JOIN #${this.channelName}`);
+
+        if (this.wsStatusBadge) {
+          this.wsStatusBadge.textContent = "● CONECTADO #imarixu";
+          this.wsStatusBadge.classList.add('connected');
+        }
+        if (this.monitorLed) {
+          this.monitorLed.classList.add('connected');
+        }
+
+        this.addTerminalLine(`✔ Conectado exitosamente al chat en directo de #${this.channelName}. Escuchando mensajes...`, "sys");
+      };
+
+      this.ws.onmessage = (event) => {
+        const data = event.data;
+
+        if (data.startsWith('PING')) {
+          this.ws.send('PONG :tmi.twitch.tv');
+          return;
+        }
+
+        const lines = data.split('\r\n');
+        lines.forEach(line => {
+          if (line.includes('PRIVMSG')) {
+            this.parseTwitchPrivmsg(line);
+          }
+        });
+      };
+
+      this.ws.onerror = (err) => {
+        console.error('Twitch WS Error:', err);
+        this.addTerminalLine("⚠️ Error de conexión con el WebSocket de Twitch.", "sys");
+        if (this.wsStatusBadge) this.wsStatusBadge.textContent = "🔴 ERROR WS";
+      };
+
+      this.ws.onclose = () => {
+        this.addTerminalLine("Desconectado de Twitch IRC. Reintentando en 5s...", "sys");
+        if (this.wsStatusBadge) {
+          this.wsStatusBadge.textContent = "🔴 DESCONECTADO";
+          this.wsStatusBadge.classList.remove('connected');
+        }
+        if (this.monitorLed) this.monitorLed.classList.remove('connected');
+        setTimeout(() => this.initTwitchWebSocket(), 5000);
+      };
+
+    } catch (e) {
+      console.error(e);
+      this.addTerminalLine("No se pudo iniciar el WebSocket de Twitch.", "sys");
+    }
+  }
+
+  parseTwitchPrivmsg(rawLine) {
+    let username = 'Anónimo';
+    let message = '';
+
+    const displayNameMatch = rawLine.match(/display-name=([^;]+)/);
+    if (displayNameMatch && displayNameMatch[1]) {
+      username = displayNameMatch[1];
+    } else {
+      const userMatch = rawLine.match(/:([^!]+)!/);
+      if (userMatch && userMatch[1]) {
+        username = userMatch[1];
+      }
+    }
+
+    const msgIndex = rawLine.indexOf(' PRIVMSG ');
+    if (msgIndex !== -1) {
+      const colonIndex = rawLine.indexOf(' :', msgIndex);
+      if (colonIndex !== -1) {
+        message = rawLine.substring(colonIndex + 2).trim();
+      }
+    }
+
+    if (!message) return;
+
+    this.wsMsgCount++;
+    if (this.wsMsgCounter) this.wsMsgCounter.textContent = `${this.wsMsgCount} MSGS`;
+
+    this.addTerminalLine(`[${username}]: ${message}`, "user", username);
+
+    // ONLY PROCESS IF TIMER IS RUNNING AND NOT DECRYPTING NEXT CABLE
+    if (this.isRunning && !this.isDecrypting) {
+      this.processInputWord(message, username, false);
+    }
+  }
+
+  addTerminalLine(text, type = "user", username = "") {
+    if (!this.liveChatMessages) return;
+
+    const lineEl = document.createElement('div');
+    lineEl.className = `terminal-line ${type}`;
+
+    if (type === 'sys') {
+      lineEl.innerHTML = text;
+    } else {
+      lineEl.innerHTML = `<span class="terminal-user">[${username}]:</span> <span class="terminal-text">${this.escapeHtml(text.replace(`[${username}]: `, ''))}</span>`;
+    }
+
+    this.liveChatMessages.appendChild(lineEl);
+    this.liveChatMessages.scrollTop = this.liveChatMessages.scrollHeight;
+
+    if (this.liveChatMessages.children.length > 80) {
+      this.liveChatMessages.removeChild(this.liveChatMessages.firstChild);
+    }
+  }
+
+  escapeHtml(str) {
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  /* ==========================================================================
+     WEB AUDIO PROCEDURAL SOUND FX (INCLUDING CYBER DECRYPTION SCAN)
      ========================================================================== */
   initAudioContext() {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -89,26 +259,61 @@ class BombGameEngine {
     }
   }
 
-  playTickSound(frequency = 600, duration = 0.08) {
+  playTickSound(frequency = 520, duration = 0.06) {
     if (this.isMuted || !this.audioCtx) return;
     try {
       const osc = this.audioCtx.createOscillator();
       const gain = this.audioCtx.createGain();
-
       osc.type = 'sine';
       osc.frequency.setValueAtTime(frequency, this.audioCtx.currentTime);
-
-      gain.gain.setValueAtTime(0.15, this.audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.12, this.audioCtx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, this.audioCtx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(this.audioCtx.destination);
+      osc.start();
+      osc.stop(this.audioCtx.currentTime + duration);
+    } catch (e) { console.error(e); }
+  }
+
+  playCableCutSound() {
+    if (this.isMuted || !this.audioCtx) return;
+    try {
+      const notes = [659.25, 880.00, 1174.66];
+      notes.forEach((freq, idx) => {
+        const osc = this.audioCtx.createOscillator();
+        const gain = this.audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, this.audioCtx.currentTime + idx * 0.05);
+        gain.gain.setValueAtTime(0.2, this.audioCtx.currentTime + idx * 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.audioCtx.currentTime + idx * 0.05 + 0.25);
+        osc.connect(gain);
+        gain.connect(this.audioCtx.destination);
+        osc.start(this.audioCtx.currentTime + idx * 0.05);
+        osc.stop(this.audioCtx.currentTime + idx * 0.05 + 0.25);
+      });
+    } catch (e) { console.error(e); }
+  }
+
+  playDecryptionScanSound() {
+    if (this.isMuted || !this.audioCtx) return;
+    try {
+      // Futuristic cyber sweep sound lasting ~2.5s
+      const osc = this.audioCtx.createOscillator();
+      const gain = this.audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(300, this.audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1400, this.audioCtx.currentTime + 1.2);
+      osc.frequency.exponentialRampToValueAtTime(600, this.audioCtx.currentTime + 2.5);
+
+      gain.gain.setValueAtTime(0.12, this.audioCtx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.18, this.audioCtx.currentTime + 1.2);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.audioCtx.currentTime + 2.8);
 
       osc.connect(gain);
       gain.connect(this.audioCtx.destination);
-
       osc.start();
-      osc.stop(this.audioCtx.currentTime + duration);
-    } catch (e) {
-      console.error(e);
-    }
+      osc.stop(this.audioCtx.currentTime + 2.8);
+    } catch (e) { console.error(e); }
   }
 
   playWarningSiren() {
@@ -116,95 +321,167 @@ class BombGameEngine {
     try {
       const osc = this.audioCtx.createOscillator();
       const gain = this.audioCtx.createGain();
-
       osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(800, this.audioCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(400, this.audioCtx.currentTime + 0.3);
-
-      gain.gain.setValueAtTime(0.2, this.audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, this.audioCtx.currentTime + 0.3);
-
+      osc.frequency.setValueAtTime(900, this.audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(450, this.audioCtx.currentTime + 0.4);
+      gain.gain.setValueAtTime(0.22, this.audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, this.audioCtx.currentTime + 0.4);
       osc.connect(gain);
       gain.connect(this.audioCtx.destination);
-
       osc.start();
-      osc.stop(this.audioCtx.currentTime + 0.3);
-    } catch (e) {
-      console.error(e);
-    }
+      osc.stop(this.audioCtx.currentTime + 0.4);
+    } catch (e) { console.error(e); }
   }
 
   playVictoryFanfare() {
     if (this.isMuted || !this.audioCtx) return;
     try {
-      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
       notes.forEach((freq, index) => {
         const osc = this.audioCtx.createOscillator();
         const gain = this.audioCtx.createGain();
-
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(freq, this.audioCtx.currentTime + index * 0.12);
-
-        gain.gain.setValueAtTime(0.25, this.audioCtx.currentTime + index * 0.12);
-        gain.gain.exponentialRampToValueAtTime(0.001, this.audioCtx.currentTime + index * 0.12 + 0.4);
-
+        gain.gain.setValueAtTime(0.3, this.audioCtx.currentTime + index * 0.12);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.audioCtx.currentTime + index * 0.12 + 0.5);
         osc.connect(gain);
         gain.connect(this.audioCtx.destination);
-
         osc.start(this.audioCtx.currentTime + index * 0.12);
-        osc.stop(this.audioCtx.currentTime + index * 0.12 + 0.4);
+        osc.stop(this.audioCtx.currentTime + index * 0.12 + 0.5);
       });
-    } catch (e) {
-      console.error(e);
-    }
+    } catch (e) { console.error(e); }
   }
 
   playExplosionSound() {
     if (this.isMuted || !this.audioCtx) return;
     try {
-      // Noise buffer for explosion rumble
       const bufferSize = this.audioCtx.sampleRate * 1.5;
       const buffer = this.audioCtx.createBuffer(1, bufferSize, this.audioCtx.sampleRate);
       const output = buffer.getChannelData(0);
-
       for (let i = 0; i < bufferSize; i++) {
         output[i] = Math.random() * 2 - 1;
       }
-
       const whiteNoise = this.audioCtx.createBufferSource();
       whiteNoise.buffer = buffer;
-
       const filter = this.audioCtx.createBiquadFilter();
       filter.type = 'lowpass';
       filter.frequency.setValueAtTime(800, this.audioCtx.currentTime);
-      filter.frequency.linearRampToValueAtTime(50, this.audioCtx.currentTime + 1.5);
-
+      filter.frequency.linearRampToValueAtTime(40, this.audioCtx.currentTime + 1.5);
       const gain = this.audioCtx.createGain();
-      gain.gain.setValueAtTime(0.8, this.audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.9, this.audioCtx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.01, this.audioCtx.currentTime + 1.5);
-
       whiteNoise.connect(filter);
       filter.connect(gain);
       gain.connect(this.audioCtx.destination);
-
       whiteNoise.start();
       whiteNoise.stop(this.audioCtx.currentTime + 1.5);
-    } catch (e) {
-      console.error(e);
+    } catch (e) { console.error(e); }
+  }
+
+  /* ==========================================================================
+     REQUIREMENT 1: SEQUENTIAL GRID RENDERING (ENCRYPTED VS ACTIVE VS COMPLETED)
+     ========================================================================== */
+  renderCablesGrid() {
+    if (!this.cablesGrid) return;
+    this.cablesGrid.innerHTML = '';
+
+    this.modulos.forEach((mod, idx) => {
+      const card = document.createElement('div');
+      card.id = `cable-card-${mod.id}`;
+
+      const isCompleted = mod.estado === 'completado';
+      const isActive = mod.estado === 'activo';
+      const isDecrypting = mod.estado === 'desencriptando';
+      const isEncrypted = mod.estado === 'encriptado';
+
+      if (isCompleted) {
+        card.className = 'cable-card solved';
+        const primaryAnswer = (mod.defuserKeyword || mod.respuestas[0]).toUpperCase();
+        card.innerHTML = `
+          <div class="cable-card-header">
+            <span class="cable-num-tag">${mod.cableNum}</span>
+            <span class="cable-status-led" id="cable-status-${mod.id}">
+              <span class="led-dot green"></span> CORTADO
+            </span>
+          </div>
+          <div class="cable-wire-graphic"><div class="wire-line"></div></div>
+          <div class="cable-riddle-text">${mod.pregunta}</div>
+          <div class="cable-answer-hint" id="cable-hint-${mod.id}">Clave: ${primaryAnswer}</div>
+          ${mod.defuser ? `
+            <div class="cable-hero-badge">
+              <i class="fas fa-shield-cat"></i> Desactivado por: <strong>${this.escapeHtml(mod.defuser)}</strong>
+            </div>
+          ` : ''}
+        `;
+      } else if (isActive) {
+        card.className = 'cable-card active-cable';
+        card.innerHTML = `
+          <div class="cable-card-header">
+            <span class="cable-num-tag">${mod.cableNum}</span>
+            <span class="cable-status-led" id="cable-status-${mod.id}">
+              <span class="led-dot yellow"></span> EN CURSO
+            </span>
+          </div>
+          <div class="cable-wire-graphic"><div class="wire-line"></div></div>
+          <div class="cable-riddle-text">${mod.pregunta}</div>
+          <div class="cable-answer-hint" id="cable-hint-${mod.id}">Clave: ??? (¡Escribid en chat!)</div>
+        `;
+      } else if (isDecrypting) {
+        card.className = 'cable-card decrypt-reveal';
+        card.innerHTML = `
+          <div class="decrypting-overlay">
+            <div class="decrypt-scanner-line"></div>
+            <div class="decrypt-status-title"><i class="fas fa-microchip fa-spin"></i> DESENCRIPTANDO NÚCLEO...</div>
+            <div class="decrypt-progress-track"><div class="decrypt-progress-fill"></div></div>
+            <div class="decrypt-subtext">PROCESANDO ${mod.cableNum}</div>
+          </div>
+        `;
+      } else {
+        // Encriptado (Dynamic previous cable reference)
+        const prevCableNum = String(Math.max(1, mod.id - 1)).padStart(2, '0');
+        card.className = 'cable-card encrypted-card';
+        card.innerHTML = `
+          <div class="encrypted-overlay">
+            <div class="encrypted-glitch-text"><i class="fas fa-lock"></i> 🔒 MÓDULO ENCRIPTADO</div>
+            <div class="encrypted-sub">Esperando resolución de Cable #${prevCableNum}</div>
+          </div>
+          <div class="cable-card-header">
+            <span class="cable-num-tag">${mod.cableNum}</span>
+            <span class="cable-status-led"><span class="led-dot red"></span> BLOQUEADO</span>
+          </div>
+          <div class="cable-wire-graphic"><div class="wire-line"></div></div>
+          <div class="cable-riddle-text">${mod.pregunta}</div>
+          <div class="cable-answer-hint">Clave: ???</div>
+        `;
+      }
+
+      this.cablesGrid.appendChild(card);
+    });
+
+    this.updateCompletedCounter();
+  }
+
+  updateCompletedCounter() {
+    const completedCount = this.modulos.filter(m => m.estado === 'completado').length;
+    if (this.completedCablesCount) {
+      this.completedCablesCount.textContent = completedCount;
     }
   }
 
   /* ==========================================================================
-     TIMER ENGINE & CONTROLS
+     TIMER ENGINE & 05:00 ALERT VISUAL
      ========================================================================== */
   startTimer() {
     this.ensureAudioStarted();
     if (this.isRunning) return;
     this.isRunning = true;
 
-    if (this.statusPill) {
-      this.statusPill.innerHTML = `<span>●</span> REFACTOR EN CURSO`;
-      this.statusPill.classList.remove('danger');
+    if (this.statusPillText) {
+      this.statusPillText.textContent = "DESACTIVACIÓN EN PROGRESO (10:00)";
+    }
+    if (this.terminalStatusText) {
+      this.terminalStatusText.textContent = "🟢 TEMPORIZADOR ACTIVO: Escuchando respuestas para " + this.modulos[this.activeModuleIndex].cableNum + "...";
+      this.terminalStatusText.style.color = "#00E676";
     }
 
     this.timerInterval = setInterval(() => {
@@ -212,13 +489,10 @@ class BombGameEngine {
         this.remainingTime--;
         this.updateHUD();
 
-        // Audio cues based on remaining time
-        if (this.remainingTime <= 15 && this.remainingTime > 0) {
-          document.body.classList.add('alarm-active');
-          this.timerDigits.classList.add('critical');
-          this.playWarningSiren();
-        } else {
-          this.playTickSound(600 + (60 - this.remainingTime) * 10, 0.08);
+        if (this.remainingTime <= 300) {
+          if (this.remainingTime % 2 === 0) {
+            this.playTickSound(800, 0.08);
+          }
         }
       } else {
         this.triggerBoomFailure();
@@ -230,40 +504,44 @@ class BombGameEngine {
     this.isRunning = false;
     clearInterval(this.timerInterval);
     document.body.classList.remove('alarm-active');
-    if (this.timerStatus) this.timerStatus.textContent = "CONTRARRELOJ PAUSADO";
+    if (this.timerStatus) this.timerStatus.textContent = "CUENTA REGRESIVA PAUSADA";
+    if (this.terminalStatusText) {
+      this.terminalStatusText.textContent = "⚠️ Temporizador pausado. Inicia para activar la auto-lectura.";
+      this.terminalStatusText.style.color = "#FFD166";
+    }
   }
 
-  resetGame(newSeconds = 60) {
+  resetGame(seconds = 600) {
     this.pauseTimer();
-    this.totalTime = newSeconds;
-    this.remainingTime = newSeconds;
-    this.currentDefuses = 0;
+    this.totalTime = seconds;
+    this.remainingTime = seconds;
+    this.warningAlertTriggered = false;
+    this.activeModuleIndex = 0;
+    this.isDecrypting = false;
+
+    // Reset 10 modules: Cable #01 active, Cables #02..#10 encrypted
+    this.modulos.forEach((mod, idx) => {
+      mod.estado = (idx === 0) ? 'activo' : 'encriptado';
+      mod.defuser = null;
+      mod.defuserKeyword = null;
+    });
+    this.heroesArray = [];
+
     document.body.classList.remove('alarm-active');
-    this.timerDigits.classList.remove('critical');
-    this.boomOverlay.classList.remove('active');
-    this.successOverlay.classList.remove('active');
+    if (this.timerDigits) this.timerDigits.classList.remove('warning-alert');
+    if (this.timerHudCard) this.timerHudCard.classList.remove('warning-card-border');
+    if (this.statusPill) this.statusPill.classList.remove('danger');
+    if (this.statusPillText) this.statusPillText.textContent = "SISTEMA NÚCLEO PREPARADO (10:00)";
 
-    if (this.statusPill) {
-      this.statusPill.innerHTML = `<span>⚡</span> SISTEMA NÚCLEO PREPARADO`;
-      this.statusPill.classList.remove('danger');
-    }
+    this.boomOverlay?.classList.remove('active');
+    this.successOverlay?.classList.remove('active');
 
+    this.renderCablesGrid();
     this.updateHUD();
-    this.addChatMessage("Sistema", "Núcleo reiniciado. ¡Uníos para desactivarlo!", "#00F5D4", "SYS");
-  }
-
-  addTime(seconds) {
-    this.remainingTime += seconds;
-    if (this.remainingTime > 15) {
-      document.body.classList.remove('alarm-active');
-      this.timerDigits.classList.remove('critical');
-    }
-    this.updateHUD();
-    this.addChatMessage("EventBot", `¡+${seconds}s añadidos al temporizador!`, "#FFD166", "EVENT");
+    this.addTerminalLine("🔒 Sistema reiniciado. Cable #01 ACTIVO. Cables #02 al #10 encriptados.", "sys");
   }
 
   updateHUD() {
-    // Format mm:ss
     const minutes = Math.floor(this.remainingTime / 60);
     const seconds = this.remainingTime % 60;
     const formatted = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
@@ -272,93 +550,235 @@ class BombGameEngine {
       this.timerDigits.textContent = formatted;
     }
 
-    // Progress Bar Update
-    const percentage = Math.min(100, Math.round((this.currentDefuses / this.targetDefuses) * 100));
-    if (this.defuseProgressFill) {
-      this.defuseProgressFill.style.width = `${percentage}%`;
-    }
-    if (this.defuseCountText) {
-      this.defuseCountText.textContent = `${this.currentDefuses} / ${this.targetDefuses} (${percentage}%)`;
-    }
+    if (this.remainingTime <= 300 && this.remainingTime > 0) {
+      if (this.timerDigits && !this.timerDigits.classList.contains('warning-alert')) {
+        this.timerDigits.classList.add('warning-alert');
+      }
+      if (this.timerHudCard && !this.timerHudCard.classList.contains('warning-card-border')) {
+        this.timerHudCard.classList.add('warning-card-border');
+      }
+      if (this.statusPill && !this.statusPill.classList.contains('danger')) {
+        this.statusPill.classList.add('danger');
+        if (this.statusPillText) {
+          this.statusPillText.textContent = "⚠️ ALERTA: REACTOR EN ALERTA ROJA (≤ 05:00)";
+        }
+      }
+      document.body.classList.add('alarm-active');
 
-    if (this.remainingTime <= 15 && this.remainingTime > 0) {
-      if (this.timerStatus) this.timerStatus.textContent = "⚠️ ¡ESTABILIDAD CRÍTICA - APURAD!";
+      if (!this.warningAlertTriggered) {
+        this.warningAlertTriggered = true;
+        this.playWarningSiren();
+        this.addTerminalLine("¡ATENCIÓN! Tiempo restante menor a 05:00. El reactor entra en ALERTA ROJA.", "sys");
+      }
+
+      if (this.timerStatus) {
+        this.timerStatus.textContent = "⚠️ ALERTA ROJA: COLAPSO INMINENTE";
+      }
     } else if (this.isRunning) {
-      if (this.timerStatus) this.timerStatus.textContent = "DESACTIVACIÓN EN PROGRESO...";
+      if (this.timerStatus) {
+        const activeMod = this.modulos[this.activeModuleIndex];
+        this.timerStatus.textContent = `ESCUCHANDO RESPUESTAS EN CHAT PARA ${activeMod ? activeMod.cableNum : 'REACTOR'}...`;
+      }
     } else {
-      if (this.timerStatus) this.timerStatus.textContent = "PRESIONA INICIAR PARA COMENZAR";
+      if (this.timerStatus) {
+        this.timerStatus.textContent = "PRESIONA INICIAR PARA COMENZAR LA CUENTA REGRESIVA";
+      }
     }
   }
 
   /* ==========================================================================
-     DEFUSE & CHAT CHALLENGE SYSTEM
+     REQUIREMENT 3: RESTRICTIVE SEQUENTIAL VALIDATION & 3.0s DRAMATIC REVEAL
      ========================================================================== */
-  registerDefuse(amount = 1, username = "ImArixu", isUserAction = false) {
-    if (!this.isRunning && !isUserAction) return;
+  processInputWord(messageText, username = "ImArixu", isManualUser = false) {
+    if (!messageText || this.isDecrypting) return;
 
-    this.currentDefuses += amount;
-    this.createSparkExplosion();
+    // RESTRICTIVE CHECK: Only validate against current active cable!
+    const currentActiveModule = this.modulos[this.activeModuleIndex];
+    if (!currentActiveModule || currentActiveModule.estado !== 'activo') return;
 
-    if (isUserAction) {
-      this.playTickSound(1200, 0.12);
+    // 1. Normalize message text (lowercase & strip diacritics/accents)
+    const normalizedText = messageText
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+
+    // 2. Extract individual word/number tokens (including underscores e.g. "el_xenomorfo_")
+    const words = normalizedText.match(/[\p{L}\p{N}_]+/gu) || [];
+
+    let isMatch = false;
+    let foundAnswerKeyword = "";
+
+    // 3. Compare words ONLY against the current active module's respuestas
+    for (const rawWord of words) {
+      const cleanWord = rawWord.trim();
+      if (!cleanWord) continue;
+
+      for (const resp of currentActiveModule.respuestas) {
+        const respClean = resp
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .trim();
+
+        if (cleanWord === respClean) {
+          isMatch = true;
+          foundAnswerKeyword = resp.toUpperCase();
+          break;
+        }
+      }
+
+      if (isMatch) break;
     }
 
-    this.updateHUD();
+    if (isMatch) {
+      // 1. Mark active module as completed & save defuser
+      currentActiveModule.estado = 'completado';
+      currentActiveModule.defuser = username;
+      currentActiveModule.defuserKeyword = foundAnswerKeyword;
 
-    // Check Victory Condition
-    if (this.currentDefuses >= this.targetDefuses) {
-      this.triggerDefusalSuccess();
+      // 2. Save hero into Array
+      this.heroesArray.push({
+        cableId: currentActiveModule.id,
+        cableNum: currentActiveModule.cableNum,
+        username: username,
+        keyword: foundAnswerKeyword
+      });
+
+      // 3. Play sound & spark explosion
+      this.playCableCutSound();
+      this.createSparkExplosion(40);
+      this.updateCompletedCounter();
+
+      // 4. Update card UI to solved
+      this.renderCablesGrid();
+
+      // 5. Terminal log
+      this.addTerminalLine(`⚡ ¡${username} ha cortado el ${currentActiveModule.cableNum}! Clave: ${foundAnswerKeyword}`, "sys");
+
+      // 6. Check Win Condition or Trigger Sequential Reveal of next cable
+      if (this.activeModuleIndex >= this.modulos.length - 1) {
+        this.triggerDefusalSuccess();
+      } else {
+        this.revealNextCableSequentially();
+      }
     }
   }
 
-  toggleMathMode() {
-    this.isMathMode = !this.isMathMode;
-    if (this.isMathMode) {
-      this.generateNewMathProblem();
-      this.challengeDesc.textContent = "¡Modo Acertijo Activado! Resuelve la ecuación en la entrada de comandos para inyectar un súper defuse (+10).";
-    } else {
-      this.challengeDesc.textContent = "Lograd que el chat o tú escriban la palabra clave 'DEFUSE' para desactivar la bomba antes de que expire el tiempo.";
-      this.targetText.textContent = "PALABRA CLAVE: DEFUSE";
+  /* REQUIREMENT 2 & 3: SEQUENTIAL DECRYPTION REVEAL SYSTEM (3.0s DRAMATIC ANIMATION) */
+  revealNextCableSequentially() {
+    this.isDecrypting = true;
+    this.activeModuleIndex++;
+
+    const nextModule = this.modulos[this.activeModuleIndex];
+    if (!nextModule) return;
+
+    nextModule.estado = 'desencriptando';
+    this.renderCablesGrid();
+
+    // Play cyber decryption sweep sound effect
+    this.playDecryptionScanSound();
+    this.addTerminalLine(`🔓 Iniciando desencriptación del Cable #${String(nextModule.id).padStart(2, '0')}... (3.0s)`, "sys");
+
+    if (this.terminalStatusText) {
+      this.terminalStatusText.textContent = `⏳ Desencriptando Cable #${String(nextModule.id).padStart(2, '0')}...`;
+      this.terminalStatusText.style.color = "#FFD166";
+    }
+
+    // 3.0 Seconds Dramatic Transition
+    setTimeout(() => {
+      nextModule.estado = 'activo';
+      this.isDecrypting = false;
+      this.renderCablesGrid();
+      this.playTickSound(1100, 0.15);
+
+      this.addTerminalLine(`✅ ¡${nextModule.cableNum} DESENCRIPTADO! Acertijo activo para el chat.`, "sys");
+
+      if (this.terminalStatusText) {
+        this.terminalStatusText.textContent = `🟢 ESCUCHANDO RESPUESTAS PARA ${nextModule.cableNum}...`;
+        this.terminalStatusText.style.color = "#00E676";
+      }
+    }, 3000);
+  }
+
+  cutNextPendingCable(username = "StreamerMod") {
+    if (this.isDecrypting) return;
+    const currentActive = this.modulos[this.activeModuleIndex];
+    if (currentActive && currentActive.estado === 'activo') {
+      this.processInputWord(currentActive.respuestas[0], username, true);
     }
   }
 
-  generateNewMathProblem() {
-    const num1 = Math.floor(Math.random() * 30) + 12;
-    const num2 = Math.floor(Math.random() * 25) + 8;
-    this.currentMathAnswer = num1 + num2;
-    if (this.targetText) {
-      this.targetText.textContent = `ACERTIJO: ¿Cuánto es ${num1} + ${num2}?`;
-    }
+  simulateWin() {
+    this.modulos.forEach((m, idx) => {
+      const dummyUser = `Héroe_${idx + 1}`;
+      const key = m.respuestas[0].toUpperCase();
+      m.estado = 'completado';
+      m.defuser = dummyUser;
+      m.defuserKeyword = key;
+      if (!this.heroesArray.find(h => h.cableId === m.id)) {
+        this.heroesArray.push({
+          cableId: m.id,
+          cableNum: m.cableNum,
+          username: dummyUser,
+          keyword: key
+        });
+      }
+    });
+    this.activeModuleIndex = 9;
+    this.isDecrypting = false;
+    this.renderCablesGrid();
+    this.triggerDefusalSuccess();
   }
 
   /* ==========================================================================
-     OUTCOME EVENTS (SUCCESS vs BOOOM)
+     RANDOM RNG REWARD SYSTEM & HEROES SQUAD ROSTER
      ========================================================================== */
   triggerDefusalSuccess() {
     this.pauseTimer();
     this.playVictoryFanfare();
     this.createVictoryConfetti();
 
+    const randomIndex = Math.floor(Math.random() * this.rewardOptions.length);
+    const selectedReward = this.rewardOptions[randomIndex];
+
+    if (this.rngRewardTag) {
+      this.rngRewardTag.innerHTML = `<i class="fas fa-dice"></i> ${selectedReward.tag}`;
+    }
+    if (this.rngRewardText) {
+      this.rngRewardText.textContent = selectedReward.text;
+    }
+
+    if (this.heroesSquadList) {
+      this.heroesSquadList.innerHTML = '';
+
+      if (this.heroesArray.length > 0) {
+        this.heroesArray.forEach(hero => {
+          const chip = document.createElement('div');
+          chip.className = 'hero-chip';
+          chip.innerHTML = `<span class="hero-cable">#${hero.cableId}</span> <strong class="hero-name">${this.escapeHtml(hero.username)}</strong> (${hero.keyword})`;
+          this.heroesSquadList.appendChild(chip);
+        });
+      } else {
+        this.heroesSquadList.innerHTML = `<span style="color: var(--text-muted); font-size: 0.85rem;">Escuadrón completo de la comunidad</span>`;
+      }
+    }
+
     if (this.successOverlay) {
       this.successOverlay.classList.add('active');
     }
-    if (this.statusPill) {
-      this.statusPill.innerHTML = `<span>✔</span> ¡BOMBA DESACTIVADA!`;
-      this.statusPill.className = "dia1-status-pill";
-      this.statusPill.style.borderColor = "var(--twitch-green)";
-      this.statusPill.style.color = "var(--twitch-green)";
+    if (this.statusPillText) {
+      this.statusPillText.textContent = "✔ ¡BOMBA DESACTIVADA! (10/10 CABLES)";
     }
 
-    this.addChatMessage("SISTEMA", "¡BOMBA DESACTIVADA! El stream está a salvo. MVP: La Comunidad.", "#00E676", "VICTORY");
+    this.addTerminalLine("🎉 ¡BOMBA DESACTIVADA! Los 10 cables cortados por el escuadrón.", "sys");
   }
 
   triggerBoomFailure() {
     this.pauseTimer();
     document.body.classList.remove('alarm-active');
     this.playExplosionSound();
-    this.createSparkExplosion(80);
+    this.createSparkExplosion(90);
 
-    // Pick random penalty
     const randomPenalty = this.penalties[Math.floor(Math.random() * this.penalties.length)];
     if (this.penaltyText) {
       this.penaltyText.textContent = randomPenalty;
@@ -368,57 +788,17 @@ class BombGameEngine {
       this.boomOverlay.classList.add('active');
     }
     if (this.statusPill) {
-      this.statusPill.innerHTML = `<span>💀</span> COLLAPSE TOTAL: BOOOM`;
-      this.statusPill.className = "dia1-status-pill danger";
+      this.statusPill.classList.add('danger');
+    }
+    if (this.statusPillText) {
+      this.statusPillText.textContent = "💀 BOOOM! REACTOR COLAPSADO";
     }
 
-    this.addChatMessage("SISTEMA", "¡BOOOM! La bomba ha explotado. Penalización activada.", "#FF3366", "BOOM");
+    this.addTerminalLine("💥 ¡BOOOM! El tiempo llegó a 00:00. Penalización activada.", "sys");
   }
 
   /* ==========================================================================
-     TWITCH CHAT SIMULATOR
-     ========================================================================== */
-  startChatSimulation() {
-    setInterval(() => {
-      if (!this.isRunning) return;
-
-      const randomUser = this.chatUsers[Math.floor(Math.random() * this.chatUsers.length)];
-      const isDefuseMsg = Math.random() > 0.35;
-      const emote = this.emotes[Math.floor(Math.random() * this.emotes.length)];
-      const msgContent = isDefuseMsg ? `DEFUSE ${emote}` : `¡Vamos ImArixu! ${emote} Pog`;
-
-      this.addChatMessage(randomUser.name, msgContent, randomUser.color, randomUser.badge);
-
-      if (isDefuseMsg) {
-        this.registerDefuse(1, randomUser.name, false);
-      }
-    }, 1800);
-  }
-
-  addChatMessage(username, message, color = "#9146FF", badge = "VIEWER") {
-    if (!this.chatMessages) return;
-
-    const msgLine = document.createElement('div');
-    msgLine.className = 'chat-msg-line';
-    msgLine.style.setProperty('--msg-color', color);
-
-    msgLine.innerHTML = `
-      <span class="chat-badge-icon">${badge}</span>
-      <span class="chat-username" style="color: ${color};">${username}:</span>
-      <span class="chat-text">${message}</span>
-    `;
-
-    this.chatMessages.appendChild(msgLine);
-    this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
-
-    // Limit chat lines to 40
-    if (this.chatMessages.children.length > 40) {
-      this.chatMessages.removeChild(this.chatMessages.firstChild);
-    }
-  }
-
-  /* ==========================================================================
-     CANVAS ANIMATION & PARTICLE PARTICLES
+     CANVAS ANIMATION & PARTICLES
      ========================================================================== */
   initCanvas() {
     if (!this.canvas || !this.ctx) return;
@@ -442,14 +822,14 @@ class BombGameEngine {
 
     for (let i = 0; i < count; i++) {
       const angle = Math.random() * Math.PI * 2;
-      const speed = Math.random() * 6 + 2;
+      const speed = Math.random() * 7 + 2;
       this.particles.push({
         x: centerX,
         y: centerY,
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed,
         radius: Math.random() * 3.5 + 1.5,
-        color: Math.random() > 0.5 ? '#9146FF' : (Math.random() > 0.5 ? '#00F5D4' : '#FF007A'),
+        color: Math.random() > 0.4 ? '#00E676' : (Math.random() > 0.5 ? '#9146FF' : '#FFD166'),
         alpha: 1,
         decay: Math.random() * 0.03 + 0.015
       });
@@ -458,7 +838,7 @@ class BombGameEngine {
 
   createVictoryConfetti() {
     if (!this.canvas) return;
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 90; i++) {
       this.particles.push({
         x: Math.random() * this.canvas.width,
         y: -10,
@@ -500,39 +880,21 @@ class BombGameEngine {
   }
 
   /* ==========================================================================
-     EVENT LISTENERS & USER INPUT BINDINGS
+     EVENT LISTENERS & BINDINGS
      ========================================================================== */
   bindEvents() {
-    // Form Submit
     if (this.defuseForm) {
       this.defuseForm.addEventListener('submit', (e) => {
         e.preventDefault();
         this.ensureAudioStarted();
-        const val = this.defuseInput.value.trim();
+        const val = this.defuseInput.value;
         if (!val) return;
 
-        if (this.isMathMode) {
-          if (parseInt(val, 10) === this.currentMathAnswer) {
-            this.addChatMessage("TÚ", `¡Respuesta Correcta (${val})! +10 DEFUSES`, "#00F5D4", "HERO");
-            this.registerDefuse(10, "TÚ", true);
-            this.generateNewMathProblem();
-          } else {
-            this.addChatMessage("TÚ", `Respuesta incorrecta (${val})... ¡Inténtalo de nuevo!`, "#FF3366", "USER");
-          }
-        } else {
-          if (val.toUpperCase() === 'DEFUSE') {
-            this.addChatMessage("TÚ", `DEFUSE!`, "#00F5D4", "YOU");
-            this.registerDefuse(1, "TÚ", true);
-          } else {
-            this.addChatMessage("TÚ", val, "#FFFFFF", "YOU");
-          }
-        }
-
+        this.processInputWord(val, "TÚ (Manual)", true);
         this.defuseInput.value = '';
       });
     }
 
-    // Audio Toggle Button
     const audioToggleBtn = document.getElementById('btnAudioToggle');
     if (audioToggleBtn) {
       audioToggleBtn.addEventListener('click', () => {
@@ -543,30 +905,33 @@ class BombGameEngine {
       });
     }
 
-    // Mod Controls
     document.getElementById('btnStartTimer')?.addEventListener('click', () => this.startTimer());
     document.getElementById('btnPauseTimer')?.addEventListener('click', () => this.pauseTimer());
-    document.getElementById('btnResetTimer')?.addEventListener('click', () => this.resetGame(60));
-    document.getElementById('btnAddTime')?.addEventListener('click', () => this.addTime(15));
-    document.getElementById('btnSpamChat')?.addEventListener('click', () => {
+    document.getElementById('btnResetTimer')?.addEventListener('click', () => this.resetGame(600));
+    document.getElementById('btnCutNext')?.addEventListener('click', () => {
       this.ensureAudioStarted();
-      this.registerDefuse(10, "SimulatedSpam", true);
-      this.addChatMessage("MOD_BOOST", "¡SPAM DE CHAT ACTIVADO! +10 DEFUSES", "#FFD166", "MOD");
+      this.cutNextPendingCable("StreamerMod");
     });
-    document.getElementById('btnToggleMath')?.addEventListener('click', () => this.toggleMathMode());
+    document.getElementById('btnSimulateWin')?.addEventListener('click', () => {
+      this.ensureAudioStarted();
+      this.simulateWin();
+    });
+    document.getElementById('btnSimulateBoom')?.addEventListener('click', () => {
+      this.ensureAudioStarted();
+      this.triggerBoomFailure();
+    });
 
-    // Modal Action Buttons
     document.getElementById('btnRerollPenalty')?.addEventListener('click', () => {
       const randomPenalty = this.penalties[Math.floor(Math.random() * this.penalties.length)];
       if (this.penaltyText) this.penaltyText.textContent = randomPenalty;
     });
 
-    document.getElementById('btnResetFromBoom')?.addEventListener('click', () => this.resetGame(60));
-    document.getElementById('btnResetFromSuccess')?.addEventListener('click', () => this.resetGame(60));
+    document.getElementById('btnResetFromBoom')?.addEventListener('click', () => this.resetGame(600));
+    document.getElementById('btnResetFromSuccess')?.addEventListener('click', () => this.resetGame(600));
   }
 }
 
-// Global Engine Instance
+// Instantiate Engine on DOM ready
 window.addEventListener('DOMContentLoaded', () => {
   window.bombGame = new BombGameEngine();
 });
