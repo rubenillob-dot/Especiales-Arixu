@@ -17,11 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     2: {
       title: "Día 2: Fortnite-Guessr",
-      status: "PRÓXIMAMENTE - BLOQUEADO",
-      statusClass: "tag-locked",
-      link: "#",
+      status: "¡EN VIVO AHORA!",
+      statusClass: "tag-active",
+      link: "dia2.html",
       badge: "RECONOCIMIENTO DE MAPA",
-      desc: "Demuestra que conoces la isla. Adivina la ubicación exacta viendo solo una fotografía de la isla de Fortnite en tiempo récord."
+      desc: "Demuestra que conoces la isla. Adivina las 20 ubicaciones exactas a través del visor de reconocimiento satelital de Fortnite."
     },
     3: {
       title: "Día 3: Qué Prefieres: Edición ImArixu",

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Día 2: Fortnite-Guessr (Radar de Comunicaciones) | Especiales ImArixu</title>
+  <meta name="description" content="Día 2: Fortnite-Guessr en vivo. Feed de reconocimiento satelital vertical con Radar de Comunicaciones en tiempo real donde el chat de Twitch de ImArixu adivina las 20 ubicaciones.">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/dia2.css">
+  <!-- FontAwesome Icons for Gamer & Tactical UI -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body class="guessr-theme">
+
+  <!-- LAYER 1: Topographic Elevation Contour Lines Background -->
+  <div class="topo-backdrop-layer" aria-hidden="true"></div>
+
+  <!-- LAYER 2: Tactical Cartesian Grid Overlay -->
+  <div class="tactical-grid-overlay" aria-hidden="true"></div>
+
+  <!-- LAYER 3: Radar Scanning Laser Line -->
+  <div class="radar-scan-line" aria-hidden="true"></div>
+
+  <!-- ======================================================================
+       STICKY TOP HUD (Flawlessly fixed with solid dark glass & #00fa9a border)
+       ====================================================================== -->
+  <header class="dia2-sticky-header">
+    <div class="sticky-header-content">
+      
+      <!-- Top Row: Hub Navigation, Brand, Dynamic Round Badge, Telemetry & Controls -->
+      <div class="sticky-top-row">
+        
+        <div class="header-brand-group">
+          <a href="index.html" class="btn-nav-hub" title="Volver a la portada de Especiales">
+            <i class="fas fa-arrow-left"></i> Hub
+          </a>
+          <img src="assets/arixu_avatar.png" alt="ImArixu Avatar" class="brand-mini-avatar">
+          <div class="brand-title-badge">
+            ARIXU <span>• FORTNITE-GUESSR</span>
+          </div>
+        </div>
+
+        <!-- Dynamic Round Progress Counter -->
+        <div class="sticky-round-counter">
+          <i class="fas fa-location-dot" style="color: var(--radar-green);"></i>
+          <span>RONDA ACTUAL: <strong class="counter-highlight" id="stickyRoundNum">1</strong> / 20</span>
+        </div>
+
+        <!-- Integrated Telemetry Ticker -->
+        <div class="sticky-telemetry-badge">
+          <span class="hud-blip-dot"></span>
+          <span>SAT_LINK: <strong>ACTIVE</strong> // FREQ: 443.00 MHz</span>
+        </div>
+
+        <!-- Header Controls -->
+        <div class="header-actions-group">
+          <button class="hud-tool-btn" id="btnAudioToggle" title="Activar/Desactivar efectos de sonido">
+            <i class="fas fa-volume-up"></i> Audio: ON
+          </button>
+
+          <button class="hud-tool-btn" id="btnFullscreenToggle" title="Modo Pantalla Completa">
+            <i class="fas fa-expand"></i> Fullscreen
+          </button>
+
+          <a href="ruleta.html" class="hud-tool-btn" title="Ir a la Ruleta Oficial">
+            <i class="fas fa-dice"></i> Ruleta
+          </a>
+        </div>
+
+      </div>
+
+      <!-- Bottom Row: 20-Round Interactive Progress Track Strip -->
+      <div class="sticky-track-container">
+        <div class="round-track-grid" id="roundTrackGrid">
+          <!-- Injected dynamically by JS (Nodes 1 to 20) -->
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ======================================================================
+       2-COLUMN MAIN LAYOUT (75% RECON FEED / 25% RADAR COMMS SIDEBAR)
+       ====================================================================== -->
+  <div class="dia2-main-layout">
+    
+    <!-- LEFT 75% COLUMN: Mission Briefing & Vertical Recon Feed -->
+    <div class="dia2-feed-column">
+      
+      <!-- Mission Instructions & Briefing Panel -->
+      <section class="mission-briefing-panel" style="margin: 0; padding: 0;">
+        <div class="briefing-card">
+          <div class="briefing-header">
+            <div class="briefing-tag">
+              <span class="hud-blip-dot"></span>
+              <i class="fas fa-satellite-dish"></i> INFORME DE MISIÓN • RECONOCIMIENTO DE LA ISLA
+            </div>
+            <span class="briefing-status">● ESCUADRÓN EN DIRECTO</span>
+          </div>
+          <div class="briefing-body">
+            <div class="briefing-icon-box">
+              <i class="fas fa-earth-americas"></i>
+            </div>
+            <p class="briefing-text">
+              <strong>🌍 ¡Atención, Escuadrón de Exploración!</strong> El dron de reconocimiento ha escaneado la isla. Las ubicaciones que veréis a continuación son clásicos de Fortnite, muy fáciles de reconocer si sois verdaderos veteranos. Para facilitaros la misión, cada escaneo incluirá una <em>"pista encriptada"</em> con un juego de palabras. ¡Leed la pista, observad el entorno y sed los primeros en escribir la ubicación exacta en el chat!
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Vertical Scanning Feed Container (20 cards stacked in cascade) -->
+      <main class="feed-scan-container" id="feedScanContainer" style="margin: 0; padding: 0;">
+        <!-- Hydrated dynamically by js/dia2.js -->
+      </main>
+
+    </div>
+
+    <!-- RIGHT 25% COLUMN: REQUIREMENT 1 (Radar de Comunicaciones Sidebar) -->
+    <aside class="dia2-sidebar-column">
+      <div class="radar-comms-terminal">
+        
+        <!-- Radar Terminal Header with Animated CSS Radar Scope -->
+        <div class="radar-terminal-header">
+          <div class="radar-header-info">
+            <div class="radar-scope-mini">
+              <div class="radar-sweep-beam"></div>
+              <div class="radar-scope-cross"></div>
+            </div>
+            <div>
+              <h3 class="radar-title">RADAR DE COMUNICACIONES</h3>
+              <span class="radar-subtitle">FEED SATELITAL // TWITCH IRC (#imarixu)</span>
+            </div>
+          </div>
+          <span class="radar-ws-badge" id="radarWsBadge">● RECEPTOR ACTIVO</span>
+        </div>
+
+        <!-- Telemetry Frequency Sub-bar -->
+        <div class="radar-status-bar">
+          <span>FREC: <strong>443.00 MHz</strong></span>
+          <span id="radarMsgCount"><strong>0</strong> COORD_RECV</span>
+        </div>
+
+        <!-- Live Terminal Chat Message Feed -->
+        <div class="radar-chat-feed" id="radarChatMessages">
+          <div class="terminal-line sys">
+            <span class="terminal-coord">[SYS_INIT]</span> Radar de comunicaciones calibrado. Escuchando respuestas de exploración en #imarixu...
+          </div>
+        </div>
+
+        <!-- Terminal Footer: Active Target Indicator -->
+        <div class="radar-terminal-footer">
+          <div class="radar-active-target-text" id="radarTargetText">
+            <span class="radar-ping-dot"></span> OBJETIVO ACTUAL: <strong>RONDA #01</strong> // D5
+          </div>
+        </div>
+
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- ======================================================================
+       STREAMER FLOATING BOTTOM DOCK
+       ====================================================================== -->
+  <footer class="streamer-bottom-dock">
+    <div class="dock-content-wrapper">
+      
+      <!-- Primary Streamer & Mod Action Buttons -->
+      <div class="dock-primary-actions">
+        
+        <!-- Force Reveal Button -->
+        <button class="btn-dock-action btn-force-reveal" id="btnForceReveal" title="Forzar acierto de la ronda activa (Espacio o R)">
+          <i class="fas fa-bolt"></i> Forzar Acierto <span class="btn-key-badge">ESPACIO</span>
+        </button>
+
+        <!-- Hint Button -->
+        <button class="btn-dock-action btn-dock-subtle" id="btnHintActive" title="Ver pista de la ronda activa (H)">
+          <i class="fas fa-lightbulb"></i> Pista <span class="btn-key-badge">H</span>
+        </button>
+
+        <!-- Reset Button -->
+        <button class="btn-dock-action btn-dock-ghost" id="btnResetGame" title="Reiniciar partida a la Ronda #1">
+          <i class="fas fa-rotate-left"></i> Reiniciar
+        </button>
+
+      </div>
+
+      <!-- Manual Test Form (Streamer / Offline / Mod testing) -->
+      <form class="manual-test-form" id="manualTestForm" title="Consola manual para probar aciertos o moderar">
+        <i class="fas fa-keyboard" style="color: var(--radar-green); font-size: 0.8rem; margin-left: 4px;"></i>
+        <input 
+          type="text" 
+          class="manual-test-input" 
+          id="manualTestInput" 
+          placeholder="Probar palabra (ej. pisos, balsa...)" 
+          autocomplete="off"
+        >
+        <button type="submit" class="btn-dock-action btn-force-reveal" style="padding: 0.35rem 0.75rem; font-size: 0.78rem;">
+          Enviar
+        </button>
+      </form>
+
+    </div>
+  </footer>
+
+  <!-- JavaScript Engine (Vertical Feed & Twitch WebSocket) -->
+  <script src="js/dia2.js"></script>
+</body>
+</html>
