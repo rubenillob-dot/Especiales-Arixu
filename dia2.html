@@ -168,6 +168,11 @@
       <!-- Primary Streamer & Mod Action Buttons -->
       <div class="dock-primary-actions">
         
+        <!-- Extract Winners Button -->
+        <button class="btn-dock-action btn-dock-extract" id="btnExtractWinners" title="Extraer y exportar lista de ganadores">
+          <i class="fas fa-trophy"></i> Extraer Ganadores (<span id="winnerCountBadge">0</span>)
+        </button>
+
         <!-- Force Reveal Button -->
         <button class="btn-dock-action btn-force-reveal" id="btnForceReveal" title="Forzar acierto de la ronda activa (Espacio o R)">
           <i class="fas fa-bolt"></i> Forzar Acierto <span class="btn-key-badge">ESPACIO</span>
@@ -202,6 +207,55 @@
 
     </div>
   </footer>
+
+  <!-- ======================================================================
+       WINNERS EXTRACTION MODAL
+       ====================================================================== -->
+  <div class="winners-modal-backdrop" id="winnersModalBackdrop" style="display: none;">
+    <div class="winners-modal-card">
+      <div class="winners-modal-header">
+        <div class="winners-modal-title">
+          <i class="fas fa-trophy" style="color: #FFD166;"></i>
+          <span>REGISTRO OFICIAL DE EXPLORADORES GANADORES</span>
+        </div>
+        <button class="btn-close-modal" id="btnCloseWinnersModal" title="Cerrar ventana">
+          <i class="fas fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="winners-modal-body">
+        <div class="winners-summary-bar">
+          <span>Zonas Completadas: <strong id="modalTotalCompleted">0 / 20</strong></span>
+          <span>Exploradores Únicos: <strong id="modalUniqueWinners">0</strong></span>
+        </div>
+
+        <div class="winners-table-container">
+          <table class="winners-table" id="winnersTable">
+            <thead>
+              <tr>
+                <th># Ronda</th>
+                <th>Ubicación</th>
+                <th>Explorador Ganador</th>
+                <th>Hora</th>
+              </tr>
+            </thead>
+            <tbody id="winnersTableBody">
+              <!-- Injected dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="winners-modal-footer">
+        <button class="btn-modal-action btn-copy-winners" id="btnCopyWinners">
+          <i class="fas fa-copy"></i> Copiar Lista (@Nombres)
+        </button>
+        <button class="btn-modal-action btn-download-winners" id="btnDownloadWinners">
+          <i class="fas fa-download"></i> Descargar Exploradores (TXT)
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- JavaScript Engine (Vertical Feed & Twitch WebSocket) -->
   <script src="js/dia2.js"></script>

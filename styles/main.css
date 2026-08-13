@@ -635,6 +635,30 @@ body::before {
   box-shadow: 0 0 30px rgba(145, 70, 255, 0.35);
 }
 
+/* Day 3 Custom Violet/Purple Illumination */
+.day-card.day-3-card {
+  border: 2px solid rgba(145, 70, 255, 0.6);
+  background: linear-gradient(160deg, rgba(145, 70, 255, 0.16) 0%, rgba(20, 15, 30, 0.92) 100%);
+  box-shadow: 0 0 25px rgba(145, 70, 255, 0.25);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.day-card.day-3-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  border-color: #9146FF;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8), 0 0 35px rgba(145, 70, 255, 0.75), 0 0 15px rgba(255, 255, 255, 0.4);
+}
+
+.btn-enter-dia3 {
+  background: linear-gradient(135deg, #9146FF 0%, #772CE8 100%) !important;
+  box-shadow: 0 0 16px rgba(145, 70, 255, 0.5);
+}
+
+.btn-enter-dia3:hover {
+  background: linear-gradient(135deg, #A970FF 0%, #9146FF 100%) !important;
+  box-shadow: 0 0 25px rgba(145, 70, 255, 0.9);
+}
+
 .day-card-header {
   display: flex;
   justify-content: space-between;

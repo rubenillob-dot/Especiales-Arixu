@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Día 3: Qué Prefieres (Duelo de Decisiones) | Especiales ImArixu</title>
+  <meta name="description" content="Día 3: Qué Prefieres: Edición ImArixu. Duelo de decisiones en pantalla dividida con monitor de chat en tiempo real en Twitch de ImArixu.">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/dia3.css">
+  <!-- FontAwesome Icons for Gaming UI -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body class="dia3-theme">
+
+  <!-- Confetti Canvas for Victory Celebration -->
+  <canvas id="confettiCanvas" aria-hidden="true"></canvas>
+
+  <!-- ======================================================================
+       COMPACT STICKY TOP HEADER HUD
+       ====================================================================== -->
+  <header class="dia3-sticky-header">
+    
+    <!-- Brand & Navigation Hub -->
+    <div class="header-brand-group">
+      <a href="index.html" class="btn-nav-hub" title="Volver a la portada de Especiales">
+        <i class="fas fa-arrow-left"></i> Hub
+      </a>
+      <img src="assets/arixu_avatar.png" alt="ImArixu Avatar" class="brand-mini-avatar">
+      <div class="brand-title-badge">
+        ARIXU <span>• DUELO DE DECISIONES</span>
+      </div>
+    </div>
+
+    <!-- Category Theme Pillar Badge -->
+    <div class="category-theme-badge cat-fortnite" id="categoryThemeBadge">
+      <i class="fas fa-gamepad" id="categoryIcon"></i>
+      <span id="categoryLabel">TEMÁTICA: FORTNITE</span>
+    </div>
+
+    <!-- Dynamic Round Counter -->
+    <div class="sticky-round-counter">
+      <i class="fas fa-scale-balanced" style="color: #FF007A;"></i>
+      <span>DILEMA: <strong class="counter-highlight" id="stickyRoundNum">1</strong> / 35</span>
+    </div>
+
+    <!-- Header Actions (Audio, Fullscreen, Ruleta) -->
+    <div class="header-actions-group">
+      <button class="hud-tool-btn" id="btnAudioToggle" title="Activar/Desactivar efectos de sonido">
+        <i class="fas fa-volume-up"></i> Audio: ON
+      </button>
+
+      <button class="hud-tool-btn" id="btnFullscreenToggle" title="Modo Pantalla Completa">
+        <i class="fas fa-expand"></i> Fullscreen
+      </button>
+
+      <a href="ruleta.html" class="hud-tool-btn" title="Ir a la Ruleta Oficial">
+        <i class="fas fa-dice"></i> Ruleta
+      </a>
+    </div>
+
+  </header>
+
+  <!-- ======================================================================
+       REQUIREMENT 1: 2-COLUMN MAIN LAYOUT (75% GAME-AREA / 25% CHAT-AREA)
+       ====================================================================== -->
+  <div class="dia3-main-layout">
+    
+    <!-- LEFT 75% COLUMN: GAME AREA (CONFINED SPLIT DUEL STAGE) -->
+    <div class="dia3-game-area" id="gameArea">
+      
+      <main class="duel-split-stage" id="duelSplitStage">
+        
+        <!-- LEFT HALF: OPTION A (Fiery Crimson / Twitch Neon Violet) -->
+        <section class="duel-half side-a" id="optionCardA" tabindex="0" title="Votar o elegir Opción A">
+          <div class="half-inner-content">
+            
+            <!-- Option Header Badge -->
+            <div class="half-badge-tag">
+              <span class="option-pill">OPCIÓN A</span>
+              <span class="key-hint">TECLA [ 1 ] o [ A ]</span>
+            </div>
+
+            <!-- GIANT IMPACTFUL TEXT -->
+            <h1 class="dilemma-giant-text" id="optionTextA">
+              Caer siempre en Pisos Picados y morir rápido
+            </h1>
+
+            <!-- Reveal Stats & Percentages Container -->
+            <div class="duel-stats-container is-hidden-results" id="votingStatsA">
+              <div class="giant-percentage" id="percentageNumA">--%</div>
+              <div class="stats-vote-count" id="voteCountA"><strong>0</strong> votos</div>
+              <div class="stats-bar-track">
+                <div class="stats-bar-fill" id="voteProgressFillA"></div>
+              </div>
+            </div>
+
+            <!-- Winner Crown Trophy Overlay -->
+            <div class="winner-trophy-tag" id="winnerCrownA" style="display: none;">
+              <i class="fas fa-crown"></i> ¡OPCIÓN GANADORA!
+            </div>
+
+          </div>
+        </section>
+
+        <!-- CENTRAL CLASH DIVIDER WITH METALLIC "VS" BADGE -->
+        <div class="central-clash-divider" id="centralDivider" aria-hidden="true">
+          <div class="clash-laser-line"></div>
+          <div class="vs-metallic-badge">
+            <span>VS</span>
+          </div>
+        </div>
+
+        <!-- RIGHT HALF: OPTION B (Cold Arctic / Fortnite Storm Cyan) -->
+        <section class="duel-half side-b" id="optionCardB" tabindex="0" title="Votar o elegir Opción B">
+          <div class="half-inner-content">
+            
+            <!-- Option Header Badge -->
+            <div class="half-badge-tag">
+              <span class="option-pill">OPCIÓN B</span>
+              <span class="key-hint">TECLA [ 2 ] o [ B ]</span>
+            </div>
+
+            <!-- GIANT IMPACTFUL TEXT -->
+            <h1 class="dilemma-giant-text" id="optionTextB">
+              Caer en los bordes del mapa y ganar aburriéndote
+            </h1>
+
+            <!-- Reveal Stats & Percentages Container -->
+            <div class="duel-stats-container is-hidden-results" id="votingStatsB">
+              <div class="giant-percentage" id="percentageNumB">--%</div>
+              <div class="stats-vote-count" id="voteCountB"><strong>0</strong> votos</div>
+              <div class="stats-bar-track">
+                <div class="stats-bar-fill" id="voteProgressFillB"></div>
+              </div>
+            </div>
+
+            <!-- Winner Crown Trophy Overlay -->
+            <div class="winner-trophy-tag" id="winnerCrownB" style="display: none;">
+              <i class="fas fa-crown"></i> ¡OPCIÓN GANADORA!
+            </div>
+
+          </div>
+        </section>
+
+      </main>
+
+    </div>
+
+    <!-- RIGHT 25% COLUMN: REQUIREMENT 3 (MONITOR DE COMUNICACIONES CHAT TWITCH) -->
+    <aside class="dia3-chat-area" id="chatArea">
+      <div class="radar-comms-terminal">
+        
+        <!-- Radar Terminal Header with Animated CSS Radar Scope -->
+        <div class="radar-terminal-header">
+          <div class="radar-header-info">
+            <div class="radar-scope-mini">
+              <div class="radar-sweep-beam"></div>
+              <div class="radar-scope-cross"></div>
+            </div>
+            <div>
+              <h3 class="radar-title">MONITOR DE VOTACIÓN</h3>
+              <span class="radar-subtitle">TWITCH IRC // #imarixu</span>
+            </div>
+          </div>
+          <span class="radar-ws-badge" id="radarWsBadge">● RECEPTOR ACTIVO</span>
+        </div>
+
+        <!-- Telemetry Frequency Sub-bar -->
+        <div class="radar-status-bar">
+          <span>ENLACE: <strong>443.00 MHz</strong></span>
+          <span id="radarMsgCount"><strong>0</strong> VOTOS_RECV</span>
+        </div>
+
+        <!-- Live Terminal Chat Message Feed -->
+        <div class="radar-chat-feed" id="radarChatMessages">
+          <div class="terminal-line sys">
+            <span class="terminal-coord">[SYS_INIT]</span> Monitor de decisiones listo. Vota en el chat escribiendo A o B en #imarixu...
+          </div>
+        </div>
+
+        <!-- Terminal Footer: Active Target Indicator -->
+        <div class="radar-terminal-footer">
+          <div class="radar-active-target-text" id="radarTargetText">
+            <span class="radar-ping-dot"></span> DILEMA ACTUAL: <strong>#01</strong> // FORTNITE
+          </div>
+        </div>
+
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- ======================================================================
+       STREAMER FLOATING CONTROL DOCK (FOOTER)
+       ====================================================================== -->
+  <footer class="dia3-streamer-dock">
+    
+    <!-- Primary Streamer Action Controls -->
+    <div class="dock-controls-group">
+      
+      <!-- Toggle Voting Open/Lock Button -->
+      <button class="btn-dock-cta btn-dock-toggle-voting" id="btnToggleVoting" title="Abrir o Cerrar votaciones del chat">
+        <i class="fas fa-lock-open"></i> <span id="btnToggleVotingText">Cerrar Votación</span>
+      </button>
+
+      <!-- Reveal Percentages & Results Button -->
+      <button class="btn-dock-cta btn-dock-reveal" id="btnRevealResults" title="Revelar los porcentajes y coronar la opción ganadora (Espacio)">
+        <i class="fas fa-chart-pie"></i> Revelar Resultados <span class="btn-key-tag">ESPACIO</span>
+      </button>
+
+      <!-- Next Dilemma Button -->
+      <button class="btn-dock-cta btn-dock-next" id="btnNextDilemma" title="Pasar al siguiente dilema (Tecla N)">
+        Siguiente <i class="fas fa-arrow-right"></i> <span class="btn-key-tag">N</span>
+      </button>
+
+      <!-- Prev Dilemma Button -->
+      <button class="btn-dock-cta btn-dock-secondary" id="btnPrevDilemma" title="Volver al dilema anterior (Tecla P)">
+        <i class="fas fa-arrow-left"></i> Anterior <span class="btn-key-tag">P</span>
+      </button>
+
+      <!-- Reset Dilemma Button -->
+      <button class="btn-dock-cta btn-dock-secondary" id="btnResetRound" title="Reiniciar votos del dilema actual">
+        <i class="fas fa-rotate-left"></i>
+      </button>
+
+    </div>
+
+    <!-- Manual Test & Streamer Votes -->
+    <div class="dock-manual-group">
+      <button class="btn-vote-test btn-test-a" id="btnTestVoteA" title="Añadir voto manual a la Opción A">
+        +1 Voto A
+      </button>
+      <button class="btn-vote-test btn-test-b" id="btnTestVoteB" title="Añadir voto manual a la Opción B">
+        +1 Voto B
+      </button>
+      <button class="hud-tool-btn" id="btnSimulateVotes" title="Simular lote de votos de la audiencia">
+        <i class="fas fa-users"></i> Simular Votos <span class="btn-key-tag">S</span>
+      </button>
+    </div>
+
+  </footer>
+
+  <!-- JavaScript Engine for Day 3 -->
+  <script src="js/dia3.js"></script>
+</body>
+</html>

@@ -25,11 +25,11 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     3: {
       title: "Día 3: Qué Prefieres: Edición ImArixu",
-      status: "PRÓXIMAMENTE - BLOQUEADO",
-      statusClass: "tag-locked",
-      link: "#",
-      badge: "DILEMAS & DEBATE CHAT",
-      desc: "Dilemas imposibles sobre el meta actual de Fortnite, la vida del streamer en Twitch y salseo IRL elegidos en directo."
+      status: "¡EN VIVO AHORA!",
+      statusClass: "tag-active",
+      link: "dia3.html",
+      badge: "DILEMAS & DEBATE EN DIRECTO",
+      desc: "20 dilemas interactivos sobre Fortnite, la vida del streamer en Twitch y salseo sano. ¡Votación en vivo con el chat de Twitch!"
     },
     4: {
       title: "Día 4: Trivial: Historia de Fortnite",

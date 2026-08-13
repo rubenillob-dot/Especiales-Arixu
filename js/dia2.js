@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 13,
       ubicacion: "Plaza Principal (Reckless Railways)",
       keywords: ["plaza principal", "grand plaza", "plaza", "estacion central", "reckless railways", "reckless"],
-      imagen: "assets/dia2_guessr/plaza_principal.jpg",
+      imagen: "assets/dia2_guessr/Plaza Principal.jpg",
       pista: "El epicentro de los raíles y trenes de vapor. Una gran 'plaza' metropolitana donde el tren blindado nunca espera a los rezagados.",
       capitulo: "Capítulo 7 • Temporada 3",
       cuadricula: "F6",
@@ -257,6 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let isProcessingMatch = false; // Mutex lock for speed validator
   let receivedCoordsCount = 0;
   const completedRounds = new Set();
+  const winnersLog = []; // Stores { roundId, location, winner, time }
 
   // Web Audio Context Synthesizer
   let audioCtx = null;
@@ -382,6 +383,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnForceReveal = document.getElementById('btnForceReveal');
   const btnResetGame = document.getElementById('btnResetGame');
   const btnHintActive = document.getElementById('btnHintActive');
+  const btnExtractWinners = document.getElementById('btnExtractWinners');
+  const winnerCountBadge = document.getElementById('winnerCountBadge');
+
+  // Winners Extraction Modal Elements
+  const winnersModalBackdrop = document.getElementById('winnersModalBackdrop');
+  const btnCloseWinnersModal = document.getElementById('btnCloseWinnersModal');
+  const modalTotalCompleted = document.getElementById('modalTotalCompleted');
+  const modalUniqueWinners = document.getElementById('modalUniqueWinners');
+  const winnersTableBody = document.getElementById('winnersTableBody');
+  const btnCopyWinners = document.getElementById('btnCopyWinners');
+  const btnDownloadWinners = document.getElementById('btnDownloadWinners');
 
   // ========================================================================
   // 5. RADAR DE COMUNICACIONES (TERMINAL LOG FEED)
@@ -750,6 +762,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     appendRadarTerminalLine(winnerUser, roundData.respuesta || roundData.ubicacion, 'match-win');
 
+    // Record winner in log
+    winnersLog.push({
+      roundId: roundData.id,
+      location: roundData.respuesta || roundData.ubicacion,
+      winner: winnerUser,
+      time: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+    });
+    if (winnerCountBadge) {
+      winnerCountBadge.textContent = winnersLog.length;
+    }
+
     // D) CASCADE REVEAL & AUTO-SCROLL TO NEXT CARD
     if (roundIndex < RONDAS_FORTNITE.length - 1) {
       const nextIndex = roundIndex + 1;
@@ -936,6 +959,8 @@ document.addEventListener('DOMContentLoaded', () => {
     btnResetGame.addEventListener('click', () => {
       if (confirm('¿Seguro que deseas reiniciar todo el feed de Fortnite-Guessr desde la Ronda #1?')) {
         completedRounds.clear();
+        winnersLog.length = 0;
+        if (winnerCountBadge) winnerCountBadge.textContent = '0';
         currentActiveIndex = 0;
         isProcessingMatch = false;
         receivedCoordsCount = 0;
@@ -950,6 +975,134 @@ document.addEventListener('DOMContentLoaded', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     });
+  }
+
+  // ========================================================================
+  // 13. WINNERS EXTRACTION MODAL LOGIC
+  // ========================================================================
+  function openWinnersModal() {
+    if (!winnersModalBackdrop) return;
+
+    // Calculate unique winners
+    const uniqueWinnersSet = new Set(winnersLog.map(w => w.winner.toLowerCase()));
+
+    if (modalTotalCompleted) {
+      modalTotalCompleted.textContent = `${winnersLog.length} / ${RONDAS_FORTNITE.length}`;
+    }
+    if (modalUniqueWinners) {
+      modalUniqueWinners.textContent = uniqueWinnersSet.size;
+    }
+
+    if (winnersTableBody) {
+      if (winnersLog.length === 0) {
+        winnersTableBody.innerHTML = `
+          <tr>
+            <td colspan="4" style="text-align: center; color: var(--hud-text-dim); padding: 1.5rem;">
+              Aún no se ha registrado ningún acierto en esta sesión.
+            </td>
+          </tr>
+        `;
+      } else {
+        winnersTableBody.innerHTML = winnersLog.map(item => `
+          <tr>
+            <td><strong>#${item.roundId.toString().padStart(2, '0')}</strong></td>
+            <td>${escapeHtml(item.location)}</td>
+            <td class="winners-user-highlight">@${escapeHtml(item.winner)}</td>
+            <td>${escapeHtml(item.time)}</td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    winnersModalBackdrop.style.display = 'flex';
+    playTacticalSound('next');
+  }
+
+  function closeWinnersModal() {
+    if (winnersModalBackdrop) {
+      winnersModalBackdrop.style.display = 'none';
+    }
+  }
+
+  function copyWinnersToClipboard() {
+    if (winnersLog.length === 0) {
+      alert('Aún no hay ganadores registrados para copiar.');
+      return;
+    }
+
+    // Formato limpio: ÚNICAMENTE un nombre de usuario por línea (@Usuario)
+    const lines = winnersLog.map(item => {
+      const name = item.winner.trim();
+      return name.startsWith('@') ? name : `@${name}`;
+    });
+
+    const textContent = lines.join('\n');
+
+    navigator.clipboard.writeText(textContent).then(() => {
+      if (btnCopyWinners) {
+        const originalHtml = btnCopyWinners.innerHTML;
+        btnCopyWinners.innerHTML = `<i class="fas fa-check"></i> ¡Lista Copiada!`;
+        btnCopyWinners.style.background = '#00FA9A';
+        setTimeout(() => {
+          btnCopyWinners.innerHTML = originalHtml;
+          btnCopyWinners.style.background = '';
+        }, 2500);
+      }
+      playTacticalSound('stamp');
+    }).catch(err => {
+      console.warn('Clipboard write failed:', err);
+      alert(textContent);
+    });
+  }
+
+  function downloadWinnersFile() {
+    if (winnersLog.length === 0) {
+      alert('Aún no hay ganadores registrados para descargar.');
+      return;
+    }
+
+    // Formato limpio: ÚNICAMENTE un nombre de usuario por línea (@Usuario)
+    const lines = winnersLog.map(item => {
+      const name = item.winner.trim();
+      return name.startsWith('@') ? name : `@${name}`;
+    });
+
+    const textContent = lines.join('\n');
+
+    const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'exploradores_dia2.txt';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    playTacticalSound('stamp');
+  }
+
+  if (btnExtractWinners) {
+    btnExtractWinners.addEventListener('click', openWinnersModal);
+  }
+
+  if (btnCloseWinnersModal) {
+    btnCloseWinnersModal.addEventListener('click', closeWinnersModal);
+  }
+
+  if (winnersModalBackdrop) {
+    winnersModalBackdrop.addEventListener('click', (e) => {
+      if (e.target === winnersModalBackdrop) {
+        closeWinnersModal();
+      }
+    });
+  }
+
+  if (btnCopyWinners) {
+    btnCopyWinners.addEventListener('click', copyWinnersToClipboard);
+  }
+
+  if (btnDownloadWinners) {
+    btnDownloadWinners.addEventListener('click', downloadWinnersFile);
   }
 
   // Audio Toggle

@@ -1281,19 +1281,212 @@ body.guessr-theme {
   color: var(--hud-text-muted);
 }
 
-.btn-dock-subtle:hover {
-  background: rgba(0, 250, 154, 0.15);
-  border-color: var(--radar-green);
-  color: var(--radar-green);
+.btn-dock-extract {
+  background: linear-gradient(135deg, #FFD166 0%, #FF9E00 100%);
+  color: #05090F;
+  box-shadow: 0 2px 12px rgba(255, 209, 102, 0.4);
+  font-weight: 800;
 }
 
-.btn-key-badge {
-  padding: 1px 5px;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 3px;
+.btn-dock-extract:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+  box-shadow: 0 4px 18px rgba(255, 209, 102, 0.7);
+}
+
+/* ==========================================================================
+   WINNERS EXTRACTION MODAL
+   ========================================================================== */
+
+.winners-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(3, 6, 12, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 1.25rem;
+  animation: fadeInModal 0.25s ease-out;
+}
+
+@keyframes fadeInModal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.winners-modal-card {
+  background: linear-gradient(180deg, #0D1624 0%, #060B12 100%);
+  border: 1px solid rgba(0, 250, 154, 0.35);
+  border-top: 3px solid #FFD166;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(255, 209, 102, 0.15);
+  width: 100%;
+  max-width: 680px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: scaleInModal 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes scaleInModal {
+  from { transform: scale(0.92); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.winners-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 1.4rem;
+  background: rgba(0, 0, 0, 0.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.winners-modal-title {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-family: var(--font-sans);
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #FFFFFF;
+  letter-spacing: 0.5px;
+}
+
+.btn-close-modal {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #FFF;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.btn-close-modal:hover {
+  background: rgba(255, 51, 102, 0.25);
+  border-color: #FF3366;
+  color: #FF3366;
+  transform: rotate(90deg);
+}
+
+.winners-modal-body {
+  padding: 1.25rem 1.4rem;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.winners-summary-bar {
+  display: flex;
+  justify-content: space-between;
+  background: rgba(0, 250, 154, 0.08);
+  border: 1px solid rgba(0, 250, 154, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 1rem;
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.84rem;
+  color: var(--hud-text-bright);
+}
+
+.winners-summary-bar strong {
+  color: #FFD166;
+}
+
+.winners-table-container {
+  overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.winners-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  text-align: left;
+}
+
+.winners-table th {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 0.65rem 0.85rem;
+  color: var(--hud-text-dim);
   font-weight: 700;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.winners-table td {
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: #E2E8F0;
+}
+
+.winners-table tr:hover td {
+  background: rgba(0, 250, 154, 0.05);
+}
+
+.winners-user-highlight {
+  color: #FFD166;
+  font-weight: 700;
+}
+
+.winners-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 1.4rem;
+  background: rgba(0, 0, 0, 0.4);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.btn-modal-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.btn-copy-winners {
+  background: var(--radar-green);
+  color: #05090F;
+  box-shadow: 0 0 12px var(--radar-green-glow);
+}
+
+.btn-copy-winners:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+}
+
+.btn-download-winners {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #FFF;
+}
+
+.btn-download-winners:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: #FFF;
 }
 
 /* ==========================================================================

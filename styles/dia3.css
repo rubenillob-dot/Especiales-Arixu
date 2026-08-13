@@ -1,0 +1,945 @@
+/* ==========================================================================
+   ESPECIALES ARIXU - DÍA 3: QUÉ PREFIERES (DUELO DE DECISIONES)
+   Main Layout: 75% Decision Duel Stage / 25% Twitch Communications Sidebar
+   Features:
+   - 50/50 Split Screen territory expansion (65% vs 35% hover) confined strictly in 75%
+   - High Contrast Warm/Fire vs Cold/Ice aesthetics & Giant Typography
+   - Twitch IRC Live Communications Terminal ([VOTO_RECV] User: Msg)
+   ========================================================================== */
+
+:root {
+  /* Side A (Warm Aggressive / Twitch Crimson-Fire) */
+  --sideA-primary: #FF007A;
+  --sideA-purple: #9146FF;
+  --sideA-gradient: linear-gradient(135deg, #FF007A 0%, #9146FF 100%);
+  --sideA-glow: rgba(255, 0, 122, 0.65);
+  --sideA-bg-dark: #12031B;
+  --sideA-bg-light: #2C0735;
+
+  /* Side B (Cold Arctic / Fortnite Storm Cyan & Blue) */
+  --sideB-primary: #00D2FF;
+  --sideB-blue: #0051FF;
+  --sideB-gradient: linear-gradient(135deg, #00D2FF 0%, #0066FF 100%);
+  --sideB-glow: rgba(0, 210, 255, 0.65);
+  --sideB-bg-dark: #021024;
+  --sideB-bg-light: #072545;
+
+  /* Category Themes */
+  --cat-fortnite: #00FA9A;
+  --cat-streamer: #FFD166;
+  --cat-salseo: #FF3366;
+
+  /* Terminal Colors */
+  --term-bg: #060911;
+  --term-border: rgba(145, 70, 255, 0.3);
+  --term-text: #00fa9a;
+
+  /* Layout Dimensions */
+  --header-height: 56px;
+  --dock-height: 60px;
+}
+
+/* Base Body Styling */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font-sans);
+  background-color: #030508;
+  color: #FFFFFF;
+}
+
+body.dia3-theme {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: relative;
+  user-select: none;
+}
+
+/* Background Confetti Canvas */
+#confettiCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ==========================================================================
+   COMPACT STICKY TOP HEADER HUD
+   ========================================================================== */
+
+.dia3-sticky-header {
+  height: var(--header-height);
+  background: rgba(8, 12, 20, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+  flex-shrink: 0;
+}
+
+.header-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.btn-nav-hub {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-sm);
+  color: #FFF;
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.btn-nav-hub:hover {
+  background: rgba(145, 70, 255, 0.3);
+  border-color: #9146FF;
+  box-shadow: 0 0 12px rgba(145, 70, 255, 0.5);
+}
+
+.brand-mini-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #9146FF;
+  object-fit: cover;
+}
+
+.brand-title-badge {
+  font-size: 0.9rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+}
+
+.brand-title-badge span {
+  color: #FF007A;
+}
+
+/* Category Theme Pill */
+.category-theme-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.9rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.category-theme-badge.cat-fortnite {
+  background: rgba(0, 250, 154, 0.15);
+  border: 1px solid var(--cat-fortnite);
+  color: var(--cat-fortnite);
+  box-shadow: 0 0 12px rgba(0, 250, 154, 0.25);
+}
+
+.category-theme-badge.cat-streamer {
+  background: rgba(255, 209, 102, 0.15);
+  border: 1px solid var(--cat-streamer);
+  color: var(--cat-streamer);
+  box-shadow: 0 0 12px rgba(255, 209, 102, 0.25);
+}
+
+.category-theme-badge.cat-salseo {
+  background: rgba(255, 51, 102, 0.15);
+  border: 1px solid var(--cat-salseo);
+  color: var(--cat-salseo);
+  box-shadow: 0 0 12px rgba(255, 51, 102, 0.25);
+}
+
+/* Round Counter */
+.sticky-round-counter {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.85rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-pill);
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.sticky-round-counter .counter-highlight {
+  color: #FFD166;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+}
+
+/* Header Action Tools */
+.header-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hud-tool-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.32rem 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-sm);
+  color: #CBD5E1;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.hud-tool-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #FFF;
+  border-color: #FFF;
+}
+
+/* ==========================================================================
+   REQUIREMENT 1: 2-COLUMN MAIN LAYOUT (75% GAME-AREA / 25% CHAT-AREA)
+   ========================================================================== */
+
+.dia3-main-layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  width: 100vw;
+  height: calc(100vh - var(--header-height) - var(--dock-height));
+  position: relative;
+  overflow: hidden;
+}
+
+/* 75% Container for Decision Duel */
+.dia3-game-area {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+}
+
+/* ==========================================================================
+   REQUIREMENT 2: 50/50 SPLIT DUEL STAGE CONFINED IN GAME-AREA
+   Territory Expansion Hover (65% vs 35%) Strictly Inside Game-Area
+   ========================================================================== */
+
+.duel-split-stage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  background-color: #030508;
+}
+
+/* Left Half (Option A) & Right Half (Option B) */
+.duel-half {
+  flex: 1 1 50%;
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 2rem 2.5rem;
+  cursor: pointer;
+  user-select: none;
+  overflow: hidden;
+  transition: flex 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.45s ease,
+              background 0.45s ease,
+              box-shadow 0.45s ease;
+  z-index: 5;
+}
+
+/* --- SIDE A (WARM, AGGRESSIVE, FIRE / TWITCH CRIMSON-MAGENTA) --- */
+.duel-half.side-a {
+  background: linear-gradient(145deg, var(--sideA-bg-dark) 0%, var(--sideA-bg-light) 50%, #0A0210 100%);
+  border-right: 1px solid rgba(255, 0, 122, 0.25);
+}
+
+.duel-half.side-a::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 50%, rgba(255, 0, 122, 0.28) 0%, rgba(145, 70, 255, 0.12) 60%, transparent 85%);
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+/* --- SIDE B (COLD, ARCTIC, ICE / FORTNITE STORM CYAN-BLUE) --- */
+.duel-half.side-b {
+  background: linear-gradient(145deg, var(--sideB-bg-dark) 0%, var(--sideB-bg-light) 50%, #010814 100%);
+  border-left: 1px solid rgba(0, 210, 255, 0.25);
+}
+
+.duel-half.side-b::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 70% 50%, rgba(0, 210, 255, 0.28) 0%, rgba(0, 81, 255, 0.12) 60%, transparent 85%);
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+/* ==========================================================================
+   CONFINED TERRITORY EXPANSION (65% vs 35% WEIGHT HOVER)
+   ========================================================================== */
+
+.duel-split-stage:has(.duel-half.side-a:hover) .duel-half.side-a,
+.duel-half.side-a.is-hovered {
+  flex: 1.65 1 65%;
+  background: linear-gradient(145deg, #240533 0%, #420A4E 50%, #150220 100%);
+  box-shadow: inset -25px 0 80px rgba(255, 0, 122, 0.35);
+}
+
+.duel-split-stage:has(.duel-half.side-a:hover) .duel-half.side-b,
+.duel-half.side-b.is-pushed {
+  flex: 0.85 1 35%;
+  filter: brightness(0.38) saturate(0.65) blur(0.5px);
+}
+
+.duel-split-stage:has(.duel-half.side-b:hover) .duel-half.side-b,
+.duel-half.side-b.is-hovered {
+  flex: 1.65 1 65%;
+  background: linear-gradient(145deg, #051A38 0%, #0A3668 50%, #020F20 100%);
+  box-shadow: inset 25px 0 80px rgba(0, 210, 255, 0.35);
+}
+
+.duel-split-stage:has(.duel-half.side-b:hover) .duel-half.side-a,
+.duel-half.side-a.is-pushed {
+  flex: 0.85 1 35%;
+  filter: brightness(0.38) saturate(0.65) blur(0.5px);
+}
+
+/* ==========================================================================
+   HALF CONTENT INNER WRAPPER & GIANT IMPACTFUL TYPOGRAPHY
+   ========================================================================== */
+
+.half-inner-content {
+  max-width: 640px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  z-index: 10;
+}
+
+/* Option Pill Tag & Keyboard Hint */
+.half-badge-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.option-pill {
+  padding: 0.35rem 1.1rem;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.side-a .option-pill {
+  background: rgba(255, 0, 122, 0.25);
+  border: 1px solid var(--sideA-primary);
+  color: #FFF;
+  box-shadow: 0 0 16px var(--sideA-glow);
+}
+
+.side-b .option-pill {
+  background: rgba(0, 210, 255, 0.25);
+  border: 1px solid var(--sideB-primary);
+  color: #FFF;
+  box-shadow: 0 0 16px var(--sideB-glow);
+}
+
+.key-hint {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-sm);
+  color: #E2E8F0;
+}
+
+/* GIANT DILEMMA TEXT (Auto-fitting clamp for 35 rounds) */
+.dilemma-giant-text {
+  font-size: clamp(1.35rem, 1.95vw, 2.5rem);
+  font-weight: 900;
+  line-height: 1.25;
+  color: #FFFFFF;
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.95);
+  margin: 0.75rem 0 1.5rem;
+  transition: transform 0.35s ease;
+  letter-spacing: -0.3px;
+  word-break: normal;
+}
+
+.duel-half:hover .dilemma-giant-text {
+  transform: scale(1.02);
+}
+
+/* Revealed Stats Container */
+.duel-stats-container {
+  width: 100%;
+  max-width: 440px;
+  margin-top: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.4s ease;
+}
+
+.giant-percentage {
+  font-family: var(--font-mono);
+  font-size: clamp(2.8rem, 4vw, 4.4rem);
+  font-weight: 950;
+  line-height: 1;
+  letter-spacing: -1.5px;
+  text-shadow: 0 0 30px currentColor;
+}
+
+.side-a .giant-percentage {
+  color: #FF66B2;
+}
+
+.side-b .giant-percentage {
+  color: #80E5FF;
+}
+
+.stats-vote-count {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #CBD5E1;
+}
+
+.stats-vote-count strong {
+  color: #FFF;
+  font-size: 1.2rem;
+}
+
+.stats-bar-track {
+  width: 100%;
+  height: 16px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+.stats-bar-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: var(--radius-pill);
+  transition: width 1.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.side-a .stats-bar-fill {
+  background: var(--sideA-gradient);
+  box-shadow: 0 0 20px var(--sideA-primary);
+}
+
+.side-b .stats-bar-fill {
+  background: var(--sideB-gradient);
+  box-shadow: 0 0 20px var(--sideB-primary);
+}
+
+/* Hidden state before reveal */
+.duel-stats-container.is-hidden-results .giant-percentage {
+  font-size: 2rem;
+  color: #64748B;
+  text-shadow: none;
+}
+
+.duel-stats-container.is-hidden-results .stats-bar-fill {
+  width: 50% !important;
+  opacity: 0.15;
+}
+
+/* Winner Trophy Overlay */
+.winner-trophy-tag {
+  margin-top: 1rem;
+  padding: 0.45rem 1.25rem;
+  background: linear-gradient(135deg, #FFD166 0%, #FF9E00 100%);
+  border-radius: var(--radius-pill);
+  color: #000;
+  font-size: 0.92rem;
+  font-weight: 900;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  box-shadow: 0 0 25px rgba(255, 209, 102, 0.9);
+  animation: popCrown 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popCrown {
+  0% { transform: scale(0) rotate(-15deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+/* ==========================================================================
+   CENTRAL CLASH DIVIDER (CONFINED INSIDE GAME-AREA)
+   ========================================================================== */
+
+.central-clash-divider {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 25;
+  transition: left 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.clash-laser-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, transparent 0%, #FFF 50%, transparent 100%);
+  box-shadow: 0 0 15px #FFF, 0 0 30px var(--sideA-primary), 0 0 30px var(--sideB-primary);
+}
+
+.vs-metallic-badge {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #253348 0%, #0B1019 70%, #030508 100%);
+  border: 3px solid #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  font-weight: 950;
+  color: #FFFFFF;
+  box-shadow: 
+    0 0 40px rgba(0, 0, 0, 0.95),
+    0 0 25px var(--sideA-glow),
+    0 0 25px var(--sideB-glow);
+  animation: vsPulseDuel 2.5s infinite ease-in-out;
+}
+
+@keyframes vsPulseDuel {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 25px var(--sideA-glow), 0 0 25px var(--sideB-glow); }
+  50% { transform: scale(1.08); box-shadow: 0 0 45px var(--sideA-glow), 0 0 45px var(--sideB-glow), 0 0 20px #FFF; }
+}
+
+.duel-split-stage:has(.duel-half.side-a:hover) .central-clash-divider {
+  left: 65%;
+}
+
+.duel-split-stage:has(.duel-half.side-b:hover) .central-clash-divider {
+  left: 35%;
+}
+
+/* ==========================================================================
+   REQUIREMENT 3: 25% CHAT-AREA (RADAR / MONITOR DE COMUNICACIONES TWITCH)
+   ========================================================================== */
+
+.dia3-chat-area {
+  width: 100%;
+  height: 100%;
+  background: #060910;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 50;
+}
+
+.radar-comms-terminal {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #09121E 0%, #050A12 100%);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Radar Terminal Header */
+.radar-terminal-header {
+  padding: 0.75rem 1rem;
+  background: rgba(0, 0, 0, 0.4);
+  border-bottom: 1px solid rgba(145, 70, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.radar-header-info {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+/* Mini CSS Radar Scope */
+.radar-scope-mini {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid #9146FF;
+  position: relative;
+  background: rgba(145, 70, 255, 0.1);
+  overflow: hidden;
+}
+
+.radar-sweep-beam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: conic-gradient(from 0deg at 50% 50%, rgba(145, 70, 255, 0.7) 0deg, transparent 60deg);
+  animation: radarSweepSpin 3s linear infinite;
+}
+
+@keyframes radarSweepSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.radar-scope-cross {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: rgba(145, 70, 255, 0.3);
+}
+
+.radar-scope-cross::after {
+  content: '';
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  width: 1px;
+  height: 28px;
+  background: rgba(145, 70, 255, 0.3);
+}
+
+.radar-title {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #FFF;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.radar-subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  color: #94A3B8;
+  display: block;
+}
+
+.radar-ws-badge {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 800;
+  color: #00FA9A;
+  border: 1px solid rgba(0, 250, 154, 0.4);
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(0, 250, 154, 0.1);
+}
+
+/* Status Frequency Bar */
+.radar-status-bar {
+  padding: 0.4rem 1rem;
+  background: rgba(0, 0, 0, 0.6);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: #94A3B8;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.radar-status-bar strong {
+  color: #FFF;
+}
+
+/* Live Terminal Chat Message Feed */
+.radar-chat-feed {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  line-height: 1.4;
+  scroll-behavior: smooth;
+}
+
+.radar-chat-feed::-webkit-scrollbar {
+  width: 5px;
+}
+.radar-chat-feed::-webkit-scrollbar-thumb {
+  background: rgba(145, 70, 255, 0.4);
+  border-radius: 3px;
+}
+
+.terminal-line {
+  word-break: break-word;
+}
+
+.terminal-line.sys {
+  color: #94A3B8;
+  font-style: italic;
+}
+
+.terminal-line.vote-a-log {
+  color: #FF80BF;
+}
+
+.terminal-line.vote-b-log {
+  color: #80E5FF;
+}
+
+.terminal-line .terminal-coord {
+  color: #FFD166;
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.terminal-line .terminal-author {
+  color: #FFFFFF;
+  font-weight: 700;
+}
+
+/* Terminal Footer */
+.radar-terminal-footer {
+  padding: 0.5rem 1rem;
+  background: rgba(0, 0, 0, 0.6);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #94A3B8;
+  flex-shrink: 0;
+}
+
+.radar-ping-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00FA9A;
+  margin-right: 5px;
+  box-shadow: 0 0 6px #00FA9A;
+}
+
+/* ==========================================================================
+   STREAMER FLOATING CONTROL DOCK (FOOTER)
+   ========================================================================== */
+
+.dia3-streamer-dock {
+  height: var(--dock-height);
+  background: rgba(8, 12, 20, 0.96);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  z-index: 100;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.7);
+  flex-shrink: 0;
+}
+
+.dock-controls-group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.btn-dock-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.42rem 1.05rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.btn-dock-reveal {
+  background: linear-gradient(135deg, #FFD166 0%, #FF9E00 100%);
+  color: #000;
+  box-shadow: 0 0 15px rgba(255, 209, 102, 0.4);
+}
+
+.btn-dock-reveal:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(255, 209, 102, 0.8);
+}
+
+.btn-dock-toggle-voting {
+  background: rgba(0, 250, 154, 0.15);
+  border-color: #00fa9a;
+  color: #00fa9a;
+}
+
+.btn-dock-toggle-voting:hover {
+  background: rgba(0, 250, 154, 0.3);
+}
+
+.btn-dock-next {
+  background: linear-gradient(135deg, #9146FF 0%, #772CE8 100%);
+  color: #FFF;
+  box-shadow: 0 0 15px rgba(145, 70, 255, 0.4);
+}
+
+.btn-dock-next:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(145, 70, 255, 0.7);
+}
+
+.btn-dock-secondary {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #FFF;
+}
+
+.btn-dock-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #FFF;
+}
+
+.btn-key-tag {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 2px 4px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.dock-manual-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-vote-test {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.btn-vote-test.btn-test-a {
+  background: rgba(255, 0, 122, 0.2);
+  border: 1px solid var(--sideA-primary);
+  color: #FF80BF;
+}
+
+.btn-vote-test.btn-test-b {
+  background: rgba(0, 210, 255, 0.2);
+  border: 1px solid var(--sideB-primary);
+  color: #80E5FF;
+}
+
+.btn-vote-test:hover {
+  transform: scale(1.06);
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN (MOBILE & TABLET ADAPTATION)
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .dia3-main-layout {
+    grid-template-columns: 1fr;
+    height: auto;
+    overflow-y: auto;
+  }
+
+  .dia3-game-area {
+    height: calc(100vh - var(--header-height) - var(--dock-height) - 220px);
+    min-height: 440px;
+  }
+
+  .dia3-chat-area {
+    height: 220px;
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+@media (max-width: 768px) {
+  .duel-split-stage {
+    flex-direction: column;
+  }
+
+  .duel-half {
+    width: 100%;
+    height: 50%;
+    padding: 1.5rem 1.25rem;
+  }
+
+  .central-clash-divider {
+    top: 50%;
+    left: 50% !important;
+    transform: translate(-50%, -50%);
+    height: auto;
+  }
+
+  .clash-laser-line {
+    display: none;
+  }
+
+  .dilemma-giant-text {
+    font-size: 1.5rem;
+  }
+}
