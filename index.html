@@ -26,6 +26,9 @@
       </a>
 
       <div class="header-status">
+        <a href="ruleta.html" class="btn-header-ruleta">
+          <i class="fas fa-dice"></i> RULETA
+        </a>
         <div class="live-indicator">
           <span class="live-dot"></span>
           EN DIRECTO
@@ -175,6 +178,55 @@
       </div>
     </section>
 
+    <!-- SECTION: TIRA DE LA RULETA (NUEVA HERRAMIENTA DESTACADA) -->
+    <section class="ruleta-banner-section" id="ruleta">
+      <div class="ruleta-banner-card">
+        <div class="ruleta-banner-badge">
+          <span class="badge-dot blink"></span>
+          <i class="fas fa-magic"></i> HERRAMIENTA INTERACTIVA DE STREAMING
+        </div>
+
+        <div class="ruleta-banner-grid">
+          <div class="ruleta-banner-info">
+            <h2 class="ruleta-banner-title">
+              🎰 TIRA DE LA RULETA
+            </h2>
+            <p class="ruleta-banner-text">
+              ¿Listo para seleccionar ganadores de sorteos, decidir el siguiente castigo de ImArixu o elegir un héroe del chat al azar? 
+              Pega los nombres de la comunidad, personaliza la rueda y ¡que empiece el espectáculo en directo con estética Twitch & Fortnite!
+            </p>
+            <div class="ruleta-banner-highlights">
+              <span class="highlight-chip"><i class="fas fa-users"></i> Lista de Participantes</span>
+              <span class="highlight-chip"><i class="fas fa-bolt"></i> Giro Físico Suave</span>
+              <span class="highlight-chip"><i class="fas fa-trophy"></i> Confeti & Celebración</span>
+            </div>
+            <div class="ruleta-banner-action">
+              <a href="ruleta.html" class="btn-ruleta-cta">
+                <i class="fas fa-play"></i> IR A LA RULETA EN VIVO <i class="fas fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="ruleta-banner-visual">
+            <div class="wheel-preview-graphic">
+              <div class="wheel-pointer-icon"><i class="fas fa-caret-down"></i></div>
+              <div class="wheel-circle-outer">
+                <div class="wheel-segment seg-1"></div>
+                <div class="wheel-segment seg-2"></div>
+                <div class="wheel-segment seg-3"></div>
+                <div class="wheel-segment seg-4"></div>
+                <div class="wheel-segment seg-5"></div>
+                <div class="wheel-segment seg-6"></div>
+                <div class="wheel-center-cap">
+                  <i class="fas fa-trophy"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- SECTION 2: Panel de 7 Días (7-Day Grid Panel) -->
     <section class="days-panel-section" id="dias">
       <div class="section-header">
@@ -194,9 +246,9 @@
           </div>
 
           <div class="day-card-body">
-            <h3 class="day-title">La Bomba de Tiempo Cooperativa</h3>
+            <h3 class="day-title">La Bomba de Tiempo</h3>
             <p class="day-description">
-              Un reactor de energía está al borde del colapso. El chat debe colaborar en vivo ingresando comandos para desactivar la bomba antes de que expire la cuenta regresiva.
+              Desactiva el reactor en equipo antes de que el contador llegue a cero.
             </p>
             <div class="day-tags">
               <span class="day-tag">#ChatCooperativo</span>
@@ -213,141 +265,141 @@
           </div>
         </div>
 
-        <!-- Day 2 Card -->
-        <div class="day-card">
+        <!-- Day 2 Card (Locked) -->
+        <div class="day-card locked">
           <div class="day-card-header">
             <span class="day-number-badge">DÍA 02</span>
-            <span class="day-status-tag tag-upcoming">PRÓXIMAMENTE</span>
+            <span class="day-status-tag tag-locked"><i class="fas fa-lock"></i> PRÓXIMAMENTE</span>
           </div>
 
           <div class="day-card-body">
-            <h3 class="day-title">El Juicio del Chat & Ruleta de Castigos</h3>
+            <h3 class="day-title">Fortnite-Guessr</h3>
             <p class="day-description">
-              El chat toma el control absoluto del directo. Votaciones en tiempo real para imponer normas locas a ImArixu durante las partidas.
+              Demuestra que conoces la isla. Adivina la ubicación exacta viendo solo una fotografía.
             </p>
             <div class="day-tags">
-              <span class="day-tag">#PollsTwitch</span>
-              <span class="day-tag">#RuletaCastigos</span>
+              <span class="day-tag">#FortniteGuessr</span>
+              <span class="day-tag">#MapaFortnite</span>
             </div>
           </div>
 
           <div class="day-card-footer">
-            <button class="btn-day-preview" data-day="2">Ver Info</button>
+            <button class="btn-day-preview" data-day="2"><i class="fas fa-lock"></i> Ver Info</button>
           </div>
         </div>
 
-        <!-- Day 3 Card -->
-        <div class="day-card">
+        <!-- Day 3 Card (Locked) -->
+        <div class="day-card locked">
           <div class="day-card-header">
             <span class="day-number-badge">DÍA 03</span>
-            <span class="day-status-tag tag-upcoming">PRÓXIMAMENTE</span>
+            <span class="day-status-tag tag-locked"><i class="fas fa-lock"></i> PRÓXIMAMENTE</span>
           </div>
 
           <div class="day-card-body">
-            <h3 class="day-title">Speedrun IRL & Retos Extremos</h3>
+            <h3 class="day-title">Qué Prefieres: Edición ImArixu</h3>
             <p class="day-description">
-              Pruebas de habilidad física e ingenio en tiempo récord. El tiempo máximo dependerá del ritmo de subs completadas en el directo.
+              Dilemas imposibles sobre el meta actual de Fortnite, la vida del streamer en Twitch y salseo IRL.
             </p>
             <div class="day-tags">
-              <span class="day-tag">#Speedrun</span>
-              <span class="day-tag">#RetosIRL</span>
+              <span class="day-tag">#QuePrefieres</span>
+              <span class="day-tag">#DilemasTwitch</span>
             </div>
           </div>
 
           <div class="day-card-footer">
-            <button class="btn-day-preview" data-day="3">Ver Info</button>
+            <button class="btn-day-preview" data-day="3"><i class="fas fa-lock"></i> Ver Info</button>
           </div>
         </div>
 
-        <!-- Day 4 Card -->
-        <div class="day-card">
+        <!-- Day 4 Card (Locked) -->
+        <div class="day-card locked">
           <div class="day-card-header">
             <span class="day-number-badge">DÍA 04</span>
-            <span class="day-status-tag tag-upcoming">PRÓXIMAMENTE</span>
+            <span class="day-status-tag tag-locked"><i class="fas fa-lock"></i> PRÓXIMAMENTE</span>
           </div>
 
           <div class="day-card-body">
-            <h3 class="day-title">Karaoke a Ciegas & Autotune Extremo</h3>
+            <h3 class="day-title">Trivial: Historia de Fortnite</h3>
             <p class="day-description">
-              Soundboard interactiva operada por los bits del chat. Efectos de voz cambiantes en directo mientras ImArixu canta las peticiones de la comunidad.
+              Cultura general de la isla. ¿Recuerdas los eventos de las primeras temporadas?
             </p>
             <div class="day-tags">
-              <span class="day-tag">#Karaoke</span>
-              <span class="day-tag">#Soundboard</span>
+              <span class="day-tag">#TrivialFortnite</span>
+              <span class="day-tag">#LoreFortnite</span>
             </div>
           </div>
 
           <div class="day-card-footer">
-            <button class="btn-day-preview" data-day="4">Ver Info</button>
+            <button class="btn-day-preview" data-day="4"><i class="fas fa-lock"></i> Ver Info</button>
           </div>
         </div>
 
-        <!-- Day 5 Card -->
-        <div class="day-card">
+        <!-- Day 5 Card (Locked) -->
+        <div class="day-card locked">
           <div class="day-card-header">
             <span class="day-number-badge">DÍA 05</span>
-            <span class="day-status-tag tag-upcoming">PRÓXIMAMENTE</span>
+            <span class="day-status-tag tag-locked"><i class="fas fa-lock"></i> PRÓXIMAMENTE</span>
           </div>
 
           <div class="day-card-body">
-            <h3 class="day-title">Survival Horror Night & Pulsómetro HUD</h3>
+            <h3 class="day-title">El Sonido de la Batalla</h3>
             <p class="day-description">
-              Monitor de ritmo cardíaco en vivo en la pantalla. Cada vez que ImArixu supere las 130 pulsaciones por minuto, saltará una donación o reto sorpresa.
+              Agudiza el oído. Adivina de qué arma o ítem es el efecto de sonido a ciegas.
             </p>
             <div class="day-tags">
-              <span class="day-tag">#HorrorStream</span>
-              <span class="day-tag">#HeartMonitor</span>
+              <span class="day-tag">#EfectosDeSonido</span>
+              <span class="day-tag">#DesafioAuditivo</span>
             </div>
           </div>
 
           <div class="day-card-footer">
-            <button class="btn-day-preview" data-day="5">Ver Info</button>
+            <button class="btn-day-preview" data-day="5"><i class="fas fa-lock"></i> Ver Info</button>
           </div>
         </div>
 
-        <!-- Day 6 Card -->
-        <div class="day-card">
+        <!-- Day 6 Card (Locked) -->
+        <div class="day-card locked">
           <div class="day-card-header">
             <span class="day-number-badge">DÍA 06</span>
-            <span class="day-status-tag tag-upcoming">PRÓXIMAMENTE</span>
+            <span class="day-status-tag tag-locked"><i class="fas fa-lock"></i> PRÓXIMAMENTE</span>
           </div>
 
           <div class="day-card-body">
-            <h3 class="day-title">Subathon de la Ruleta Cósmica</h3>
+            <h3 class="day-title">¿Quién es ese Streamer?</h3>
             <p class="day-description">
-              Premios acumulativos, regalos de merchandising, insignias VIP y multiplicadores de horas para el stream especial de fin de semana.
+              Adivina al creador de contenido de Fortnite viendo solo una parte de su cuerpo.
             </p>
             <div class="day-tags">
-              <span class="day-tag">#Subathon</span>
-              <span class="day-tag">#RegalosComunidad</span>
+              <span class="day-tag">#AdivinaElStreamer</span>
+              <span class="day-tag">#CreadoresFortnite</span>
             </div>
           </div>
 
           <div class="day-card-footer">
-            <button class="btn-day-preview" data-day="6">Ver Info</button>
+            <button class="btn-day-preview" data-day="6"><i class="fas fa-lock"></i> Ver Info</button>
           </div>
         </div>
 
-        <!-- Day 7 Card -->
-        <div class="day-card">
+        <!-- Day 7 Card (Locked) -->
+        <div class="day-card locked">
           <div class="day-card-header">
             <span class="day-number-badge">DÍA 07</span>
-            <span class="day-status-tag tag-upcoming">EVENTO FINAL</span>
+            <span class="day-status-tag tag-locked"><i class="fas fa-lock"></i> EVENTO FINAL</span>
           </div>
 
           <div class="day-card-body">
-            <h3 class="day-title">La Gran Gala Twitch Partner & Arixu Awards</h3>
+            <h3 class="day-title">Elimina una Opción</h3>
             <p class="day-description">
-              Ceremonia final de entrega de premios de la comunidad, clips más divertidos del año, alfombra roja virtual e invitados en Discord.
+              Rondas eliminatorias extremas de objetos, mecánicas o skins del juego.
             </p>
             <div class="day-tags">
-              <span class="day-tag">#ArixuAwards</span>
-              <span class="day-tag">#GalaPartner</span>
+              <span class="day-tag">#EliminaUnaOpcion</span>
+              <span class="day-tag">#EventoFinal</span>
             </div>
           </div>
 
           <div class="day-card-footer">
-            <button class="btn-day-preview" data-day="7">Ver Info</button>
+            <button class="btn-day-preview" data-day="7"><i class="fas fa-lock"></i> Ver Info</button>
           </div>
         </div>
 

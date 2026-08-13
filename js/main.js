@@ -8,60 +8,60 @@ document.addEventListener('DOMContentLoaded', () => {
   // Day Details Data for Preview Modal
   const daysData = {
     1: {
-      title: "Día 1: La Bomba de Tiempo Cooperativa",
+      title: "Día 1: La Bomba de Tiempo",
       status: "¡EN VIVO AHORA!",
       statusClass: "tag-active",
       link: "dia1.html",
       badge: "RETOS DE CHAT & ADRENALINA",
-      desc: "Un reactor de energía está a punto de colapsar. El chat debe unirse en directo para ingresar comandos de desactivación y acertijos en un tiempo límite. ¡Cualquier fallo activará un castigo inmediato para ImArixu!"
+      desc: "Desactiva el reactor en equipo antes de que el contador llegue a cero. El chat debe ingresar comandos y resolver acertijos en vivo para evitar la explosión y salvar a ImArixu de la penalización."
     },
     2: {
-      title: "Día 2: El Juicio del Chat & Ruleta de la Verdad",
-      status: "PRÓXIMAMENTE - MAÑANA 20:00 CEST",
-      statusClass: "tag-upcoming",
+      title: "Día 2: Fortnite-Guessr",
+      status: "PRÓXIMAMENTE - BLOQUEADO",
+      statusClass: "tag-locked",
       link: "#",
-      badge: "VOTACIONES EN DIRECTO",
-      desc: "El chat toma el control absoluto. Votaciones en directo para decidir los juegos, las reglas absurdas que ImArixu debe obedecer durante el stream y las confesiones más comprometedoras."
+      badge: "RECONOCIMIENTO DE MAPA",
+      desc: "Demuestra que conoces la isla. Adivina la ubicación exacta viendo solo una fotografía de la isla de Fortnite en tiempo récord."
     },
     3: {
-      title: "Día 3: Speedrun IRL & Retos Extremos",
-      status: "PRÓXIMAMENTE - DÍA 3",
-      statusClass: "tag-upcoming",
+      title: "Día 3: Qué Prefieres: Edición ImArixu",
+      status: "PRÓXIMAMENTE - BLOQUEADO",
+      statusClass: "tag-locked",
       link: "#",
-      badge: "DESAFÍO IRL + CAM",
-      desc: "Un cronómetro contra el reloj donde ImArixu deberá superar pruebas IRL en directo seleccionadas por la comunidad antes de que expire la meta de subs."
+      badge: "DILEMAS & DEBATE CHAT",
+      desc: "Dilemas imposibles sobre el meta actual de Fortnite, la vida del streamer en Twitch y salseo IRL elegidos en directo."
     },
     4: {
-      title: "Día 4: Karaoke a Ciegas con Autotune Extremo",
-      status: "PRÓXIMAMENTE - DÍA 4",
-      statusClass: "tag-upcoming",
+      title: "Día 4: Trivial: Historia de Fortnite",
+      status: "PRÓXIMAMENTE - BLOQUEADO",
+      statusClass: "tag-locked",
       link: "#",
-      badge: "MUSICAL & SHOW",
-      desc: "Bitz soundboard interactivo. El chat elige las canciones y los efectos de voz en tiempo real mientras ImArixu compite por sobrevivir al cantar sin escuchar su propia voz."
+      badge: "TRIVIAL & NOSTALGIA",
+      desc: "Cultura general de la isla. ¿Recuerdas los eventos, pases de batalla y cambios de mapa de las primeras temporadas?"
     },
     5: {
-      title: "Día 5: Survival Horror Night & Pulsómetro HUD",
-      status: "PRÓXIMAMENTE - DÍA 5",
-      statusClass: "tag-upcoming",
+      title: "Día 5: El Sonido de la Batalla",
+      status: "PRÓXIMAMENTE - BLOQUEADO",
+      statusClass: "tag-locked",
       link: "#",
-      badge: "TERROR & MONITOR PULSO",
-      desc: "Pulsómetro transmitiendo en vivo el ritmo cardíaco de ImArixu. Cada susto o superación de 130 PPM desencadena donaciones automáticas o retos sorpresa."
+      badge: "DESAFÍO AUDITIVO A CIEGAS",
+      desc: "Agudiza el oído. Adivina de qué arma, consumible o ítem es el efecto de sonido a ciegas sin ver la pantalla."
     },
     6: {
-      title: "Día 6: Subathon de la Ruleta Cósmica",
-      status: "PRÓXIMAMENTE - DÍA 6",
-      statusClass: "tag-upcoming",
+      title: "Día 6: ¿Quién es ese Streamer?",
+      status: "PRÓXIMAMENTE - BLOQUEADO",
+      statusClass: "tag-locked",
       link: "#",
-      badge: "SUBATHON & REGALOS",
-      desc: "Ruleta con multiplicadores de tiempo y premios mágicos para los espectadores. ¡Recompensas de emotes exclusivos y pases VIP para la comunidad!"
+      badge: "ADIVINA AL CREADOR",
+      desc: "Adivina al creador de contenido de Fortnite viendo solo una parte de su cuerpo, silueta o avatar característico."
     },
     7: {
-      title: "Día 7: La Gran Gala Twitch Partner & Arixu Awards",
+      title: "Día 7: Elimina una Opción",
       status: "PRÓXIMAMENTE - EVENTO FINAL",
-      statusClass: "tag-upcoming",
+      statusClass: "tag-locked",
       link: "#",
-      badge: "GALA ESPECIAL CELEBRACIÓN",
-      desc: "Premio a los mejores clips del año, sorteo de merchandising firmado, invitados especiales en Discord y la gran coronación Partner de Twitch de ImArixu."
+      badge: "GALA FINAL & TORNEO DE OPCIONES",
+      desc: "Rondas eliminatorias extremas de objetos, mecánicas o skins del juego. ¡Votación en directo hasta coronar al ganador supremo!"
     }
   };
 

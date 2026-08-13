@@ -1,0 +1,589 @@
+/* ==========================================================================
+   RULETA DE LA SUERTE - TWITCH & FORTNITE GAMER DESIGN SYSTEM
+   ========================================================================== */
+
+/* Page Container & Background */
+.ruleta-theme {
+  background: 
+    radial-gradient(circle at 10% 15%, rgba(145, 70, 255, 0.22) 0%, transparent 50%),
+    radial-gradient(circle at 90% 85%, rgba(0, 245, 212, 0.18) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(255, 0, 122, 0.08) 0%, transparent 60%),
+    linear-gradient(180deg, #08080C 0%, #0E0E14 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  color: var(--text-main);
+}
+
+.ruleta-container {
+  padding-top: 1.5rem;
+  padding-bottom: 4rem;
+}
+
+/* Header & Top Bar */
+.ruleta-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  background: rgba(14, 14, 20, 0.85);
+  border: 1px solid var(--border-color);
+  padding: 0.8rem 1.4rem;
+  border-radius: var(--radius-md);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5);
+}
+
+.btn-back-hub {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(145, 70, 255, 0.15);
+  border: 1px solid var(--twitch-purple);
+  color: #FFF;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.btn-back-hub:hover {
+  background: var(--twitch-purple);
+  box-shadow: 0 0 18px var(--twitch-purple-glow);
+  transform: translateX(-3px);
+}
+
+.ruleta-status-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 245, 212, 0.12);
+  border: 1px solid var(--twitch-neon-cyan);
+  color: var(--twitch-neon-cyan);
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.status-led.blink {
+  width: 8px;
+  height: 8px;
+  background: var(--twitch-neon-cyan);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--twitch-neon-cyan);
+  animation: blinkFast 1s infinite alternate;
+}
+
+@keyframes blinkFast {
+  0% { opacity: 0.3; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1.2); }
+}
+
+.btn-audio-toggle {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #FFF;
+  padding: 7px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-audio-toggle:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: #FFF;
+}
+
+/* Page Hero Banner */
+.ruleta-hero-banner {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.banner-fortnite-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #FF0055 0%, #9146FF 100%);
+  color: #FFF;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  padding: 4px 16px;
+  border-radius: var(--radius-pill);
+  margin-bottom: 0.8rem;
+  text-transform: uppercase;
+  box-shadow: 0 0 15px rgba(255, 0, 85, 0.4);
+}
+
+.ruleta-main-title {
+  font-size: 3rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #FFFFFF 0%, var(--twitch-neon-cyan) 50%, var(--twitch-purple) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 35px rgba(145, 70, 255, 0.4);
+}
+
+.ruleta-main-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* Main Grid Layout */
+.ruleta-layout-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* Left Column Panel Cards */
+.panel-card {
+  background: rgba(20, 20, 30, 0.85);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.6rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+}
+
+.panel-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin-bottom: 1.2rem !important;
+  width: 100% !important;
+  position: relative !important;
+}
+
+.panel-title {
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 !important;
+  white-space: nowrap;
+}
+
+.count-badge {
+  background-color: rgba(145, 71, 255, 0.2) !important;
+  border: none !important;
+  color: #00fa9a !important;
+  font-family: var(--font-mono);
+  font-size: 0.85rem !important;
+  font-weight: 800 !important;
+  padding: 4px 10px !important;
+  border-radius: 20px !important;
+  min-width: 32px !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.textarea-glow-wrapper {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.participants-textarea {
+  width: 100%;
+  height: 220px;
+  background: rgba(10, 10, 16, 0.9);
+  border: 2px solid rgba(145, 70, 255, 0.3);
+  border-radius: var(--radius-md);
+  color: #FFF;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  padding: 1rem;
+  resize: vertical;
+  line-height: 1.5;
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+.participants-textarea:focus {
+  border-color: var(--twitch-neon-cyan);
+  box-shadow: 0 0 20px rgba(0, 245, 212, 0.3);
+  background: rgba(12, 12, 20, 0.95);
+}
+
+.input-actions-row {
+  margin-bottom: 1.2rem;
+}
+
+.btn-update-wheel {
+  width: 100%;
+  background: linear-gradient(135deg, var(--twitch-purple) 0%, var(--twitch-purple-dark) 100%);
+  color: #FFF;
+  border: 1px solid var(--twitch-purple);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  font-size: 0.98rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 0 15px rgba(145, 70, 255, 0.4);
+  transition: all 0.25s ease;
+}
+
+.btn-update-wheel:hover {
+  background: linear-gradient(135deg, #A865FF 0%, var(--twitch-purple) 100%);
+  box-shadow: 0 0 25px rgba(145, 70, 255, 0.7);
+  transform: translateY(-2px);
+}
+
+.presets-wrapper {
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+  padding-top: 1rem;
+}
+
+.presets-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 0.6rem;
+  text-transform: uppercase;
+}
+
+.presets-btns {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-preset {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-main);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-preset:hover {
+  background: rgba(145, 70, 255, 0.25);
+  border-color: var(--twitch-purple);
+  color: #FFF;
+}
+
+.btn-preset.danger:hover {
+  background: rgba(255, 51, 102, 0.25);
+  border-color: var(--twitch-red);
+  color: #FFF;
+}
+
+.options-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin-bottom: 0.8rem;
+  color: var(--text-muted);
+}
+
+.option-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.88rem;
+}
+
+.styled-select {
+  background: var(--bg-dark-1);
+  border: 1px solid var(--border-color);
+  color: #FFF;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  outline: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Right Column: Wheel Stage Card */
+.ruleta-wheel-col {
+  display: flex;
+  justify-content: center;
+}
+
+.wheel-stage-card {
+  background: linear-gradient(135deg, rgba(20, 15, 35, 0.9) 0%, rgba(12, 12, 20, 0.95) 100%);
+  border: 2px solid var(--twitch-purple);
+  border-radius: var(--radius-lg);
+  padding: 2rem 2.5rem;
+  width: 100%;
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  box-shadow: 0 0 50px rgba(145, 70, 255, 0.3), inset 0 0 35px rgba(145, 70, 255, 0.1);
+}
+
+/* Pointer Arrow at Top (12 o'clock) */
+.wheel-pointer-container {
+  position: absolute;
+  top: 1.1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  filter: drop-shadow(0 0 14px rgba(255, 209, 102, 0.9));
+}
+
+.fortnite-pointer-arrow {
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-top: 36px solid #FFD166;
+  position: relative;
+}
+
+.fortnite-pointer-arrow::after {
+  content: '';
+  position: absolute;
+  top: -36px;
+  left: -12px;
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-top: 24px solid #FFF;
+}
+
+/* Canvas Wrapper */
+.canvas-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  aspect-ratio: 1 / 1;
+  margin: 1.5rem 0 2rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#wheelCanvas {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  box-shadow: 0 0 35px rgba(0, 0, 0, 0.8), 0 0 15px rgba(145, 70, 255, 0.5);
+}
+
+/* Center Spin Button */
+.spin-btn-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-spin-wheel {
+  background: linear-gradient(135deg, #00F5D4 0%, #00B4D8 50%, #9146FF 100%);
+  color: #08080C;
+  border: 2px solid #00F5D4;
+  border-radius: var(--radius-pill);
+  padding: 16px 48px;
+  font-size: 1.35rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  cursor: pointer;
+  box-shadow: 0 0 35px rgba(0, 245, 212, 0.6);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.btn-spin-wheel:hover:not(:disabled) {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 0 50px rgba(0, 245, 212, 0.9);
+  background: linear-gradient(135deg, #00FFE0 0%, #00C6FF 50%, #A865FF 100%);
+}
+
+.btn-spin-wheel:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* WINNER CELEBRATION MODAL OVERLAY */
+.winner-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(8, 8, 14, 0.92);
+  backdrop-filter: blur(16px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.winner-modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.confetti-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.winner-card {
+  position: relative;
+  z-index: 10;
+  background: linear-gradient(135deg, #1A0D2E 0%, #0E0E18 60%, #0D1C24 100%);
+  border: 3px solid var(--twitch-neon-cyan);
+  border-radius: var(--radius-lg);
+  padding: 2.8rem 2.2rem;
+  max-width: 580px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 0 80px rgba(0, 245, 212, 0.7);
+  transform: scale(0.85);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.winner-modal-overlay.active .winner-card {
+  transform: scale(1);
+}
+
+.winner-badge-header {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 900;
+  color: #FFD166;
+  letter-spacing: 2px;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 15px rgba(255, 209, 102, 0.8);
+}
+
+.winner-trophy-icon {
+  font-size: 4.5rem;
+  color: #FFD166;
+  margin-bottom: 0.8rem;
+  animation: bounceTrophy 1s infinite alternate ease-in-out;
+  filter: drop-shadow(0 0 25px #FFD166);
+}
+
+@keyframes bounceTrophy {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-12px) scale(1.08); }
+}
+
+.winner-name-display {
+  font-size: 2.8rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: #FFF;
+  text-shadow: 0 0 30px var(--twitch-neon-cyan);
+  word-break: break-word;
+  margin-bottom: 0.5rem;
+}
+
+.winner-subtext {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+}
+
+.winner-actions-group {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-winner-action {
+  padding: 12px 24px;
+  border-radius: var(--radius-pill);
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  border: none;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-winner-action.primary {
+  background: var(--twitch-purple);
+  color: #FFF;
+  box-shadow: 0 0 20px var(--twitch-purple-glow);
+}
+
+.btn-winner-action.primary:hover {
+  background: #A865FF;
+  transform: translateY(-2px);
+}
+
+.btn-winner-action.danger {
+  background: rgba(255, 51, 102, 0.2);
+  border: 1px solid var(--twitch-red);
+  color: var(--twitch-red);
+}
+
+.btn-winner-action.danger:hover {
+  background: var(--twitch-red);
+  color: #FFF;
+  box-shadow: 0 0 20px rgba(255, 51, 102, 0.6);
+  transform: translateY(-2px);
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 950px) {
+  .ruleta-layout-grid {
+    grid-template-columns: 1fr;
+  }
+  .ruleta-main-title {
+    font-size: 2.2rem;
+  }
+  .wheel-stage-card {
+    padding: 1.5rem;
+  }
+}

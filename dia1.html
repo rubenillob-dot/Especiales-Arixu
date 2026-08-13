@@ -151,6 +151,15 @@
               <button class="btn-ctrl danger" id="btnSimulateBoom">
                 <i class="fas fa-bomb"></i> Simular Explosión (BOOOM)
               </button>
+              <button class="btn-ctrl btn-copy-heroes" id="btnCopyHeroesPanel">
+                <i class="fas fa-copy"></i> 📋 Copiar Nombres de Héroes
+              </button>
+              <button class="btn-ctrl btn-download-heroes" id="btnDownloadHeroesPanel">
+                <i class="fas fa-download"></i> 💾 Descargar Nombres (TXT)
+              </button>
+              <a href="ruleta.html" class="btn-ctrl btn-ruleta-redirect">
+                <i class="fas fa-dharmachakra"></i> 🎯 Ir a la Ruleta Oficial ➡️
+              </a>
             </div>
           </div>
         </section>
@@ -226,9 +235,20 @@
         </div>
       </div>
 
-      <button class="btn-ctrl primary" id="btnResetFromSuccess" style="margin: 1.5rem auto 0; padding: 12px 30px; font-size: 1rem;">
-        <i class="fas fa-redo"></i> Jugar Otra Ronda (10:00)
-      </button>
+      <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 1.5rem; align-items: center;">
+        <button class="btn-ctrl btn-copy-heroes" id="btnCopyHeroesOverlay" style="padding: 12px 24px; font-size: 1rem;">
+          <i class="fas fa-copy"></i> 📋 Copiar Nombres de Héroes
+        </button>
+        <button class="btn-ctrl btn-download-heroes" id="btnDownloadHeroesOverlay" style="padding: 12px 24px; font-size: 1rem;">
+          <i class="fas fa-download"></i> 💾 Descargar Nombres (TXT)
+        </button>
+        <a href="ruleta.html" class="btn-ctrl btn-ruleta-redirect">
+          <i class="fas fa-dharmachakra"></i> 🎯 Ir a la Ruleta Oficial ➡️
+        </a>
+        <button class="btn-ctrl primary" id="btnResetFromSuccess" style="padding: 12px 24px; font-size: 1rem;">
+          <i class="fas fa-redo"></i> Jugar Otra Ronda (10:00)
+        </button>
+      </div>
     </div>
   </div>
 
@@ -251,7 +271,10 @@
         </div>
       </div>
 
-      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+      <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; align-items: center;">
+        <a href="ruleta.html" class="btn-ctrl btn-ruleta-redirect">
+          <i class="fas fa-dharmachakra"></i> 🎯 Ir a la Ruleta Oficial ➡️
+        </a>
         <button class="btn-ctrl danger" id="btnRerollPenalty" style="padding: 10px 20px;">
           <i class="fas fa-dice"></i> Girar Ruleta de Castigos
         </button>
@@ -260,6 +283,11 @@
         </button>
       </div>
     </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-notification" id="toastNotification">
+    <i class="fas fa-check-circle"></i> ¡Nombres copiados con éxito!
   </div>
 
   <script src="js/dia1.js"></script>

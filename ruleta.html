@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎰 Ruleta de la Suerte | Especiales ImArixu</title>
+  <meta name="description" content="Sorteos en vivo, ruleta de castigos y selección de ganadores interactiva con estética Twitch & Fortnite para la comunidad de ImArixu.">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/ruleta.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body class="ruleta-theme">
+
+  <main class="container ruleta-container">
+
+    <!-- Ruleta Top Bar -->
+    <header class="ruleta-topbar">
+      <a href="index.html" class="btn-back-hub">
+        <i class="fas fa-chevron-left"></i> Volver al Hub Principal
+      </a>
+
+      <div class="ruleta-status-pill">
+        <span class="status-led blink"></span>
+        <span>SISTEMA DE RULETA FORTNITE & TWITCH</span>
+      </div>
+
+      <div class="topbar-actions">
+        <button class="btn-audio-toggle" id="btnAudioToggle" title="Activar/Desactivar sonido">
+          <i class="fas fa-volume-up"></i> Audio: ON
+        </button>
+      </div>
+    </header>
+
+    <!-- Page Title Banner -->
+    <section class="ruleta-hero-banner">
+      <div class="banner-fortnite-tag">
+        <i class="fas fa-gamepad"></i> HERRAMIENTA INTERACTIVA STREAM
+      </div>
+      <h1 class="ruleta-main-title">
+        <i class="fas fa-dharmachakra fa-spin-hover"></i> LA RULETA DE IMARIXU
+      </h1>
+      <p class="ruleta-main-subtitle">
+        Pega o escribe la lista de participantes del chat, actualiza la rueda y ¡presiona girar para decidir el ganador con física en directo!
+      </p>
+    </section>
+
+    <!-- Main Grid: Left Inputs / Right Canvas Wheel -->
+    <div class="ruleta-layout-grid">
+
+      <!-- LEFT COLUMN: Participant Input & Controls -->
+      <div class="ruleta-controls-col">
+        <div class="panel-card input-panel">
+          <div class="panel-header">
+            <h3 class="panel-title">
+              <i class="fas fa-list-ul" style="color: var(--twitch-purple);"></i> PARTICIPANTES
+            </h3>
+            <span class="count-badge" id="participantCountBadge">0</span>
+          </div>
+
+          <div class="textarea-glow-wrapper">
+            <textarea 
+              id="participantsInput" 
+              class="participants-textarea" 
+              placeholder="Escribe o pega aquí un nombre por línea...&#10;Ejemplo:&#10;ImArixu&#10;SimbaGamer&#10;EriickWhiite&#10;Xeno_Mod&#10;Piyuyin"
+              spellcheck="false"
+            ></textarea>
+          </div>
+
+          <div class="input-actions-row">
+            <button class="btn-update-wheel" id="btnUpdateWheel">
+              <i class="fas fa-sync-alt"></i> Actualizar Ruleta
+            </button>
+          </div>
+
+          <!-- Quick Presets -->
+          <div class="presets-wrapper">
+            <span class="presets-label"><i class="fas fa-bolt"></i> Cargar Ajustes Rápidos:</span>
+            <div class="presets-btns">
+              <button class="btn-preset" id="btnPresetDemo">
+                <i class="fas fa-users"></i> Demo Comunidad
+              </button>
+              <button class="btn-preset" id="btnPresetPenalties">
+                <i class="fas fa-skull"></i> Castigos Stream
+              </button>
+              <button class="btn-preset danger" id="btnClearList">
+                <i class="fas fa-trash-alt"></i> Limpiar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wheel Settings Panel -->
+        <div class="panel-card options-panel">
+          <h4 class="options-title"><i class="fas fa-sliders-h"></i> CONFIGURACIÓN DE GIRO</h4>
+          <div class="option-row">
+            <label for="spinDurationSelect"><i class="fas fa-stopwatch"></i> Duración del giro:</label>
+            <select id="spinDurationSelect" class="styled-select">
+              <option value="4">4 Segundos (Rápido)</option>
+              <option value="6" selected>6 Segundos (Normal Dramático)</option>
+              <option value="8">8 Segundos (Épico)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: Interactive Canvas Wheel -->
+      <div class="ruleta-wheel-col">
+        <div class="wheel-stage-card">
+
+          <!-- Pointer Arrow at Top (12 o'clock) -->
+          <div class="wheel-pointer-container">
+            <div class="fortnite-pointer-arrow"></div>
+          </div>
+
+          <!-- Canvas Element -->
+          <div class="canvas-wrapper">
+            <canvas id="wheelCanvas" width="520" height="520"></canvas>
+          </div>
+
+          <!-- Giant Center Spin Button -->
+          <div class="spin-btn-container">
+            <button class="btn-spin-wheel" id="btnSpinWheel">
+              <i class="fas fa-play"></i> GIRAR RULETA
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- WINNER CELEBRATION MODAL OVERLAY -->
+  <div class="winner-modal-overlay" id="winnerModalOverlay">
+    <canvas id="confettiCanvas" class="confetti-canvas"></canvas>
+    
+    <div class="winner-card">
+      <div class="winner-badge-header">
+        <i class="fas fa-crown"></i> ¡TENEMOS UN GANADOR! <i class="fas fa-crown"></i>
+      </div>
+
+      <div class="winner-trophy-icon">
+        <i class="fas fa-trophy"></i>
+      </div>
+
+      <h1 class="winner-name-display" id="winnerNameDisplay">
+        ¡NOMBRE DEL GANADOR!
+      </h1>
+
+      <p class="winner-subtext">
+        ¡La ruleta de ImArixu ha dictado sentencia en directo!
+      </p>
+
+      <div class="winner-actions-group">
+        <button class="btn-winner-action danger" id="btnRemoveWinnerAndSpin">
+          <i class="fas fa-user-minus"></i> Eliminar Ganador y Volver a Girar
+        </button>
+        <button class="btn-winner-action primary" id="btnCloseWinnerModal">
+          <i class="fas fa-check-circle"></i> Aceptar y Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-notification" id="toastNotification">
+    <i class="fas fa-check-circle"></i> ¡Acción realizada con éxito!
+  </div>
+
+  <script src="js/ruleta.js"></script>
+</body>
+</html>

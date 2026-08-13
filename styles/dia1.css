@@ -1367,3 +1367,107 @@ body.alarm-active .bomb-core-image {
   .timer-digits { font-size: 3.4rem; }
   .cables-grid { grid-template-columns: 1fr; }
 }
+
+/* HERO COPY BUTTON (MATTE TEAL - EYE COMFORT) */
+.btn-copy-heroes {
+  background: #2a9d8f !important;
+  color: #f1f1f1 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid #1e6b65 !important;
+  transition: all 0.25s ease !important;
+}
+
+.btn-copy-heroes:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35) !important;
+  background: #238579 !important;
+  filter: brightness(1.08);
+}
+
+/* HERO DOWNLOAD BUTTON (MUTED COBALT BLUE - EYE COMFORT) */
+.btn-download-heroes {
+  background: #2b5c8f !important;
+  color: #f1f1f1 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid #1d3557 !important;
+  transition: all 0.25s ease !important;
+}
+
+.btn-download-heroes:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35) !important;
+  background: #244e7a !important;
+  filter: brightness(1.08);
+}
+
+.toast-notification {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 9999;
+  background: rgba(14, 26, 22, 0.95);
+  border: 2px solid var(--twitch-neon-cyan);
+  box-shadow: 0 0 25px rgba(0, 245, 212, 0.6), 0 8px 32px rgba(0, 0, 0, 0.8);
+  color: #FFFFFF;
+  padding: 1rem 1.6rem;
+  border-radius: var(--radius-md);
+  font-weight: 800;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  backdrop-filter: blur(12px);
+  transform: translateY(100px);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.35s ease;
+}
+
+.toast-notification.show {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.toast-notification i {
+  color: var(--twitch-neon-cyan);
+  font-size: 1.4rem;
+}
+
+/* RULETA DIRECT REDIRECTION BUTTON */
+.btn-ruleta-redirect {
+  background: linear-gradient(135deg, #9146FF 0%, #FF6B00 50%, #FFD166 100%) !important;
+  color: #08080C !important;
+  font-weight: 900 !important;
+  font-size: 1.05rem !important;
+  padding: 14px 28px !important;
+  border-radius: var(--radius-pill) !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  border: 2px solid #FFD166 !important;
+  box-shadow: 0 0 25px rgba(255, 107, 0, 0.6), 0 0 15px rgba(145, 70, 255, 0.5) !important;
+  animation: ruletaPulseGlow 2.5s infinite ease-in-out !important;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+  cursor: pointer !important;
+}
+
+@keyframes ruletaPulseGlow {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 25px rgba(255, 107, 0, 0.6), 0 0 15px rgba(145, 70, 255, 0.5);
+  }
+  50% {
+    transform: scale(1.04);
+    box-shadow: 0 0 40px rgba(255, 209, 102, 0.9), 0 0 25px rgba(145, 70, 255, 0.8);
+  }
+}
+
+.btn-ruleta-redirect:hover {
+  transform: translateY(-3px) scale(1.06) !important;
+  background: linear-gradient(135deg, #A865FF 0%, #FF8533 50%, #FFE066 100%) !important;
+  box-shadow: 0 0 50px rgba(255, 209, 102, 1), 0 0 30px rgba(145, 70, 255, 0.9) !important;
+}

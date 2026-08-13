@@ -928,6 +928,138 @@ class BombGameEngine {
 
     document.getElementById('btnResetFromBoom')?.addEventListener('click', () => this.resetGame(600));
     document.getElementById('btnResetFromSuccess')?.addEventListener('click', () => this.resetGame(600));
+
+    // HERO EXTRACTION BUTTON LISTENERS
+    document.getElementById('btnCopyHeroesPanel')?.addEventListener('click', () => this.copyHeroesList());
+    document.getElementById('btnCopyHeroesOverlay')?.addEventListener('click', () => this.copyHeroesList());
+
+    // HERO DOWNLOAD TXT LISTENERS
+    document.getElementById('btnDownloadHeroesPanel')?.addEventListener('click', () => this.downloadHeroesTXT());
+    document.getElementById('btnDownloadHeroesOverlay')?.addEventListener('click', () => this.downloadHeroesTXT());
+  }
+
+  /* ==========================================================================
+     HEROES EXTRACTION & TOAST NOTIFICATION LOGIC
+     ========================================================================== */
+  downloadHeroesTXT() {
+    const names = [];
+
+    // 1. Gather unique defuser usernames from heroesArray
+    if (this.heroesArray && this.heroesArray.length > 0) {
+      this.heroesArray.forEach(h => {
+        if (h.username && !names.includes(h.username)) {
+          names.push(h.username);
+        }
+      });
+    }
+
+    // 2. Fallback / check modulos array
+    this.modulos.forEach(mod => {
+      if (mod.defuser && !names.includes(mod.defuser)) {
+        names.push(mod.defuser);
+      }
+    });
+
+    if (names.length === 0) {
+      this.showToast("⚠️ No hay nombres de héroes registrados aún.");
+      return;
+    }
+
+    // Formatted list separated by newline (\n)
+    const formattedText = names.join("\n");
+
+    // Generate plain text Blob
+    const blob = new Blob([formattedText], { type: 'text/plain;charset=utf-8' });
+    const objectUrl = URL.createObjectURL(blob);
+
+    // Dynamically create <a> anchor element to trigger download
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = "heroes_escuadron.txt";
+    document.body.appendChild(link);
+    link.click();
+
+    // Clean up
+    document.body.removeChild(link);
+    URL.revokeObjectURL(objectUrl);
+
+    // Toast Notification
+    this.showToast("✅ ¡Archivo descargado con éxito!");
+  }
+  copyHeroesList() {
+    const names = [];
+
+    // 1. Gather unique defuser usernames from heroesArray
+    if (this.heroesArray && this.heroesArray.length > 0) {
+      this.heroesArray.forEach(h => {
+        if (h.username && !names.includes(h.username)) {
+          names.push(h.username);
+        }
+      });
+    }
+
+    // 2. Fallback / check modulos array
+    this.modulos.forEach(mod => {
+      if (mod.defuser && !names.includes(mod.defuser)) {
+        names.push(mod.defuser);
+      }
+    });
+
+    if (names.length === 0) {
+      this.showToast("⚠️ No hay nombres de héroes registrados aún.");
+      return;
+    }
+
+    // Formatted as comma-separated list
+    const formattedList = names.join(", ");
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(formattedList).then(() => {
+        this.showToast("¡Nombres copiados con éxito!");
+      }).catch(err => {
+        console.warn("Clipboard API writeText failed, using fallback:", err);
+        this.fallbackCopyTextToClipboard(formattedList);
+      });
+    } else {
+      this.fallbackCopyTextToClipboard(formattedList);
+    }
+  }
+
+  fallbackCopyTextToClipboard(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.top = "-9999px";
+    textArea.style.left = "-9999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+      const successful = document.execCommand('copy');
+      if (successful) {
+        this.showToast("¡Nombres copiados con éxito!");
+      } else {
+        this.showToast("❌ Error al copiar al portapapeles.");
+      }
+    } catch (err) {
+      console.error('Fallback copy error:', err);
+      this.showToast("❌ Error al copiar al portapapeles.");
+    }
+    document.body.removeChild(textArea);
+  }
+
+  showToast(message) {
+    const toast = document.getElementById('toastNotification');
+    if (!toast) return;
+
+    toast.innerHTML = `<i class="fas fa-check-circle"></i> ${this.escapeHtml(message)}`;
+    toast.classList.add('show');
+
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+    this.toastTimer = setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3200);
   }
 }
 
