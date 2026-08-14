@@ -36,7 +36,7 @@ class BombGameEngine {
       { id: 7,  cableNum: "CABLE #07", pregunta: "¿Qué es lo más picante que se ha comido Ari en directo?", respuestas: ["habanero"], estado: "encriptado", defuser: null, defuserKeyword: null },
       { id: 8,  cableNum: "CABLE #08", pregunta: "Palabra exacta para decir que dejas la view de fondo:", respuestas: ["lurk"], estado: "encriptado", defuser: null, defuserKeyword: null },
       { id: 9,  cableNum: "CABLE #09", pregunta: "¿A quién tuvimos que perdonar en un directo de Ari?", respuestas: ["piyu", "piyuyin6"], estado: "encriptado", defuser: null, defuserKeyword: null },
-      { id: 10, cableNum: "CABLE #10", pregunta: "¿Cuál es el número total de moderadores que hay en Twitch?", respuestas: ["3"], estado: "encriptado", defuser: null, defuserKeyword: null },
+      { id: 10, cableNum: "CABLE #10", pregunta: "¿Cuál es el número total de moderadores que hay en Twitch? (codigoArixu no cuenta)", respuestas: ["3", "tres"], respuesta_principal: "3", estado: "encriptado", defuser: null, defuserKeyword: null },
       { id: 11, cableNum: "CABLE #11", pregunta: "¿Qué skin gorda y monstruosa de Fortnite canjeaban los subs para trollear a Ari?", respuestas: ["godzilla"], respuesta_principal: "Godzilla", estado: "encriptado", defuser: null, defuserKeyword: null },
       { id: 12, cableNum: "CABLE #12", pregunta: "¿Qué raza de perro es Simba?", respuestas: ["teckel"], respuesta_principal: "Teckel", estado: "encriptado", defuser: null, defuserKeyword: null },
       { id: 13, cableNum: "CABLE #13", pregunta: "¿De qué se disfraza Ari si canjeas 2000 bits?", respuestas: ["fresita", "fresa"], respuestas_validas: ["fresita", "fresa"], respuesta_principal: "Fresita", estado: "encriptado", defuser: null, defuserKeyword: null },
