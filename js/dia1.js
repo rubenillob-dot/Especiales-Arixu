@@ -29,7 +29,7 @@ class BombGameEngine {
     this.modulos = [
       { id: 1,  cableNum: "CABLE #01", pregunta: "¿Cómo se llama el perro de Ari?", respuestas: ["simba"], estado: "activo", defuser: null, defuserKeyword: null },
       { id: 2,  cableNum: "CABLE #02", pregunta: "¿Cuál es el código para la tienda de Fortnite / Epic?", respuestas: ["arixu"], estado: "encriptado", defuser: null, defuserKeyword: null },
-      { id: 3,  cableNum: "CABLE #03", pregunta: "¿Cuál es el número del cumpleaños de Ari?", respuestas: ["2"], estado: "encriptado", defuser: null, defuserKeyword: null },
+      { id: 3,  cableNum: "CABLE #03", pregunta: "¿Cuál es el número del día del mes del cumpleaños de Ari?", respuestas: ["2", "dos", "02"], respuesta_principal: "2", estado: "encriptado", defuser: null, defuserKeyword: null },
       { id: 4,  cableNum: "CABLE #04", pregunta: "Género que NO le gusta a Ari (Romántico, Anime, Histórico, Fantasía):", respuestas: ["anime"], estado: "encriptado", defuser: null, defuserKeyword: null },
       { id: 5,  cableNum: "CABLE #05", pregunta: "¿Cómo se llama el máximo donador del canal?", respuestas: ["erick", "eriickwhiite"], estado: "encriptado", defuser: null, defuserKeyword: null },
       { id: 6,  cableNum: "CABLE #06", pregunta: "¿Qué VIP fue expulsado por tocar los huevos?", respuestas: ["xeno", "el_xenomorfo_"], estado: "encriptado", defuser: null, defuserKeyword: null },
