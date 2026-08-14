@@ -36,8 +36,20 @@ class BombGameEngine {
       { id: 7,  cableNum: "CABLE #07", pregunta: "¿Qué es lo más picante que se ha comido Ari en directo?", respuestas: ["habanero"], estado: "encriptado", defuser: null, defuserKeyword: null },
       { id: 8,  cableNum: "CABLE #08", pregunta: "Palabra exacta para decir que dejas la view de fondo:", respuestas: ["lurk"], estado: "encriptado", defuser: null, defuserKeyword: null },
       { id: 9,  cableNum: "CABLE #09", pregunta: "¿A quién tuvimos que perdonar en un directo de Ari?", respuestas: ["piyu", "piyuyin6"], estado: "encriptado", defuser: null, defuserKeyword: null },
-      { id: 10, cableNum: "CABLE #10", pregunta: "¿Cuál es el número total de moderadores que hay en Twitch?", respuestas: ["3"], estado: "encriptado", defuser: null, defuserKeyword: null }
+      { id: 10, cableNum: "CABLE #10", pregunta: "¿Cuál es el número total de moderadores que hay en Twitch?", respuestas: ["3"], estado: "encriptado", defuser: null, defuserKeyword: null },
+      { id: 'nuevo_1', pregunta: '¿Qué skin gorda y monstruosa de Fortnite canjeaban los subs para trollear a Ari?', respuesta_principal: 'Godzilla' },
+      { id: 'nuevo_2', pregunta: '¿Qué raza de perro es Simba?', respuesta_principal: 'Teckel' },
+      { id: 'nuevo_3', pregunta: '¿De qué se disfraza Ari si canjeas 2000 bits?', respuestas_validas: ['fresita', 'fresa'] }
     ];
+
+    // Ensure all modules have default properties (cableNum, estado, defuser, defuserKeyword)
+    this.modulos.forEach((mod, idx) => {
+      if (!mod.cableNum) mod.cableNum = `CABLE #${String(idx + 1).padStart(2, '0')}`;
+      if (!mod.estado) mod.estado = (idx === 0) ? 'activo' : 'encriptado';
+      if (mod.defuser === undefined) mod.defuser = null;
+      if (mod.defuserKeyword === undefined) mod.defuserKeyword = null;
+    });
+
     window.bombModules = this.modulos;
 
     // Array of Heroes (Users who cut cables)
@@ -381,6 +393,39 @@ class BombGameEngine {
   /* ==========================================================================
      REQUIREMENT 1: SEQUENTIAL GRID RENDERING (ENCRYPTED VS ACTIVE VS COMPLETED)
      ========================================================================== */
+  /* ==========================================================================
+     HELPER METHODS: ANSWER EXTRACTION & NORMALIZATION
+     ========================================================================== */
+  getValidAnswers(mod) {
+    if (!mod) return [];
+    if (Array.isArray(mod.respuestas_validas) && mod.respuestas_validas.length > 0) {
+      return mod.respuestas_validas;
+    }
+    if (Array.isArray(mod.respuestas) && mod.respuestas.length > 0) {
+      return mod.respuestas;
+    }
+    if (mod.respuesta_principal) {
+      return [mod.respuesta_principal];
+    }
+    return [];
+  }
+
+  getPrimaryAnswer(mod) {
+    if (!mod) return "";
+    if (mod.defuserKeyword) return mod.defuserKeyword;
+    if (mod.respuesta_principal) return mod.respuesta_principal;
+    if (Array.isArray(mod.respuestas_validas) && mod.respuestas_validas.length > 0) {
+      return mod.respuestas_validas[0];
+    }
+    if (Array.isArray(mod.respuestas) && mod.respuestas.length > 0) {
+      return mod.respuestas[0];
+    }
+    return "";
+  }
+
+  /* ==========================================================================
+     REQUIREMENT 1: SEQUENTIAL GRID RENDERING (ENCRYPTED VS ACTIVE VS COMPLETED)
+     ========================================================================== */
   renderCablesGrid() {
     if (!this.cablesGrid) return;
     this.cablesGrid.innerHTML = '';
@@ -396,7 +441,7 @@ class BombGameEngine {
 
       if (isCompleted) {
         card.className = 'cable-card solved';
-        const primaryAnswer = (mod.defuserKeyword || mod.respuestas[0]).toUpperCase();
+        const primaryAnswer = (mod.defuserKeyword || this.getPrimaryAnswer(mod)).toUpperCase();
         card.innerHTML = `
           <div class="cable-card-header">
             <span class="cable-num-tag">${mod.cableNum}</span>
@@ -409,7 +454,8 @@ class BombGameEngine {
           <div class="cable-answer-hint" id="cable-hint-${mod.id}">Clave: ${primaryAnswer}</div>
           ${mod.defuser ? `
             <div class="cable-hero-badge">
-              <i class="fas fa-shield-cat"></i> Desactivado por: <strong>${this.escapeHtml(mod.defuser)}</strong>
+              <span class="hero-badge-title"><i class="fas fa-shield-cat"></i> Desactivado por:</span>
+              <strong class="hero-name" title="${this.escapeHtml(mod.defuser)}">${this.escapeHtml(mod.defuser)}</strong>
             </div>
           ` : ''}
         `;
@@ -438,7 +484,7 @@ class BombGameEngine {
         `;
       } else {
         // Encriptado (Dynamic previous cable reference)
-        const prevCableNum = String(Math.max(1, mod.id - 1)).padStart(2, '0');
+        const prevCableNum = idx > 0 ? String(idx).padStart(2, '0') : '01';
         card.className = 'cable-card encrypted-card';
         card.innerHTML = `
           <div class="encrypted-overlay">
@@ -519,7 +565,7 @@ class BombGameEngine {
     this.activeModuleIndex = 0;
     this.isDecrypting = false;
 
-    // Reset 10 modules: Cable #01 active, Cables #02..#10 encrypted
+    // Reset all modules: Cable #01 active, remaining encrypted
     this.modulos.forEach((mod, idx) => {
       mod.estado = (idx === 0) ? 'activo' : 'encriptado';
       mod.defuser = null;
@@ -538,7 +584,7 @@ class BombGameEngine {
 
     this.renderCablesGrid();
     this.updateHUD();
-    this.addTerminalLine("🔒 Sistema reiniciado. Cable #01 ACTIVO. Cables #02 al #10 encriptados.", "sys");
+    this.addTerminalLine(`🔒 Sistema reiniciado. ${this.modulos[0].cableNum} ACTIVO. Resto de módulos encriptados.`, "sys");
   }
 
   updateHUD() {
@@ -596,38 +642,40 @@ class BombGameEngine {
     const currentActiveModule = this.modulos[this.activeModuleIndex];
     if (!currentActiveModule || currentActiveModule.estado !== 'activo') return;
 
-    // 1. Normalize message text (lowercase & strip diacritics/accents)
-    const normalizedText = messageText
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "");
+    // Helper to normalize string (lowercase & remove diacritics/accents)
+    const normalize = (str) =>
+      String(str || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+
+    // 1. Normalize full message text
+    const normalizedText = normalize(messageText);
 
     // 2. Extract individual word/number tokens (including underscores e.g. "el_xenomorfo_")
     const words = normalizedText.match(/[\p{L}\p{N}_]+/gu) || [];
 
+    // 3. Get all valid answer strings for the active module (handles respuestas_validas, respuesta_principal, respuestas)
+    const validAnswers = this.getValidAnswers(currentActiveModule);
+
     let isMatch = false;
     let foundAnswerKeyword = "";
 
-    // 3. Compare words ONLY against the current active module's respuestas
-    for (const rawWord of words) {
-      const cleanWord = rawWord.trim();
-      if (!cleanWord) continue;
+    // 4. Compare incoming message against candidate valid answers
+    for (const resp of validAnswers) {
+      const respClean = normalize(resp);
+      if (!respClean) continue;
 
-      for (const resp of currentActiveModule.respuestas) {
-        const respClean = resp
-          .toLowerCase()
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .trim();
+      // Check token match, exact string match, or substring inclusion for multi-word or compound messages
+      const wordMatch = words.some(w => w === respClean);
+      const includesMatch = normalizedText.includes(respClean);
 
-        if (cleanWord === respClean) {
-          isMatch = true;
-          foundAnswerKeyword = resp.toUpperCase();
-          break;
-        }
+      if (wordMatch || includesMatch) {
+        isMatch = true;
+        foundAnswerKeyword = resp.toUpperCase();
+        break;
       }
-
-      if (isMatch) break;
     }
 
     if (isMatch) {
@@ -677,10 +725,10 @@ class BombGameEngine {
 
     // Play cyber decryption sweep sound effect
     this.playDecryptionScanSound();
-    this.addTerminalLine(`🔓 Iniciando desencriptación del Cable #${String(nextModule.id).padStart(2, '0')}... (3.0s)`, "sys");
+    this.addTerminalLine(`🔓 Iniciando desencriptación del ${nextModule.cableNum}... (3.0s)`, "sys");
 
     if (this.terminalStatusText) {
-      this.terminalStatusText.textContent = `⏳ Desencriptando Cable #${String(nextModule.id).padStart(2, '0')}...`;
+      this.terminalStatusText.textContent = `⏳ Desencriptando ${nextModule.cableNum}...`;
       this.terminalStatusText.style.color = "#FFD166";
     }
 
@@ -704,14 +752,15 @@ class BombGameEngine {
     if (this.isDecrypting) return;
     const currentActive = this.modulos[this.activeModuleIndex];
     if (currentActive && currentActive.estado === 'activo') {
-      this.processInputWord(currentActive.respuestas[0], username, true);
+      const firstAnswer = this.getPrimaryAnswer(currentActive);
+      this.processInputWord(firstAnswer, username, true);
     }
   }
 
   simulateWin() {
     this.modulos.forEach((m, idx) => {
       const dummyUser = `Héroe_${idx + 1}`;
-      const key = m.respuestas[0].toUpperCase();
+      const key = this.getPrimaryAnswer(m).toUpperCase();
       m.estado = 'completado';
       m.defuser = dummyUser;
       m.defuserKeyword = key;
@@ -724,7 +773,7 @@ class BombGameEngine {
         });
       }
     });
-    this.activeModuleIndex = 9;
+    this.activeModuleIndex = this.modulos.length - 1;
     this.isDecrypting = false;
     this.renderCablesGrid();
     this.triggerDefusalSuccess();

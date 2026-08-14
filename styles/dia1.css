@@ -856,16 +856,16 @@ body.alarm-active .bomb-core-image {
 
 .cable-hero-badge {
   margin-top: 0.5rem;
-  background: rgba(0, 245, 212, 0.12);
-  border: 1px solid rgba(0, 245, 212, 0.35);
+  background: rgba(0, 230, 118, 0.12);
+  border: 1px solid rgba(0, 230, 118, 0.35);
   border-radius: 6px;
-  padding: 4px 8px;
-  font-size: 0.72rem;
-  color: var(--twitch-neon-cyan);
-  font-weight: 700;
+  padding: 6px 10px;
   display: flex;
-  align-items: center;
-  gap: 6px;
+  flex-direction: column;
+  gap: 3px;
+  box-sizing: border-box;
+  width: 100%;
+  overflow: hidden;
   animation: heroBadgePop 0.35s ease-out;
 }
 
@@ -874,9 +874,31 @@ body.alarm-active .bomb-core-image {
   100% { transform: scale(1); opacity: 1; }
 }
 
+.cable-hero-badge .hero-badge-title {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  color: #00E676;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cable-hero-badge .hero-badge-title i {
+  font-size: 0.75rem;
+}
+
+.cable-hero-badge .hero-name,
 .cable-hero-badge strong {
+  display: block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.88rem;
+  font-weight: bold;
   color: #FFFFFF;
-  font-weight: 800;
 }
 
 /* MANUAL INPUT & CONTROL PANEL */
