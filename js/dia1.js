@@ -24,7 +24,7 @@ class BombGameEngine {
     this.activeModuleIndex = 0;
     this.isDecrypting = false;
 
-    // Array of Reactor Cables / Riddles (16 Sequential Modules)
+    // Array of Reactor Cables / Riddles (20 Sequential Modules)
     // Initially Cable #01 is 'activo', remaining cables are 'encriptado'
     this.modulos = [
       { id: 1,  cableNum: "CABLE #01", pregunta: "¿Cómo se llama el perro de Ari?", respuestas: ["simba"], estado: "activo", defuser: null, defuserKeyword: null },
@@ -42,7 +42,11 @@ class BombGameEngine {
       { id: 13, cableNum: "CABLE #13", pregunta: "¿De qué se disfraza Ari si canjeas 2000 bits?", respuestas: ["fresita", "fresa"], respuestas_validas: ["fresita", "fresa"], respuesta_principal: "Fresita", estado: "encriptado", defuser: null, defuserKeyword: null },
       { id: 14, cableNum: "CABLE #14", pregunta: "Si spameas en el chat, ¿cuál es tu castigo? (Palabra de 3 letras)", respuestas: ["ban"], respuesta_principal: "ban", estado: "encriptado", defuser: null, defuserKeyword: null },
       { id: 15, cableNum: "CABLE #15", pregunta: "¿Cuál es el número de puntos del canal necesarios para canjear una canción?", respuestas: ["1500"], respuesta_principal: "1500", estado: "encriptado", defuser: null, defuserKeyword: null },
-      { id: 16, cableNum: "CABLE #16", pregunta: "¿Qué baile teníamos como canje de puntos para que lo hiciera Ari?", respuestas: ["griddy"], respuesta_principal: "griddy", estado: "encriptado", defuser: null, defuserKeyword: null }
+      { id: 16, cableNum: "CABLE #16", pregunta: "¿Qué baile teníamos como canje de puntos para que lo hiciera Ari?", respuestas: ["griddy"], respuesta_principal: "griddy", estado: "encriptado", defuser: null, defuserKeyword: null },
+      { id: 17, cableNum: "CABLE #17", pregunta: "¿Qué palabra/comando (sin incluir !) es para saber de quién estás enamorado?", respuestas: ["amor"], respuesta_principal: "amor", estado: "encriptado", defuser: null, defuserKeyword: null },
+      { id: 18, cableNum: "CABLE #18", pregunta: "¿Qué palabra/comando (sin incluir !) es para saber cuánto te mide el tanque de guerra?", respuestas: ["tula"], respuesta_principal: "tula", estado: "encriptado", defuser: null, defuserKeyword: null },
+      { id: 19, cableNum: "CABLE #19", pregunta: "¿Cuál es el nombre de la persona que hace las webs para los especiales?", respuestas: ["ruben", "rubencillo_04"], respuestas_validas: ["ruben", "rubencillo_04"], respuesta_principal: "ruben", estado: "encriptado", defuser: null, defuserKeyword: null },
+      { id: 20, cableNum: "CABLE #20", pregunta: "¿Qué palabra/comando (sin incluir !) es para saber el % de amor que tienes con Ari?", respuestas: ["meama"], respuesta_principal: "meama", estado: "encriptado", defuser: null, defuserKeyword: null }
     ];
 
     // Ensure all modules have default properties (cableNum, estado, defuser, defuserKeyword)

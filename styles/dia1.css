@@ -626,11 +626,14 @@ body.alarm-active .bomb-core-image {
 }
 
 .cable-riddle-text {
-  font-size: 0.83rem;
+  font-size: 0.80rem;
   color: #D1D1E0;
-  line-height: 1.3;
+  line-height: 1.32;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.45rem;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 .cable-answer-hint {
