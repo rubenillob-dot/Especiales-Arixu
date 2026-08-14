@@ -21,7 +21,7 @@
 
       <div class="dia1-status-pill" id="statusPill">
         <span class="status-led blink"></span>
-        <span id="statusPillText">SISTEMA NÚCLEO PREPARADO (10:00)</span>
+        <span id="statusPillText">SISTEMA NÚCLEO PREPARADO (07:00)</span>
       </div>
 
       <div class="topbar-actions">
@@ -48,7 +48,7 @@
             </h2>
             <p class="instruction-text">
               <span class="highlight-alert"><i class="fas fa-exclamation-triangle"></i> ¡ALERTA CRÍTICA!</span> 
-              El reactor colapsará en <strong>10 minutos</strong>. Resolved los <strong>13 acertijos</strong> en equipo para cortar los cables correctos. 
+              El reactor colapsará en <strong>7 minutos</strong>. Resolved los <strong>16 acertijos</strong> en equipo para cortar los cables correctos. 
               Para lograr desactivar cada módulo, tendréis que escribir la <span class="highlight-keyword">PALABRA EXACTA</span> como respuesta en el chat. 
               <span class="highlight-penalty">¡Si fallamos la misión, ImArixu sufrirá un castigo en directo!</span>
             </p>
@@ -63,7 +63,7 @@
             </div>
           </div>
           <div class="instruction-counter-badge" id="cablesCounterBadge">
-            <span class="count-num" id="completedCablesCount">0</span> / 13
+            <span class="count-num" id="completedCablesCount">0</span> / 16
             <span class="count-label">CABLES CORTADOS</span>
           </div>
         </section>
@@ -79,24 +79,24 @@
             <canvas id="particleCanvas"></canvas>
           </div>
 
-          <!-- Giant Digital HUD Clock (Starts at 10:00) -->
+          <!-- Giant Digital HUD Clock (Starts at 07:00) -->
           <div class="timer-hud-card" id="timerHudCard">
             <div class="timer-hud-header">
               <span class="hud-led-dot"></span>
               <span class="timer-hud-label">TIEMPO HASTA COLAPSO</span>
               <span class="hud-led-dot"></span>
             </div>
-            <div class="timer-digits" id="timerDigits">10:00</div>
+            <div class="timer-digits" id="timerDigits">07:00</div>
             <div class="timer-status-msg" id="timerStatus">PRESIONA INICIAR PARA COMENZAR LA CUENTA REGRESIVA</div>
           </div>
         </section>
 
-        <!-- 10 Cables / Modules Section Grid -->
+        <!-- 16 Cables / Modules Section Grid -->
         <section class="cables-section">
           <div class="cables-header">
             <h3 class="cables-title">
               <i class="fas fa-microchip" style="color: var(--twitch-purple);"></i> 
-              PANEL DE CABLES DEL REACTOR (13 MÓDULOS)
+              PANEL DE CABLES DEL REACTOR (16 MÓDULOS)
             </h3>
             <div class="cables-legend">
               <span class="legend-item legend-pending"><span class="led-dot red"></span> Pendiente</span>
@@ -143,7 +143,7 @@
             </div>
             <div class="control-btns-row">
               <button class="btn-ctrl primary" id="btnStartTimer">
-                <i class="fas fa-play"></i> Iniciar Bomba (10:00)
+                <i class="fas fa-play"></i> Iniciar Bomba (07:00)
               </button>
               <button class="btn-ctrl" id="btnPauseTimer">
                 <i class="fas fa-pause"></i> Pausar
@@ -221,7 +221,7 @@
       </div>
       <h1 class="success-title">¡BOMBA DESACTIVADA!</h1>
       <p class="success-subtitle">
-        ¡Los 13 cables han sido cortados con éxito! El chat de ImArixu ha salvado el directo en un tiempo récord.
+        ¡Los 16 cables han sido cortados con éxito! El chat de ImArixu ha salvado el directo en un tiempo récord.
       </p>
 
       <!-- Requirement 3: Random RNG Reward Box -->
@@ -255,7 +255,7 @@
           <i class="fas fa-dharmachakra"></i> 🎯 Ir a la Ruleta Oficial ➡️
         </a>
         <button class="btn-ctrl primary" id="btnResetFromSuccess" style="padding: 12px 24px; font-size: 1rem;">
-          <i class="fas fa-redo"></i> Jugar Otra Ronda (10:00)
+          <i class="fas fa-redo"></i> Jugar Otra Ronda (07:00)
         </button>
       </div>
     </div>
@@ -270,7 +270,7 @@
       <h1 class="boom-title">¡BOOOOOOM!</h1>
       <h2 class="boom-subtitle">CASTIGO ACTIVADO</h2>
       <p style="font-size: 1.05rem; color: #FFB3C1; margin-bottom: 1.2rem;">
-        El tiempo de 10 minutos se ha agotado. El reactor colapsó antes de cortar los 15 cables.
+        El tiempo de 7 minutos se ha agotado. El reactor colapsó antes de cortar los 16 cables.
       </p>
 
       <div class="boom-penalty-box">
@@ -288,7 +288,7 @@
           <i class="fas fa-dice"></i> Girar Ruleta de Castigos
         </button>
         <button class="btn-ctrl primary" id="btnResetFromBoom" style="padding: 10px 20px;">
-          <i class="fas fa-redo"></i> Reiniciar Bomba (10:00)
+          <i class="fas fa-redo"></i> Reiniciar Bomba (07:00)
         </button>
       </div>
     </div>

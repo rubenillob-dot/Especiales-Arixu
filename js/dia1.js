@@ -12,9 +12,9 @@
 
 class BombGameEngine {
   constructor() {
-    // Timer Configuration (10 minutes = 600 seconds)
-    this.totalTime = 600; 
-    this.remainingTime = 600;
+    // Timer Configuration (7 minutes = 420 seconds)
+    this.totalTime = 420; 
+    this.remainingTime = 420;
     this.timerInterval = null;
     this.isRunning = false;
     this.isMuted = false;
@@ -24,8 +24,8 @@ class BombGameEngine {
     this.activeModuleIndex = 0;
     this.isDecrypting = false;
 
-    // Requirement 1: Array of 10 Official Community Modules (bombModules)
-    // Initially Cable #01 is 'activo', Cables #02..#10 are 'encriptado'
+    // Array of Reactor Cables / Riddles
+    // Initially Cable #01 is 'activo', remaining cables are 'encriptado'
     this.modulos = [
       { id: 1,  cableNum: "CABLE #01", pregunta: "¿Cómo se llama el perro de Ari?", respuestas: ["simba"], estado: "activo", defuser: null, defuserKeyword: null },
       { id: 2,  cableNum: "CABLE #02", pregunta: "¿Cuál es el código para la tienda de Fortnite / Epic?", respuestas: ["arixu"], estado: "encriptado", defuser: null, defuserKeyword: null },
@@ -39,7 +39,10 @@ class BombGameEngine {
       { id: 10, cableNum: "CABLE #10", pregunta: "¿Cuál es el número total de moderadores que hay en Twitch?", respuestas: ["3"], estado: "encriptado", defuser: null, defuserKeyword: null },
       { id: 'nuevo_1', pregunta: '¿Qué skin gorda y monstruosa de Fortnite canjeaban los subs para trollear a Ari?', respuesta_principal: 'Godzilla' },
       { id: 'nuevo_2', pregunta: '¿Qué raza de perro es Simba?', respuesta_principal: 'Teckel' },
-      { id: 'nuevo_3', pregunta: '¿De qué se disfraza Ari si canjeas 2000 bits?', respuestas_validas: ['fresita', 'fresa'] }
+      { id: 'nuevo_3', pregunta: '¿De qué se disfraza Ari si canjeas 2000 bits?', respuestas_validas: ['fresita', 'fresa'] },
+      { id: 'lore_4', pregunta: 'Si spameas en el chat, ¿cuál es tu castigo? (Palabra de 3 letras)', respuesta_principal: 'ban' },
+      { id: 'lore_5', pregunta: '¿Cuál es el número de puntos del canal necesarios para canjear una canción?', respuesta_principal: '1500' },
+      { id: 'lore_6', pregunta: '¿Qué baile teníamos como canje de puntos para que lo hiciera Ari?', respuesta_principal: 'griddy' }
     ];
 
     // Ensure all modules have default properties (cableNum, estado, defuser, defuserKeyword)
@@ -523,7 +526,7 @@ class BombGameEngine {
     this.isRunning = true;
 
     if (this.statusPillText) {
-      this.statusPillText.textContent = "DESACTIVACIÓN EN PROGRESO (10:00)";
+      this.statusPillText.textContent = "DESACTIVACIÓN EN PROGRESO (07:00)";
     }
     if (this.terminalStatusText) {
       this.terminalStatusText.textContent = "🟢 TEMPORIZADOR ACTIVO: Escuchando respuestas para " + this.modulos[this.activeModuleIndex].cableNum + "...";
@@ -557,7 +560,7 @@ class BombGameEngine {
     }
   }
 
-  resetGame(seconds = 600) {
+  resetGame(seconds = 420) {
     this.pauseTimer();
     this.totalTime = seconds;
     this.remainingTime = seconds;
@@ -577,7 +580,7 @@ class BombGameEngine {
     if (this.timerDigits) this.timerDigits.classList.remove('warning-alert');
     if (this.timerHudCard) this.timerHudCard.classList.remove('warning-card-border');
     if (this.statusPill) this.statusPill.classList.remove('danger');
-    if (this.statusPillText) this.statusPillText.textContent = "SISTEMA NÚCLEO PREPARADO (10:00)";
+    if (this.statusPillText) this.statusPillText.textContent = "SISTEMA NÚCLEO PREPARADO (07:00)";
 
     this.boomOverlay?.classList.remove('active');
     this.successOverlay?.classList.remove('active');
@@ -956,7 +959,7 @@ class BombGameEngine {
 
     document.getElementById('btnStartTimer')?.addEventListener('click', () => this.startTimer());
     document.getElementById('btnPauseTimer')?.addEventListener('click', () => this.pauseTimer());
-    document.getElementById('btnResetTimer')?.addEventListener('click', () => this.resetGame(600));
+    document.getElementById('btnResetTimer')?.addEventListener('click', () => this.resetGame(420));
     document.getElementById('btnCutNext')?.addEventListener('click', () => {
       this.ensureAudioStarted();
       this.cutNextPendingCable("StreamerMod");
@@ -975,8 +978,8 @@ class BombGameEngine {
       if (this.penaltyText) this.penaltyText.textContent = randomPenalty;
     });
 
-    document.getElementById('btnResetFromBoom')?.addEventListener('click', () => this.resetGame(600));
-    document.getElementById('btnResetFromSuccess')?.addEventListener('click', () => this.resetGame(600));
+    document.getElementById('btnResetFromBoom')?.addEventListener('click', () => this.resetGame(420));
+    document.getElementById('btnResetFromSuccess')?.addEventListener('click', () => this.resetGame(420));
 
     // HERO EXTRACTION BUTTON LISTENERS
     document.getElementById('btnCopyHeroesPanel')?.addEventListener('click', () => this.copyHeroesList());
