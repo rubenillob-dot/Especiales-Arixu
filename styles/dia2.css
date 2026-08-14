@@ -43,9 +43,15 @@
   --hud-danger: #FF3366;
 }
 
-/* Base Body Styling */
-html {
-  overflow-x: clip;
+/* Base Body Styling - 100vh No-Scroll Layout */
+html, body.guessr-theme {
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 body.guessr-theme {
@@ -57,9 +63,7 @@ body.guessr-theme {
   background-attachment: fixed;
   color: var(--hud-text-bright);
   font-family: var(--font-sans);
-  min-height: 100vh;
   position: relative;
-  overflow-x: clip;
 }
 
 /* Topographic Contour Background */
@@ -121,17 +125,15 @@ body.guessr-theme {
    ========================================================================== */
 
 .dia2-sticky-header {
-  position: sticky;
-  top: 0;
-  left: 0;
+  flex-shrink: 0;
   width: 100%;
   z-index: 1000;
   background-color: rgba(10, 15, 25, 0.94);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid #00fa9a;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85), 0 0 20px rgba(0, 250, 154, 0.15);
-  padding: 0.65rem 1.25rem 0.75rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.85), 0 0 15px rgba(0, 250, 154, 0.15);
+  padding: 0.45rem 1.25rem 0.5rem;
 }
 
 .sticky-header-content {
@@ -337,14 +339,17 @@ body.guessr-theme {
    ========================================================================== */
 
 .dia2-main-layout {
-  max-width: 1440px;
+  flex: 1 1 0;
+  min-height: 0;
   width: 100%;
-  margin: 1.25rem auto 5rem;
-  padding: 0 1.25rem;
+  max-width: 1560px;
+  margin: 0 auto;
+  padding: 0.4rem 1rem;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;
-  gap: 1.75rem;
-  align-items: start;
+  gap: 1rem;
+  align-items: stretch;
+  overflow: hidden;
   position: relative;
   z-index: 5;
 }
@@ -352,18 +357,25 @@ body.guessr-theme {
 .dia2-feed-column {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
   min-width: 0;
+  gap: 0;
 }
 
 .dia2-sidebar-column {
-  position: sticky;
-  top: 90px;
-  height: calc(100vh - 165px);
-  min-height: 520px;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: static;
   z-index: 50;
-  align-self: start;
-  will-change: transform;
+}
+
+.mission-briefing-panel {
+  display: none;
 }
 
 /* ==========================================================================
@@ -703,13 +715,34 @@ body.guessr-theme {
 
 .feed-scan-container {
   width: 100%;
+  height: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  gap: 1.25rem;
+  padding-right: 6px;
   position: relative;
+  scroll-behavior: smooth;
 }
 
-.feed-card {
+.feed-scan-container::-webkit-scrollbar {
+  width: 6px;
+}
+.feed-scan-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+.feed-scan-container::-webkit-scrollbar-thumb {
+  background: rgba(0, 250, 154, 0.25);
+  border-radius: 4px;
+}
+
+.feed-card,
+.ronda-card,
+.ronda-container {
   position: relative;
   z-index: 1;
   background: var(--hud-bg-panel);
@@ -718,45 +751,116 @@ body.guessr-theme {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(14px);
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  display: none;
+  flex-direction: column;
+  flex-shrink: 0; /* EVITA EL APLASTAMIENTO DE TARJETAS */
+  width: 100%;
 }
 
 .feed-card.is-hidden {
-  display: none;
+  display: none !important;
   opacity: 0;
-  transform: translateY(30px) scale(0.97);
 }
 
 .feed-card.is-active {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
   border-color: var(--radar-green);
   box-shadow: 
     0 16px 50px rgba(0, 0, 0, 0.8),
     0 0 35px var(--radar-green-dim),
     inset 0 1px 0 rgba(0, 250, 154, 0.3);
-  animation: cascadeSlideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: cascadeSlideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.feed-card.is-completed {
-  display: block;
-  border-color: rgba(0, 210, 255, 0.6);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6), 0 0 25px rgba(0, 210, 255, 0.15);
+/* COLAPSO INTELIGENTE DE RONDAS ANTERIORES */
+.feed-card.ronda-completada,
+.feed-card.is-completed,
+.ronda-completada {
+  display: flex !important;
+  flex-direction: column;
+  flex-shrink: 0;
+  border-color: rgba(0, 210, 255, 0.45);
+  background: rgba(8, 14, 22, 0.95);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6), 0 0 12px rgba(0, 210, 255, 0.1);
+  margin-bottom: 0.15rem;
+}
+
+/* Ocultar completamente la imagen y la pista encriptada en rondas completadas */
+.feed-card.ronda-completada .feed-drone-viewport,
+.feed-card.is-completed .feed-drone-viewport,
+.ronda-completada .feed-drone-viewport,
+.feed-card.ronda-completada .card-clue-terminal,
+.feed-card.is-completed .card-clue-terminal,
+.ronda-completada .card-clue-terminal {
+  display: none !important;
+}
+
+/* Dejar visible únicamente cabecera, ganador y zona acertada */
+.feed-card.ronda-completada .feed-card-header,
+.feed-card.is-completed .feed-card-header,
+.ronda-completada .feed-card-header {
+  padding: 0.4rem 0.9rem;
+  background: rgba(5, 10, 18, 0.96);
+  border-bottom: 1px solid rgba(0, 210, 255, 0.15);
+}
+
+.feed-card.ronda-completada .feed-card-answer-box,
+.feed-card.is-completed .feed-card-answer-box,
+.ronda-completada .feed-card-answer-box {
+  padding: 0.5rem 0.9rem;
+  background: transparent;
+  border-top: none;
+}
+
+.feed-card.ronda-completada .card-state-completed,
+.feed-card.is-completed .card-state-completed,
+.ronda-completada .card-state-completed {
+  display: flex !important;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.feed-card.ronda-completada .explorer-winner-banner,
+.feed-card.is-completed .explorer-winner-banner,
+.ronda-completada .explorer-winner-banner {
+  padding: 0.35rem 0.8rem;
+}
+
+.feed-card.ronda-completada .completed-location-name,
+.feed-card.is-completed .completed-location-name,
+.ronda-completada .completed-location-name {
+  font-size: 1.15rem;
+  margin: 0;
+  color: #FFFFFF;
+}
+
+.feed-card.ronda-completada .completed-trivia-text,
+.feed-card.is-completed .completed-trivia-text,
+.ronda-completada .completed-trivia-text {
+  display: none !important;
 }
 
 @keyframes cascadeSlideDown {
-  0% { opacity: 0; transform: translateY(50px) scale(0.95); }
+  0% { opacity: 0; transform: translateY(20px) scale(0.98); }
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .feed-card-header {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1.25rem;
+  padding: 0.45rem 1rem;
   background: rgba(7, 14, 24, 0.9);
   border-bottom: 1px solid var(--hud-border-white);
   flex-wrap: wrap;
-  gap: 0.65rem;
+  gap: 0.5rem;
 }
 
 .card-round-badge {
@@ -764,7 +868,7 @@ body.guessr-theme {
   align-items: center;
   gap: 0.5rem;
   font-family: var(--font-mono);
-  font-size: 0.86rem;
+  font-size: 0.84rem;
   font-weight: 900;
   color: var(--radar-green);
   text-shadow: 0 0 8px var(--radar-green-glow);
@@ -774,15 +878,15 @@ body.guessr-theme {
 .card-meta-tags {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
   flex-wrap: wrap;
 }
 
 .card-meta-pill {
-  padding: 0.25rem 0.65rem;
+  padding: 0.2rem 0.55rem;
   border-radius: var(--radius-pill);
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.5px;
 }
@@ -805,24 +909,28 @@ body.guessr-theme {
   color: #C084FC;
 }
 
-/* Recon Drone Viewfinder Visual (16:9) */
+/* Recon Drone Viewfinder Visual (Ronda Activa: tamaño garantizado 16:9 / min-height: 45vh) */
 .feed-drone-viewport {
-  position: relative;
   width: 100%;
+  min-height: 45vh;
   aspect-ratio: 16 / 9;
-  background: #03060A;
+  position: relative;
+  background: #02050A;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .feed-viewport-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
+  background: #02050A;
   pointer-events: none;
+  display: block;
   transition: transform 0.2s ease-out;
 }
 
@@ -832,6 +940,7 @@ body.guessr-theme {
   left: 0;
   width: 100%;
   height: 100%;
+  object-fit: contain;
   display: block;
 }
 
@@ -1004,21 +1113,22 @@ body.guessr-theme {
 
 /* ENCRYPTED CLUE TERMINAL UNDER IMAGE */
 .card-clue-terminal {
+  flex-shrink: 0;
   background: linear-gradient(135deg, rgba(20, 24, 18, 0.95) 0%, rgba(12, 18, 26, 0.95) 100%);
   border-top: 1px solid var(--clue-yellow-border);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 0.85rem 1.4rem;
+  padding: 0.45rem 1.1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.2rem;
 }
 
 .clue-terminal-header {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 800;
   color: var(--clue-yellow);
   letter-spacing: 1px;
@@ -1036,28 +1146,28 @@ body.guessr-theme {
 
 .clue-terminal-body {
   display: flex;
-  align-items: flex-start;
-  gap: 0.65rem;
+  align-items: center;
+  gap: 0.55rem;
 }
 
 .clue-quote-icon {
   color: var(--clue-yellow);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   opacity: 0.75;
-  margin-top: 3px;
 }
 
 .clue-text {
   font-family: var(--font-sans);
-  font-size: 0.94rem;
+  font-size: 0.88rem;
   color: #F8FAFC;
-  line-height: 1.45;
+  line-height: 1.35;
   font-weight: 500;
 }
 
 /* ANSWER & WINNER STATUS BOX (Attached below each card) */
 .feed-card-answer-box {
-  padding: 1.25rem 1.75rem;
+  flex-shrink: 0;
+  padding: 0.55rem 1.1rem;
   background: rgba(9, 16, 26, 0.95);
   border-top: 1px solid var(--hud-border-white);
   transition: all 0.3s ease;
@@ -1067,18 +1177,18 @@ body.guessr-theme {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.85rem;
   flex-wrap: wrap;
 }
 
 .locked-info-group {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
 }
 
 .locked-icon-pulse {
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   color: var(--hud-text-dim);
   animation: lockPulse 2s infinite;
 }
@@ -1090,35 +1200,35 @@ body.guessr-theme {
 
 .locked-text-title {
   font-family: var(--font-mono);
-  font-size: 0.88rem;
+  font-size: 0.84rem;
   font-weight: 800;
   color: var(--hud-text-muted);
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .locked-text-sub {
-  font-size: 0.8rem;
+  font-size: 0.76rem;
   color: var(--hud-text-dim);
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
 .locked-listening-tag {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 0.35rem 0.85rem;
+  padding: 0.3rem 0.75rem;
   background: rgba(0, 250, 154, 0.08);
   border: 1px dashed var(--radar-green);
   border-radius: var(--radius-pill);
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--radar-green);
 }
 
 .card-state-completed {
   display: none;
   flex-direction: column;
-  gap: 0.7rem;
+  gap: 0.45rem;
   animation: fadeInDown 0.4s ease-out;
 }
 
@@ -1131,8 +1241,8 @@ body.guessr-theme {
 .explorer-winner-banner {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.65rem 1.15rem;
+  gap: 0.65rem;
+  padding: 0.45rem 0.95rem;
   background: linear-gradient(135deg, rgba(0, 250, 154, 0.15) 0%, rgba(0, 210, 255, 0.12) 100%);
   border: 1px solid var(--radar-green);
   border-radius: var(--radius-md);
@@ -1140,13 +1250,13 @@ body.guessr-theme {
 }
 
 .explorer-trophy-icon {
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   color: #FFD166;
   filter: drop-shadow(0 0 6px rgba(255, 209, 102, 0.6));
 }
 
 .explorer-winner-label {
-  font-size: 0.92rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: #E2E8F0;
 }
@@ -1157,11 +1267,11 @@ body.guessr-theme {
   background: linear-gradient(135deg, #00fa9a 0%, #00D2FF 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
 }
 
 .completed-location-name {
-  font-size: 1.85rem;
+  font-size: 1.4rem;
   font-weight: 900;
   color: #FFFFFF;
   letter-spacing: -0.5px;
@@ -1170,9 +1280,9 @@ body.guessr-theme {
 }
 
 .completed-trivia-text {
-  font-size: 0.9rem;
+  font-size: 0.82rem;
   color: var(--hud-text-muted);
-  line-height: 1.45;
+  line-height: 1.35;
 }
 
 /* ==========================================================================
@@ -1180,17 +1290,16 @@ body.guessr-theme {
    ========================================================================== */
 
 .streamer-bottom-dock {
-  position: fixed;
-  bottom: 0;
-  left: 0;
+  flex-shrink: 0;
+  position: relative;
   width: 100%;
   z-index: 950;
-  background: rgba(6, 11, 18, 0.96);
+  background: rgba(6, 11, 18, 0.97);
   border-top: 1px solid var(--hud-border);
-  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.85), 0 0 20px rgba(0, 250, 154, 0.08);
+  box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.85), 0 0 15px rgba(0, 250, 154, 0.08);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  padding: 0.75rem 1.25rem;
+  padding: 0.45rem 1rem;
 }
 
 .dock-content-wrapper {
@@ -1199,7 +1308,7 @@ body.guessr-theme {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.75rem;
   flex-wrap: wrap;
 }
 
@@ -1292,6 +1401,65 @@ body.guessr-theme {
   transform: translateY(-2px);
   filter: brightness(1.1);
   box-shadow: 0 4px 18px rgba(255, 209, 102, 0.7);
+}
+
+/* START ROUND BUTTONS (CARD & DOCK) */
+.btn-start-round-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.6rem 1.3rem;
+  background: linear-gradient(135deg, #00fa9a 0%, #00C87E 100%);
+  border: 1px solid #00fa9a;
+  border-radius: var(--radius-pill);
+  color: #05090F;
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 18px var(--radar-green-glow);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  animation: startBtnPulse 2s infinite alternate;
+}
+
+@keyframes startBtnPulse {
+  0% { transform: scale(1); box-shadow: 0 4px 18px rgba(0, 250, 154, 0.4); }
+  100% { transform: scale(1.03); box-shadow: 0 6px 24px rgba(0, 250, 154, 0.7); }
+}
+
+.btn-start-round-card:hover {
+  transform: translateY(-2px) scale(1.04);
+  filter: brightness(1.15);
+  box-shadow: 0 8px 28px rgba(0, 250, 154, 0.8);
+}
+
+.btn-dock-start {
+  background: linear-gradient(135deg, #00fa9a 0%, #00C87E 100%);
+  color: #05090F;
+  box-shadow: 0 2px 14px var(--radar-green-glow);
+  font-weight: 800;
+}
+
+.btn-dock-start:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(1.15);
+  box-shadow: 0 6px 22px rgba(0, 250, 154, 0.7);
+}
+
+.btn-dock-start.is-listening {
+  background: rgba(0, 250, 154, 0.15);
+  border: 1px solid var(--radar-green);
+  color: var(--radar-green);
+  box-shadow: none;
+  cursor: default;
+}
+
+.locked-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 /* ==========================================================================

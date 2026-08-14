@@ -24,7 +24,7 @@ class BombGameEngine {
     this.activeModuleIndex = 0;
     this.isDecrypting = false;
 
-    // Array of Reactor Cables / Riddles
+    // Array of Reactor Cables / Riddles (16 Sequential Modules)
     // Initially Cable #01 is 'activo', remaining cables are 'encriptado'
     this.modulos = [
       { id: 1,  cableNum: "CABLE #01", pregunta: "¿Cómo se llama el perro de Ari?", respuestas: ["simba"], estado: "activo", defuser: null, defuserKeyword: null },
@@ -37,12 +37,12 @@ class BombGameEngine {
       { id: 8,  cableNum: "CABLE #08", pregunta: "Palabra exacta para decir que dejas la view de fondo:", respuestas: ["lurk"], estado: "encriptado", defuser: null, defuserKeyword: null },
       { id: 9,  cableNum: "CABLE #09", pregunta: "¿A quién tuvimos que perdonar en un directo de Ari?", respuestas: ["piyu", "piyuyin6"], estado: "encriptado", defuser: null, defuserKeyword: null },
       { id: 10, cableNum: "CABLE #10", pregunta: "¿Cuál es el número total de moderadores que hay en Twitch?", respuestas: ["3"], estado: "encriptado", defuser: null, defuserKeyword: null },
-      { id: 'nuevo_1', pregunta: '¿Qué skin gorda y monstruosa de Fortnite canjeaban los subs para trollear a Ari?', respuesta_principal: 'Godzilla' },
-      { id: 'nuevo_2', pregunta: '¿Qué raza de perro es Simba?', respuesta_principal: 'Teckel' },
-      { id: 'nuevo_3', pregunta: '¿De qué se disfraza Ari si canjeas 2000 bits?', respuestas_validas: ['fresita', 'fresa'] },
-      { id: 'lore_4', pregunta: 'Si spameas en el chat, ¿cuál es tu castigo? (Palabra de 3 letras)', respuesta_principal: 'ban' },
-      { id: 'lore_5', pregunta: '¿Cuál es el número de puntos del canal necesarios para canjear una canción?', respuesta_principal: '1500' },
-      { id: 'lore_6', pregunta: '¿Qué baile teníamos como canje de puntos para que lo hiciera Ari?', respuesta_principal: 'griddy' }
+      { id: 11, cableNum: "CABLE #11", pregunta: "¿Qué skin gorda y monstruosa de Fortnite canjeaban los subs para trollear a Ari?", respuestas: ["godzilla"], respuesta_principal: "Godzilla", estado: "encriptado", defuser: null, defuserKeyword: null },
+      { id: 12, cableNum: "CABLE #12", pregunta: "¿Qué raza de perro es Simba?", respuestas: ["teckel"], respuesta_principal: "Teckel", estado: "encriptado", defuser: null, defuserKeyword: null },
+      { id: 13, cableNum: "CABLE #13", pregunta: "¿De qué se disfraza Ari si canjeas 2000 bits?", respuestas: ["fresita", "fresa"], respuestas_validas: ["fresita", "fresa"], respuesta_principal: "Fresita", estado: "encriptado", defuser: null, defuserKeyword: null },
+      { id: 14, cableNum: "CABLE #14", pregunta: "Si spameas en el chat, ¿cuál es tu castigo? (Palabra de 3 letras)", respuestas: ["ban"], respuesta_principal: "ban", estado: "encriptado", defuser: null, defuserKeyword: null },
+      { id: 15, cableNum: "CABLE #15", pregunta: "¿Cuál es el número de puntos del canal necesarios para canjear una canción?", respuestas: ["1500"], respuesta_principal: "1500", estado: "encriptado", defuser: null, defuserKeyword: null },
+      { id: 16, cableNum: "CABLE #16", pregunta: "¿Qué baile teníamos como canje de puntos para que lo hiciera Ari?", respuestas: ["griddy"], respuesta_principal: "griddy", estado: "encriptado", defuser: null, defuserKeyword: null }
     ];
 
     // Ensure all modules have default properties (cableNum, estado, defuser, defuserKeyword)

@@ -17,13 +17,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // 1. DATA: 20 RONDAS DE FORTNITE-GUESSR (IMÁGENES CARGADAS + CAPÍTULO 7 TEMPORADA 3)
   // ========================================================================
   const RONDAS_FORTNITE = [
-    // --- 9 RONDAS CON IMÁGENES AÑADIDAS EN assets/dia2_guessr/ ---
+    // --- 9 RONDAS CLÁSICAS DE LA ISLA ---
     {
       id: 1,
       ubicacion: "Pisos Picados (Tilted Towers)",
       keywords: ["pisos picados", "pisos", "picados", "tilted towers", "tilted", "neopicados"],
       imagen: "assets/dia2_guessr/Pisos Picados.jpeg",
-      pista: "Aquí los relojes no solo dan la hora, ¡también dan la hora de caer! Un laberinto de oficinas y rascacielos donde el que no sube se queda 'picado' en el asfalto.",
+      pista: "Un laberinto de oficinas y rascacielos donde si caes al asfalto te quedarás bien 'picado' por no abrir el ala delta a tiempo.",
       capitulo: "Capítulo 1 • Clásico",
       cuadricula: "D5",
       dificultad: "Fácil",
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ubicacion: "Parque Placentero (Pleasant Park)",
       keywords: ["parque placentero", "parque", "placentero", "pleasant park", "pleasant", "dominio de doom"],
       imagen: "assets/dia2_guessr/Parque Placentero.jpeg",
-      pista: "Un vecindario tan 'placentero' que hasta tiene campo de fútbol para marcar goles... si los francotiradores del quiosco central te dejan jugar.",
+      pista: "Un clásico vecindario con campo de fútbol donde jugar un partido resulta de lo más 'placentero'... si los francotiradores te dejan.",
       capitulo: "Capítulo 1 • Clásico",
       cuadricula: "C3",
       dificultad: "Fácil",
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ubicacion: "Señorío de la Sal (Salty Springs)",
       keywords: ["senorio de la sal", "señorio de la sal", "señorío de la sal", "senorio", "señorio", "señorío", "salty springs", "salty"],
       imagen: "assets/dia2_guessr/Señorio de la Sal.webp",
-      pista: "Si pierdes la partida aquí, te quedarás con mucha 'sal'. Cuidado con bajar al codiciado sótano secreto de la casa azul o saldrás escocido.",
+      pista: "Cuidado al bajar al codiciado sótano secreto de la casa azul o te quedarás con mucha 'sal' tras perder el cofre.",
       capitulo: "Capítulo 1 • Clásico",
       cuadricula: "F7",
       dificultad: "Fácil",
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ubicacion: "Ciudad Comercio (Retail Row)",
       keywords: ["ciudad comercio", "comercio", "retail row", "retail", "noms", "supermercado"],
       imagen: "assets/dia2_guessr/Ciudad Comercio.webp",
-      pista: "El mejor lugar para ir de 'compras' y llenar el carrito con botines legendarios en el supermercado NOMS antes de que cierren por inventario.",
+      pista: "El centro comercial más concurrido donde el 'comercio' del supermercado NOMS nunca cierra sus puertas.",
       capitulo: "Capítulo 1 • Clásico",
       cuadricula: "H6",
       dificultad: "Media",
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ubicacion: "Balsa Botín (Loot Lake)",
       keywords: ["balsa botin", "balsa botín", "balsa", "botin", "botín", "loot lake", "loot"],
       imagen: "assets/dia2_guessr/Balsa Botín.jpg",
-      pista: "Navega sin hundirte hacia la casa del medio. Un gran lago que esconde el mayor 'botín' subterráneo de la historia del Punto Cero.",
+      pista: "Cruza las aguas hacia la casa del medio para apoderarte del legendario 'botín' del Punto Cero.",
       capitulo: "Capítulo 1 • Clásico",
       cuadricula: "E4",
       dificultad: "Fácil",
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ubicacion: "Oasis Ostentoso (Paradise Palms)",
       keywords: ["oasis ostentoso", "oasis", "ostentoso", "paradise palms", "paradise", "palms"],
       imagen: "assets/dia2_guessr/Oasis Ostentoso.jpg",
-      pista: "Entre palmeras y arena dorada, este 'oasis' de lujo te invita a broncearte en la piscina o pisar a fondo el acelerador en la pista de karts.",
+      pista: "Mansiones de ensueño en el desierto con piscinas de lujo 'ostentoso' y una pista de carreras para karts.",
       capitulo: "Capítulo 1 • Clásico",
       cuadricula: "I8",
       dificultad: "Media",
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ubicacion: "Socavón Soterrado (Dusty Divot)",
       keywords: ["socavon soterrado", "socavón soterrado", "socavon", "socavón", "dusty divot", "crater"],
       imagen: "assets/dia2_guessr/Socavón Soterrado.webp",
-      pista: "Un impacto cósmico dejó este terreno bien 'soterrado' y cubierto de densa maleza selvática. ¡Cuidado con los laboratorios del meteorito!",
+      pista: "El impacto del meteorito cósmico dejó este gran cráter selvático completamente 'soterrado' entre árboles.",
       capitulo: "Capítulo 1 • Clásico",
       cuadricula: "F5",
       dificultad: "Media",
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ubicacion: "Alameda Aullante (Wailing Woods)",
       keywords: ["alameda aullante", "alameda", "aullante", "wailing woods", "wailing", "laberinto"],
       imagen: "assets/dia2_guessr/Alameda Aullante.webp",
-      pista: "Escucha el viento 'aullar' entre los robles de este laberinto de setos. Quien encuentre el búnker subterráneo con grietas de teletransporte escapará con vida.",
+      pista: "Escucha el viento 'aullar' entre los robles de este misterioso laberinto con un búnker subterráneo.",
       capitulo: "Capítulo 1 • Clásico",
       cuadricula: "I3",
       dificultad: "Media",
@@ -111,20 +111,20 @@ document.addEventListener('DOMContentLoaded', () => {
       ubicacion: "Chiringuito Chatarra (Junk Junction)",
       keywords: ["chiringuito chatarra", "chiringuito", "chatarra", "junk junction", "junk", "desguace"],
       imagen: "assets/dia2_guessr/Chiringuito Chatarra.webp",
-      pista: "Si buscas metal, este 'chiringuito' lleno de coches prensados y chatarra coronado por una llama gigante convertirá tu pico en oro puro.",
+      pista: "Montañas de coches prensados donde picar toda esa 'chatarra' te otorgará el máximo de 999 de metal.",
       capitulo: "Capítulo 1 • Clásico",
       cuadricula: "B1",
       dificultad: "Difícil",
       curiosidad: "El mejor lugar del mapa para conseguir el máximo de 999 de metal rápidamente."
     },
 
-    // --- 11 RONDAS CON UBICACIONES DE LA TEMPORADA ACTUAL: CAPÍTULO 7 • TEMPORADA 3 ---
+    // --- 11 RONDAS DE LA TEMPORADA ACTUAL (CAPÍTULO 7 • TEMPORADA 3) ---
     {
       id: 10,
       ubicacion: "Monte Olimpo (Mount Olympus)",
       keywords: ["monte olimpo", "olimpo", "mount olympus", "zeus", "templo zeus"],
       imagen: "assets/dia2_guessr/Monte Olimpo.jpg",
-      pista: "Hogar de los dioses en lo más alto de la montaña. Aquí los rayos no solo caen del cielo, ¡también te los lanza Zeus si invades su 'Olimpo'!",
+      pista: "La montaña sagrada donde los dioses griegos dominan el 'Olimpo' y Zeus desata la furia de sus rayos.",
       capitulo: "Capítulo 7 • Temporada 3",
       cuadricula: "H7",
       dificultad: "Media",
@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ubicacion: "Villa Viñedo (Lavish Lair)",
       keywords: ["villa vinedo", "villa viñedo", "vinedo", "viñedo", "mansion lavish", "lavish lair", "lavish"],
       imagen: "assets/dia2_guessr/Villa Viñedo.webp",
-      pista: "Una opulenta mansión aristocrática con jardines franceses y estatuas de mármol donde el botín fluye como el mejor vino de 'viñedo'.",
+      pista: "Una opulenta mansión aristocrática con jardines franceses donde las mejores uvas maduran en el 'viñedo'.",
       capitulo: "Capítulo 7 • Temporada 3",
       cuadricula: "D2",
       dificultad: "Media",
@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ubicacion: "Inframundo Sombrío (The Underworld)",
       keywords: ["inframundo", "el inframundo", "inframundo sombrio", "the underworld", "grim gate", "hades", "cerbero"],
       imagen: "assets/dia2_guessr/Inframundo Sombrío.jpg",
-      pista: "Aguas verdes fluorescentes y calaveras flotantes. Cruza la puerta si te atreves a desafiar a Hades y a su perro guardián Cerbero en el 'Inframundo'.",
+      pista: "El tenebroso reino de Hades custodiado por Cerbero bajo un ambiente verdoso y completamente 'sombrío'.",
       capitulo: "Capítulo 7 • Temporada 3",
       cuadricula: "B3",
       dificultad: "Media",
@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ubicacion: "Plaza Principal (Reckless Railways)",
       keywords: ["plaza principal", "grand plaza", "plaza", "estacion central", "reckless railways", "reckless"],
       imagen: "assets/dia2_guessr/Plaza Principal.jpg",
-      pista: "El epicentro de los raíles y trenes de vapor. Una gran 'plaza' metropolitana donde el tren blindado nunca espera a los rezagados.",
+      pista: "La estación ferroviaria con una gran estación abierta que sirve como nodo 'principal' del tren blindado.",
       capitulo: "Capítulo 7 • Temporada 3",
       cuadricula: "F6",
       dificultad: "Fácil",
@@ -165,23 +165,23 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     {
       id: 14,
-      ubicacion: "Cañon Calamar",
-      respuesta: "Cañon Calamar",
-      keywords: ["cañon calamar", "canon calamar", "cañón calamar", "calamar", "cañon", "canon", "cañón"],
-      imagen: "assets/dia2_guessr/PENDIENTE.jpg",
-      pista: "No te hagas un lío con los tentáculos, este 'cañón' es la pura tinta de la diversión.",
+      ubicacion: "Cañón Calamar (Squid Canyon)",
+      respuesta: "Cañón Calamar",
+      keywords: ["cañon calamar", "canon calamar", "cañón calamar", "calamar", "cañon", "canon", "cañón", "squid canyon"],
+      imagen: "assets/dia2_guessr/Cañon Calamar.jpeg",
+      pista: "Avanza entre las rocas sin que los tentáculos marinos de ningún 'calamar' te manchen de tinta el escuadrón.",
       capitulo: "Capítulo 7 • Temporada 3",
       cuadricula: "D4",
       dificultad: "Media",
-      curiosidad: "Una zona costera llena de tentáculos y pura diversión marina."
+      curiosidad: "Una zona rocosa costera llena de tentáculos y pura diversión marina."
     },
     {
       id: 15,
-      ubicacion: "Avenida Aterradora",
+      ubicacion: "Avenida Aterradora (Fright Avenue)",
       respuesta: "Avenida Aterradora",
-      keywords: ["avenida aterradora", "avenida", "aterradora"],
-      imagen: "assets/dia2_guessr/PENDIENTE.jpg",
-      pista: "Caminar por esta 'avenida' te pondrá los pelos de punta. ¡Lleva cuidado con los sustos!",
+      keywords: ["avenida aterradora", "avenida", "aterradora", "fright avenue"],
+      imagen: "assets/dia2_guessr/Avenida Aterradora.jpeg",
+      pista: "Pasear por este tramo te provocará una sensación tan 'aterradora' que hasta tus propios pasos te darán escalofríos.",
       capitulo: "Capítulo 7 • Temporada 3",
       cuadricula: "F3",
       dificultad: "Media",
@@ -189,23 +189,23 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     {
       id: 16,
-      ubicacion: "Casas Congeladas",
-      respuesta: "Casas Congeladas",
-      keywords: ["casas congeladas", "casas", "congeladas", "congelada", "casa congelada"],
-      imagen: "assets/dia2_guessr/PENDIENTE.jpg",
-      pista: "Abrígate bien antes de lotear, que en estas 'casas' hace un frío que te dejará helado.",
+      ubicacion: "Arboleda Áurea (Golden Grove)",
+      respuesta: "Arboleda Áurea",
+      keywords: ["arboleda aurea", "arboleda áurea", "arboleda", "aurea", "áurea", "golden grove", "casas congeladas"],
+      imagen: "assets/dia2_guessr/Arboleda Áurea.jpeg",
+      pista: "Un bosque místico otoñal donde todas las hojas desprenden un destello 'áureo' como si fueran de puro oro.",
       capitulo: "Capítulo 7 • Temporada 3",
       cuadricula: "A7",
       dificultad: "Media",
-      curiosidad: "Conjunto residencial cubierto de escarcha bajo cero."
+      curiosidad: "Bosque místico otoñal con árboles dorados y cofres legendarios."
     },
     {
       id: 17,
-      ubicacion: "Wonkeelandia",
+      ubicacion: "Wonkeelandia (Wonkee Land)",
       respuesta: "Wonkeelandia",
-      keywords: ["wonkeelandia", "wonkee", "wonkylandia", "wonki", "wonkilandia"],
-      imagen: "assets/dia2_guessr/PENDIENTE.jpg",
-      pista: "Un parque de locura y color donde la victoria sabe a puro caramelo. ¡Bienvenidos a la atracción principal!",
+      keywords: ["wonkeelandia", "wonkee", "wonkylandia", "wonki", "wonkilandia", "parque wonkee"],
+      imagen: "assets/dia2_guessr/Wonkeelandia.jpeg",
+      pista: "Un colorido parque de fantasía y dulces inspirado en la mítica figura de 'Wonkee' y sus atracciones.",
       capitulo: "Capítulo 7 • Temporada 3",
       cuadricula: "C5",
       dificultad: "Fácil",
@@ -213,11 +213,11 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     {
       id: 18,
-      ubicacion: "Boulevard Boscoso",
+      ubicacion: "Boulevard Boscoso (Woodland Boulevard)",
       respuesta: "Boulevard Boscoso",
-      keywords: ["boulevard boscoso", "bulevar boscoso", "boulevard", "bulevar", "boscoso"],
-      imagen: "assets/dia2_guessr/PENDIENTE.jpg",
-      pista: "No te pierdas entre las ramas al pasear por este 'boulevard' tan verde y natural.",
+      keywords: ["boulevard boscoso", "bulevar boscoso", "boulevard", "bulevar", "boscoso", "woodland boulevard"],
+      imagen: "assets/dia2_guessr/Boulevard boscoso.jpeg",
+      pista: "Un paseo elegante flanqueado por una vegetación salvaje que convierte todo el entorno en un terreno 'boscoso'.",
       capitulo: "Capítulo 7 • Temporada 3",
       cuadricula: "H4",
       dificultad: "Media",
@@ -225,11 +225,11 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     {
       id: 19,
-      ubicacion: "Costa Cafetera",
+      ubicacion: "Costa Cafetera (Coffee Coast)",
       respuesta: "Costa Cafetera",
-      keywords: ["costa cafetera", "costa", "cafetera", "cafe", "café"],
-      imagen: "assets/dia2_guessr/PENDIENTE.jpg",
-      pista: "Tómate un respiro, un buen espresso y vigila el mar en esta 'costa' llena de energía.",
+      keywords: ["costa cafetera", "costa", "cafetera", "cafe", "café", "coffee coast"],
+      imagen: "assets/dia2_guessr/Costa Cafetera.jpg",
+      pista: "Disfruta de la brisa marina mientras te tomas un buen espresso caliente recién salido de la 'cafetera'.",
       capitulo: "Capítulo 7 • Temporada 3",
       cuadricula: "I6",
       dificultad: "Fácil",
@@ -237,11 +237,11 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     {
       id: 20,
-      ubicacion: "Desguace Desolado",
+      ubicacion: "Desguace Desolado (Desolate Junkyard)",
       respuesta: "Desguace Desolado",
-      keywords: ["desguace desolado", "desguace", "desolado", "chatarra"],
-      imagen: "assets/dia2_guessr/PENDIENTE.jpg",
-      pista: "Entre chatarra y piezas sueltas, este 'desguace' está más vacío que un cofre ya abierto.",
+      keywords: ["desguace desolado", "desguace", "desolado", "chatarra", "desolate junkyard"],
+      imagen: "assets/dia2_guessr/Desguace Desolado.jpeg",
+      pista: "Un cementerio de vehículos abandonados, un rincón oxidado y completamente 'desolado' donde nadie vendrá a ayudarte.",
       capitulo: "Capítulo 7 • Temporada 3",
       cuadricula: "G2",
       dificultad: "Media",
@@ -253,6 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 2. STATE MANAGEMENT
   // ========================================================================
   let currentActiveIndex = 0;
+  let isRoundActive = false; // Controls if active round is currently listening to guesses
   let isAudioEnabled = true;
   let isProcessingMatch = false; // Mutex lock for speed validator
   let receivedCoordsCount = 0;
@@ -278,7 +279,20 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!audioCtx) return;
       const now = audioCtx.currentTime;
 
-      if (type === 'stamp') {
+      if (type === 'start') {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(280, now);
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.18);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.25);
+
+      } else if (type === 'stamp') {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = 'sawtooth';
@@ -378,6 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const radarTargetText = document.getElementById('radarTargetText');
 
   // Streamer Dock Controls
+  const btnStartRoundDock = document.getElementById('btnStartRoundDock');
   const manualTestForm = document.getElementById('manualTestForm');
   const manualTestInput = document.getElementById('manualTestInput');
   const btnForceReveal = document.getElementById('btnForceReveal');
@@ -394,6 +409,52 @@ document.addEventListener('DOMContentLoaded', () => {
   const winnersTableBody = document.getElementById('winnersTableBody');
   const btnCopyWinners = document.getElementById('btnCopyWinners');
   const btnDownloadWinners = document.getElementById('btnDownloadWinners');
+
+  // ========================================================================
+  // START ROUND HANDLER (ENABLES ACTIVE GUESSING FOR CURRENT POI)
+  // ========================================================================
+  function startActiveRound() {
+    if (currentActiveIndex >= RONDAS_FORTNITE.length) return;
+    if (completedRounds.has(currentActiveIndex)) return;
+    if (isRoundActive) return;
+
+    isRoundActive = true;
+    playTacticalSound('start');
+
+    const activeRound = RONDAS_FORTNITE[currentActiveIndex];
+
+    const startBtn = document.getElementById(`btnStartRoundCard_${currentActiveIndex}`);
+    const listeningTag = document.getElementById(`listeningTag_${currentActiveIndex}`);
+    const lockedTitle = document.getElementById(`lockedTitle_${currentActiveIndex}`);
+    const lockedSub = document.getElementById(`lockedSub_${currentActiveIndex}`);
+    const lockIcon = document.getElementById(`lockIcon_${currentActiveIndex}`);
+    const viewportStatus = document.getElementById(`viewportStatus_${currentActiveIndex}`);
+
+    if (startBtn) startBtn.style.display = 'none';
+    if (listeningTag) listeningTag.style.display = 'inline-flex';
+    if (lockIcon) {
+      lockIcon.className = 'fas fa-satellite-dish locked-icon-pulse';
+      lockIcon.style.color = 'var(--radar-green)';
+    }
+    if (lockedTitle) {
+      lockedTitle.innerHTML = `<span style="color: var(--radar-green);">[ 🟢 RONDA #${activeRound.id.toString().padStart(2, '0')} EN CURSO ]</span>`;
+    }
+    if (lockedSub) {
+      lockedSub.textContent = `¡Radar activado! Escribid el nombre de la ubicación en el chat.`;
+    }
+    if (viewportStatus) {
+      viewportStatus.innerHTML = `STATUS: <strong style="color: var(--radar-green);">ESCANEANDO CHAT...</strong>`;
+    }
+
+    if (btnStartRoundDock) {
+      btnStartRoundDock.innerHTML = `<i class="fas fa-satellite-dish fa-spin"></i> Ronda #${activeRound.id} Activa`;
+      btnStartRoundDock.classList.add('is-listening');
+      btnStartRoundDock.disabled = true;
+    }
+
+    updateStickyHUD();
+    appendRadarTerminalLine('SISTEMA', `🟢 ¡RONDA #${activeRound.id} INICIADA! Radar abierto. ¡Adivinad en el chat de @imarixu!`, 'sys');
+  }
 
   // ========================================================================
   // 5. RADAR DE COMUNICACIONES (TERMINAL LOG FEED)
@@ -578,7 +639,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="viewport-telemetry-bottom">
             <div>SATELLITE: <strong>GEO-FORT-${round.id}</strong></div>
             <div>GRID: <strong>${round.cuadricula}</strong></div>
-            <div>STATUS: <strong style="color: var(--radar-green);">ENLACE ACTIVO</strong></div>
+            <div><span id="viewportStatus_${idx}">STATUS: <strong style="color: #FFD166;">EN ESPERA</strong></span></div>
           </div>
         </div>
 
@@ -597,18 +658,23 @@ document.addEventListener('DOMContentLoaded', () => {
         <!-- Answer & Winner Status Box -->
         <div class="feed-card-answer-box" id="answerBox_${idx}">
           
-          <!-- State Locked (Waiting for chat) -->
+          <!-- State Locked (Waiting for streamer to start or listening for chat) -->
           <div class="card-state-locked" id="stateLocked_${idx}">
             <div class="locked-info-group">
-              <i class="fas fa-shield-halved locked-icon-pulse"></i>
+              <i class="fas fa-shield-halved locked-icon-pulse" id="lockIcon_${idx}"></i>
               <div>
-                <div class="locked-text-title">[ 🔒 UBICACIÓN CLASIFICADA ]</div>
-                <div class="locked-text-sub">Escribe el nombre de la localización en el chat para desbloquearla</div>
+                <div class="locked-text-title" id="lockedTitle_${idx}">[ 🔒 RONDA #${round.id.toString().padStart(2, '0')} EN ESPERA ]</div>
+                <div class="locked-text-sub" id="lockedSub_${idx}">Haz clic en "Iniciar Ronda" para activar el radar de adivinación</div>
               </div>
             </div>
-            <span class="locked-listening-tag">
-              <span class="hud-blip-dot"></span> ESCUCHANDO CHAT...
-            </span>
+            <div class="locked-actions-group">
+              <button type="button" class="btn-start-round-card" id="btnStartRoundCard_${idx}" data-round-index="${idx}">
+                <i class="fas fa-play"></i> INICIAR RONDA #${round.id}
+              </button>
+              <span class="locked-listening-tag" id="listeningTag_${idx}" style="display: none;">
+                <span class="hud-blip-dot"></span> ESCUCHANDO CHAT...
+              </span>
+            </div>
           </div>
 
           <!-- State Completed (Revealed on match) -->
@@ -631,6 +697,17 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
 
       feedScanContainer.appendChild(card);
+
+      // Start round button click handler on card
+      const cardStartBtn = card.querySelector(`#btnStartRoundCard_${idx}`);
+      if (cardStartBtn) {
+        cardStartBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (idx === currentActiveIndex) {
+            startActiveRound();
+          }
+        });
+      }
 
       // Render procedural blueprint canvas
       const canvasEl = card.querySelector(`#canvas_${idx}`);
@@ -699,7 +776,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (radarTargetText) {
       const activeRound = RONDAS_FORTNITE[currentActiveIndex];
-      radarTargetText.innerHTML = `<span class="radar-ping-dot"></span> OBJETIVO ACTUAL: <strong>RONDA #${activeRound ? activeRound.id.toString().padStart(2, '0') : '20'}</strong> // ${activeRound ? activeRound.cuadricula : 'FIN'}`;
+      if (activeRound) {
+        radarTargetText.innerHTML = `<span class="radar-ping-dot"></span> OBJETIVO ACTUAL: <strong>RONDA #${activeRound.id.toString().padStart(2, '0')}</strong> // ${activeRound.cuadricula} ${isRoundActive ? '<span style="color:#00fa9a; font-weight:800;">[EN CURSO]</span>' : '<span style="color:#FFD166; font-weight:800;">[EN ESPERA]</span>'}`;
+      } else {
+        radarTargetText.innerHTML = `<span class="radar-ping-dot"></span> OBJETIVO ACTUAL: <strong>MISIÓN COMPLETADA</strong>`;
+      }
     }
 
     RONDAS_FORTNITE.forEach((_, idx) => {
@@ -723,6 +804,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (completedRounds.has(currentActiveIndex)) return;
 
     isProcessingMatch = true;
+    isRoundActive = false; // Close guessing for completed round
     const roundIndex = currentActiveIndex;
     const roundData = RONDAS_FORTNITE[roundIndex];
     completedRounds.add(roundIndex);
@@ -749,7 +831,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (currentCard) {
       currentCard.classList.remove('is-active');
-      currentCard.classList.add('is-completed');
+      currentCard.classList.add('is-completed', 'ronda-completada');
     }
 
     // C) PROMINENTLY DISPLAY "Descubierto por el Explorador: [Nombre]"
@@ -784,8 +866,16 @@ document.addEventListener('DOMContentLoaded', () => {
           nextCard.classList.remove('is-hidden');
           nextCard.classList.add('is-active');
 
-          nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          nextCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
           playTacticalSound('next');
+        }
+
+        // Reset streamer dock start button for the new round
+        if (btnStartRoundDock) {
+          const nextRound = RONDAS_FORTNITE[nextIndex];
+          btnStartRoundDock.innerHTML = `<i class="fas fa-play"></i> Iniciar Ronda #${nextRound.id} <span class="btn-key-badge">ENTER</span>`;
+          btnStartRoundDock.classList.remove('is-listening');
+          btnStartRoundDock.disabled = false;
         }
 
         updateStickyHUD();
@@ -793,6 +883,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 700);
 
     } else {
+      if (btnStartRoundDock) {
+        btnStartRoundDock.innerHTML = `<i class="fas fa-flag-checkered"></i> Misión Completada`;
+        btnStartRoundDock.classList.remove('is-listening');
+        btnStartRoundDock.disabled = true;
+      }
       updateStickyHUD();
       setTimeout(() => {
         playTacticalSound('victory');
@@ -806,6 +901,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 10. SPEED VALIDATOR (MATCH AGAINST CURRENT ACTIVE IMAGE ONLY)
   // ========================================================================
   function validateGuessMessage(rawMessage, username) {
+    if (!isRoundActive) return; // Only validate when round has been started
     if (isProcessingMatch) return;
     if (currentActiveIndex >= RONDAS_FORTNITE.length) return;
     if (completedRounds.has(currentActiveIndex)) return;
@@ -923,11 +1019,20 @@ document.addEventListener('DOMContentLoaded', () => {
   // ========================================================================
   // 12. STREAMER DOCK & MANUAL CONTROLS
   // ========================================================================
+  if (btnStartRoundDock) {
+    btnStartRoundDock.addEventListener('click', () => {
+      startActiveRound();
+    });
+  }
+
   if (manualTestForm && manualTestInput) {
     manualTestForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const val = manualTestInput.value.trim();
       if (val) {
+        if (!isRoundActive) {
+          startActiveRound();
+        }
         receivedCoordsCount++;
         if (radarMsgCount) {
           radarMsgCount.innerHTML = `<strong>${receivedCoordsCount}</strong> COORD_RECV`;
@@ -962,13 +1067,19 @@ document.addEventListener('DOMContentLoaded', () => {
         winnersLog.length = 0;
         if (winnerCountBadge) winnerCountBadge.textContent = '0';
         currentActiveIndex = 0;
+        isRoundActive = false;
         isProcessingMatch = false;
         receivedCoordsCount = 0;
+        if (btnStartRoundDock) {
+          btnStartRoundDock.innerHTML = `<i class="fas fa-play"></i> Iniciar Ronda #1 <span class="btn-key-badge">ENTER</span>`;
+          btnStartRoundDock.classList.remove('is-listening');
+          btnStartRoundDock.disabled = false;
+        }
         buildVerticalFeed();
         if (radarChatMessages) {
           radarChatMessages.innerHTML = `
             <div class="terminal-line sys">
-              <span class="terminal-coord">[SYS_RESET]</span> Misión reiniciada. Escuchando respuestas de exploración en #imarixu...
+              <span class="terminal-coord">[SYS_RESET]</span> Misión reiniciada. Presiona "Iniciar Ronda #1" para comenzar.
             </div>
           `;
         }
@@ -1131,7 +1242,12 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('keydown', (e) => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
-    if (e.code === 'Space' || e.key.toLowerCase() === 'r') {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (!isRoundActive) {
+        startActiveRound();
+      }
+    } else if (e.code === 'Space' || e.key.toLowerCase() === 'r') {
       e.preventDefault();
       completeActiveRound('ImArixu (Atajo)');
     } else if (e.key.toLowerCase() === 'h') {
