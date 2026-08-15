@@ -201,14 +201,9 @@
         <i class="fas fa-play"></i> 🟢 Abrir Votación
       </button>
 
-      <!-- Close Voting Flow Button -->
-      <button class="btn-dock-cta btn-dock-close-voting" id="btnCloseVoting" title="Bloquear recepción de votos del chat">
+      <!-- Close Voting Flow Button (Closes voting & reveals percentages automatically) -->
+      <button class="btn-dock-cta btn-dock-close-voting" id="btnCloseVoting" title="Cerrar votación y revelar resultados automáticamente (Tecla C o Espacio)">
         <i class="fas fa-lock"></i> 🔴 Cerrar Votación
-      </button>
-
-      <!-- Reveal Percentages & Results Button -->
-      <button class="btn-dock-cta btn-dock-reveal" id="btnRevealResults" title="Revelar los porcentajes y coronar la opción ganadora (Espacio)">
-        <i class="fas fa-chart-pie"></i> Revelar Resultados <span class="btn-key-tag">ESPACIO</span>
       </button>
 
       <!-- Next Dilemma Button -->
@@ -227,13 +222,44 @@
       </button>
 
       <!-- Extraer 3 Elegidos Final Button (Shown at Round 35/35) -->
-      <button class="btn-dock-cta btn-dock-elegidos" id="btnExtractWinners" style="display: none;" title="Extraer los 3 ganadores aleatorios entre los clasificados">
+      <button class="btn-dock-cta btn-dock-elegidos" id="btnExtractWinners" style="display: none;" title="Ver la revelación final y extraer a los 3 ganadores">
         <i class="fas fa-crown"></i> 🏆 Extraer 3 Elegidos
       </button>
 
     </div>
 
   </footer>
+
+  <!-- Modal Épico: Plot Twist / Revelación del Sistema Secreto (Ronda 35) -->
+  <div class="dia3-modal-overlay plot-twist-overlay" id="plotTwistModalOverlay">
+    <div class="dia3-modal-card plot-twist-card">
+      <button class="dia3-modal-close" id="btnClosePlotTwistModal" title="Cerrar modal">&times;</button>
+      
+      <div class="plot-twist-icon-box">
+        <span class="plot-twist-alert-badge">🚨 MENSAJE CLASIFICADO 🚨</span>
+      </div>
+      
+      <h2 class="plot-twist-title">🚨 ¡FIN DEL DUELO DE DECISIONES! 🚨</h2>
+      
+      <div class="plot-twist-content">
+        <p>
+          Ha llegado el momento de revelar cómo se eligen los 3 Héroes de hoy. Durante estas 35 rondas, no buscábamos solo vuestra opinión personal... ¡Buscábamos a los que mejor saben leer a la comunidad!
+        </p>
+        <p>
+          Para evitar que los más listos esperasen al último segundo para copiar lo que votaba la mayoría, hemos mantenido la verdadera regla en secreto: Los ganadores son aquellos que tienen el mayor porcentaje de aciertos ADIVINANDO LA OPCIÓN MÁS VOTADA por el chat.
+        </p>
+        <p>
+          El sistema ha estado calculando vuestras coincidencias en las sombras. ¡Veamos quiénes son los verdaderos mentalistas del escuadrón!
+        </p>
+      </div>
+
+      <div class="plot-twist-actions">
+        <button class="btn-plot-twist-cta" id="btnRevealMentalistas">
+          <i class="fas fa-crown"></i> 🏆 Revelar a los 3 Mentalistas
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal Épico: Los 3 Elegidos (Ganadores de la Mente Colmena) -->
   <div class="dia3-modal-overlay" id="winnersModalOverlay">

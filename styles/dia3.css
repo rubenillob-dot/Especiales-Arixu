@@ -1226,6 +1226,135 @@ body.dia3-theme::before {
 }
 
 /* ==========================================================================
+   PLOT TWIST MODAL - REVELACIÓN DEL SISTEMA SECRETO (RONDA 35)
+   ========================================================================== */
+
+.plot-twist-overlay {
+  z-index: 10000;
+}
+
+.plot-twist-card {
+  background: radial-gradient(circle at 50% 10%, rgba(255, 0, 122, 0.28) 0%, rgba(145, 70, 255, 0.2) 35%, rgba(6, 9, 17, 0.98) 100%);
+  border: 2px solid #FF007A;
+  box-shadow: 0 0 60px rgba(255, 0, 122, 0.45), 0 0 35px rgba(145, 70, 255, 0.4), inset 0 0 25px rgba(255, 0, 122, 0.15);
+  max-width: 740px;
+  animation: plotTwistGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes plotTwistGlow {
+  0% {
+    border-color: #FF007A;
+    box-shadow: 0 0 45px rgba(255, 0, 122, 0.45), 0 0 25px rgba(145, 70, 255, 0.35);
+  }
+  50% {
+    border-color: #FFD700;
+    box-shadow: 0 0 70px rgba(255, 215, 0, 0.65), 0 0 35px rgba(255, 0, 122, 0.5);
+  }
+  100% {
+    border-color: #FF007A;
+    box-shadow: 0 0 45px rgba(255, 0, 122, 0.45), 0 0 25px rgba(145, 70, 255, 0.35);
+  }
+}
+
+.plot-twist-icon-box {
+  margin-bottom: 0.8rem;
+}
+
+.plot-twist-alert-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 900;
+  color: #FF3366;
+  background: rgba(255, 51, 102, 0.15);
+  border: 1.5px solid #FF3366;
+  padding: 6px 18px;
+  border-radius: var(--radius-pill);
+  letter-spacing: 1.5px;
+  animation: alertPulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes alertPulse {
+  0% { transform: scale(0.97); opacity: 0.85; }
+  100% { transform: scale(1.03); opacity: 1; box-shadow: 0 0 16px rgba(255, 51, 102, 0.6); }
+}
+
+.plot-twist-title {
+  font-size: 1.85rem;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  background: linear-gradient(135deg, #FFFFFF 0%, #FFD700 45%, #FF007A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0 0 1.2rem;
+  line-height: 1.25;
+}
+
+.plot-twist-content {
+  text-align: left;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: 1.4rem 1.6rem;
+  margin: 0 auto 1.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.plot-twist-content p {
+  color: #E2E8F0;
+  font-size: 0.98rem;
+  line-height: 1.65;
+  margin: 0;
+}
+
+.plot-twist-content p:last-child {
+  color: #FFE28A;
+  font-weight: 700;
+}
+
+.plot-twist-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.btn-plot-twist-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #FFD700 0%, #FF9E00 50%, #FF007A 100%);
+  color: #0A0A0E;
+  font-weight: 900;
+  font-size: 1.15rem;
+  padding: 1rem 2.2rem;
+  border-radius: var(--radius-pill);
+  border: 2px solid #FFF;
+  cursor: pointer;
+  box-shadow: 0 0 35px rgba(255, 215, 0, 0.6), 0 8px 25px rgba(0, 0, 0, 0.6);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  letter-spacing: 0.5px;
+  animation: ctaPulse 2s infinite ease-in-out;
+}
+
+@keyframes ctaPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
+  }
+  50% {
+    transform: scale(1.04);
+    box-shadow: 0 0 45px rgba(255, 215, 0, 0.9), 0 0 25px rgba(255, 0, 122, 0.6);
+  }
+}
+
+.btn-plot-twist-cta:hover {
+  transform: translateY(-3px) scale(1.08);
+  box-shadow: 0 0 55px rgba(255, 215, 0, 0.95), 0 0 30px rgba(255, 0, 122, 0.8);
+  color: #000;
+}
+
+/* ==========================================================================
    10. RESPONSIVE DESIGN (MOBILE & TABLET ADAPTATION)
    ========================================================================== */
 

@@ -195,11 +195,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // Streamer Dock Buttons
   const btnOpenVoting = document.getElementById('btnOpenVoting');
   const btnCloseVoting = document.getElementById('btnCloseVoting');
-  const btnRevealResults = document.getElementById('btnRevealResults');
   const btnNextDilemma = document.getElementById('btnNextDilemma');
   const btnPrevDilemma = document.getElementById('btnPrevDilemma');
   const btnResetRound = document.getElementById('btnResetRound');
   const btnExtractWinners = document.getElementById('btnExtractWinners');
+
+  // Plot Twist Modal Elements (Round 35)
+  const plotTwistModalOverlay = document.getElementById('plotTwistModalOverlay');
+  const btnClosePlotTwistModal = document.getElementById('btnClosePlotTwistModal');
+  const btnRevealMentalistas = document.getElementById('btnRevealMentalistas');
 
   // Winners Modal Elements
   const winnersModalOverlay = document.getElementById('winnersModalOverlay');
@@ -208,6 +212,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnDownloadTxtAgain = document.getElementById('btnDownloadTxtAgain');
   const winnersPodiumList = document.getElementById('winnersPodiumList');
   const winnersStatsSummary = document.getElementById('winnersStatsSummary');
+
+  // Helper Plot Twist Modal Controls
+  function openPlotTwistModal() {
+    if (plotTwistModalOverlay) {
+      plotTwistModalOverlay.classList.add('active');
+    }
+    playSound('reveal');
+  }
+
+  function closePlotTwistModal() {
+    if (plotTwistModalOverlay) {
+      plotTwistModalOverlay.classList.remove('active');
+    }
+  }
 
   // ========================================================================
   // 4. RADAR & CHAT TERMINAL LOGGER
@@ -241,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ========================================================================
-  // 5. VOTING FLOW CONTROL (OPEN / CLOSE)
+  // 5. VOTING FLOW CONTROL (OPEN / CLOSE & AUTOMATIC REVEAL)
   // ========================================================================
   function openVoting() {
     isVotingOpen = true;
@@ -259,6 +277,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function closeVoting() {
+    if (!isVotingOpen && isRevealed) return;
+
     isVotingOpen = false;
     if (btnCloseVoting) btnCloseVoting.classList.add('is-active');
     if (btnOpenVoting) btnOpenVoting.classList.remove('is-active');
@@ -269,8 +289,11 @@ document.addEventListener('DOMContentLoaded', () => {
       radarWsBadge.style.borderColor = '#FF3366';
     }
 
-    appendRadarTerminalLine('SISTEMA', `🔴 Votación CERRADA para el Dilema #${currentDilemmaIndex + 1}.`, 'sys');
+    appendRadarTerminalLine('SISTEMA', `🔴 Votación CERRADA para el Dilema #${currentDilemmaIndex + 1}. Calculando y revelando resultados...`, 'sys');
     playSound('vote');
+
+    // Automatically trigger percentage calculation & reveal results on screen
+    revealResults();
   }
 
   // ========================================================================
@@ -285,9 +308,17 @@ document.addEventListener('DOMContentLoaded', () => {
     roundVotersA.clear();
     roundVotersB.clear();
     isRevealed = false;
+    isVotingOpen = false;
 
-    // Reset flow: closed until streamer clicks "Abrir Votación"
-    closeVoting();
+    // Reset button states & WS Badge without calling reveal
+    if (btnOpenVoting) btnOpenVoting.classList.remove('is-active');
+    if (btnCloseVoting) btnCloseVoting.classList.remove('is-active');
+
+    if (radarWsBadge) {
+      radarWsBadge.textContent = '🔴 VOTACIÓN CERRADA';
+      radarWsBadge.style.color = '#FF3366';
+      radarWsBadge.style.borderColor = '#FF3366';
+    }
 
     // Check if we are at Round 35 (Index 34)
     if (btnExtractWinners) {
@@ -389,11 +420,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ========================================================================
-  // 8. PERCENTAGE CALCULATION & HIVE MIND SCORING
+  // 8. PERCENTAGE CALCULATION, HIVE MIND SCORING & PLOT TWIST TRIGGER
   // ========================================================================
   function revealResults() {
+    if (isRevealed) return; // Prevent double calculation/scoring
     isRevealed = true;
-    closeVoting(); // Lock inputs automatically upon reveal
+    isVotingOpen = false;
+
+    if (btnCloseVoting) btnCloseVoting.classList.add('is-active');
+    if (btnOpenVoting) btnOpenVoting.classList.remove('is-active');
+
+    if (radarWsBadge) {
+      radarWsBadge.textContent = '🔴 VOTACIÓN CERRADA';
+      radarWsBadge.style.color = '#FF3366';
+      radarWsBadge.style.borderColor = '#FF3366';
+    }
 
     if (votingStatsA) votingStatsA.classList.remove('is-hidden-results');
     if (votingStatsB) votingStatsB.classList.remove('is-hidden-results');
@@ -422,13 +463,19 @@ document.addEventListener('DOMContentLoaded', () => {
       appendRadarTerminalLine('PUNTUACIÓN', `🤝 ¡Empate! +1 punto para todos los participantes (${countA + countB}).`, 'sys');
     }
 
-    // If on last dilemma (round 35), ensure the final button is visible
-    if (currentDilemmaIndex === DILEMAS_DATA.length - 1 && btnExtractWinners) {
-      btnExtractWinners.style.display = 'inline-flex';
-    }
-
     calculateAndDisplayPercentages(true);
     playSound('reveal');
+
+    // Round 35 Plot Twist Trigger: At conclusion of the 35th and final dilemma
+    if (currentDilemmaIndex === DILEMAS_DATA.length - 1) {
+      if (btnExtractWinners) {
+        btnExtractWinners.style.display = 'inline-flex';
+      }
+      appendRadarTerminalLine('SISTEMA', `🚨 ¡ÚLTIMA RONDA CONCLUIDA! Desclasificando sistema de puntuación secreto...`, 'sys');
+      setTimeout(() => {
+        openPlotTwistModal();
+      }, 1200);
+    }
   }
 
   function calculateAndDisplayPercentages(animate = true) {
@@ -887,20 +934,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Reveal Percentages Button
-  if (btnRevealResults) {
-    btnRevealResults.addEventListener('click', () => {
-      revealResults();
-    });
-  }
-
   // Next Dilemma
   if (btnNextDilemma) {
     btnNextDilemma.addEventListener('click', () => {
       if (currentDilemmaIndex < DILEMAS_DATA.length - 1) {
         renderDilemma(currentDilemmaIndex + 1);
       } else {
-        alert('🎉 ¡Has completado los 35 dilemas de Qué Prefieres: Edición ImArixu! Pulsa "🏆 Extraer 3 Elegidos" para el sorteo final.');
+        openPlotTwistModal();
       }
     });
   }
@@ -921,10 +961,32 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Extraer 3 Elegidos Button
+  // Extraer 3 Elegidos Button in Dock (Shows Plot Twist modal for Round 35)
   if (btnExtractWinners) {
     btnExtractWinners.addEventListener('click', () => {
+      openPlotTwistModal();
+    });
+  }
+
+  // Plot Twist Modal Listeners
+  if (btnRevealMentalistas) {
+    btnRevealMentalistas.addEventListener('click', () => {
+      closePlotTwistModal();
       extractThreeWinners();
+    });
+  }
+
+  if (btnClosePlotTwistModal) {
+    btnClosePlotTwistModal.addEventListener('click', () => {
+      closePlotTwistModal();
+    });
+  }
+
+  if (plotTwistModalOverlay) {
+    plotTwistModalOverlay.addEventListener('click', (e) => {
+      if (e.target === plotTwistModalOverlay) {
+        closePlotTwistModal();
+      }
     });
   }
 
@@ -991,15 +1053,15 @@ document.addEventListener('DOMContentLoaded', () => {
       castVote('B', 'ImArixu (Teclado)');
     } else if (key === 'o') {
       openVoting();
-    } else if (key === 'c') {
-      closeVoting();
-    } else if (e.code === 'Space') {
+    } else if (key === 'c' || e.code === 'Space') {
       e.preventDefault();
-      revealResults();
+      closeVoting();
     } else if (key === 'n' || e.code === 'ArrowRight') {
       e.preventDefault();
       if (currentDilemmaIndex < DILEMAS_DATA.length - 1) {
         renderDilemma(currentDilemmaIndex + 1);
+      } else {
+        openPlotTwistModal();
       }
     } else if (key === 'p' || e.code === 'ArrowLeft') {
       e.preventDefault();
@@ -1011,7 +1073,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (key === 's') {
       simulateAudienceVotes();
     } else if (key === 'e' && currentDilemmaIndex === DILEMAS_DATA.length - 1) {
-      extractThreeWinners();
+      openPlotTwistModal();
     }
   });
 
