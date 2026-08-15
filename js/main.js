@@ -174,67 +174,6 @@ document.addEventListener('DOMContentLoaded', () => {
     simbaMascot.style.left = `${simbaX}px`;
     simbaSprite.style.setProperty('--simba-dir', '1');
 
-    // Sound synthesis fallback & audio player for barking
-    function playBarkAudio() {
-      try {
-        const barkSound = new Audio('assets/bark.mp3');
-        barkSound.volume = 0.6;
-        const playPromise = barkSound.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(() => playSyntheticWoof());
-        }
-      } catch (e) {
-        playSyntheticWoof();
-      }
-    }
-
-    function playSyntheticWoof() {
-      try {
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        if (!AudioCtx) return;
-        const ctx = new AudioCtx();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'triangle';
-        const now = ctx.currentTime;
-        osc.frequency.setValueAtTime(460, now);
-        osc.frequency.exponentialRampToValueAtTime(160, now + 0.22);
-        gain.gain.setValueAtTime(0.35, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start(now);
-        osc.stop(now + 0.25);
-      } catch (err) {
-        // Fallback silently
-      }
-    }
-
-    // Munch crunch sound synthesis for eating bone
-    function playMunchAudio() {
-      try {
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        if (!AudioCtx) return;
-        const ctx = new AudioCtx();
-        const now = ctx.currentTime;
-        [0, 0.13, 0.26].forEach((timeOffset, idx) => {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = idx % 2 === 0 ? 'triangle' : 'sine';
-          osc.frequency.setValueAtTime(540 + idx * 70, now + timeOffset);
-          osc.frequency.exponentialRampToValueAtTime(260, now + timeOffset + 0.08);
-          gain.gain.setValueAtTime(0.2, now + timeOffset);
-          gain.gain.exponentialRampToValueAtTime(0.01, now + timeOffset + 0.08);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(now + timeOffset);
-          osc.stop(now + timeOffset + 0.09);
-        });
-      } catch (err) {
-        // Fallback silently
-      }
-    }
-
     // Function to display speech bubble with random or custom text
     function showSpeech(text = null, duration = 3000) {
       if (speechTimer) clearTimeout(speechTimer);
@@ -420,14 +359,12 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.appendChild(bone);
       activeBoneEl = bone;
 
-      // Play munch crunch sounds
-      playMunchAudio();
+      // Munch crunch visual particles
       spawnMunchParticle(clampedBoneLeft + 4, '✨');
 
       // Second crunch wave
       setTimeout(() => {
         if (currentState === 'EAT' && !isUserInteracting) {
-          playMunchAudio();
           spawnMunchParticle(clampedBoneLeft + (currentDirection > 0 ? 8 : -2), '😋');
         }
       }, 1000);
@@ -516,9 +453,6 @@ document.addEventListener('DOMContentLoaded', () => {
     simbaMascot.addEventListener('click', () => {
       isUserInteracting = true;
       clearCurrentState();
-
-      // Play sound
-      playBarkAudio();
 
       // Bark/jump animation
       setSpriteClass('barking');

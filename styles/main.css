@@ -783,6 +783,54 @@ body::before {
   letter-spacing: 0.2px;
 }
 
+.heroes-prize-banner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 1.4rem auto 0;
+  max-width: 860px;
+  width: 100%;
+  padding: 0.95rem 1.8rem;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.18) 0%, rgba(255, 140, 0, 0.26) 50%, rgba(255, 100, 0, 0.18) 100%), rgba(18, 14, 6, 0.9);
+  border: 1.5px solid #FFD700;
+  border-radius: var(--radius-pill);
+  color: #FFFFFF;
+  font-size: 1.02rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  line-height: 1.45;
+  text-align: center;
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.35), 0 0 10px rgba(255, 140, 0, 0.25), inset 0 0 15px rgba(255, 215, 0, 0.12);
+  animation: legendaryPulse 3.5s ease-in-out infinite alternate;
+}
+
+.prize-highlight {
+  color: #FFE600;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+  white-space: nowrap;
+}
+
+@keyframes legendaryPulse {
+  0% {
+    box-shadow: 0 0 18px rgba(255, 215, 0, 0.3), inset 0 0 10px rgba(255, 215, 0, 0.1);
+    border-color: rgba(255, 215, 0, 0.7);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 32px rgba(255, 215, 0, 0.7), 0 0 18px rgba(255, 140, 0, 0.5), inset 0 0 20px rgba(255, 215, 0, 0.25);
+    border-color: #FFE838;
+    transform: scale(1.015);
+  }
+  100% {
+    box-shadow: 0 0 18px rgba(255, 215, 0, 0.3), inset 0 0 10px rgba(255, 215, 0, 0.1);
+    border-color: rgba(255, 215, 0, 0.7);
+    transform: scale(1);
+  }
+}
+
 .heroes-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -995,12 +1043,24 @@ body::before {
   .heroes-title {
     font-size: 1.7rem;
   }
+  .heroes-prize-banner {
+    font-size: 0.9rem;
+    padding: 0.8rem 1.2rem;
+    border-radius: var(--radius-md);
+    margin-top: 1rem;
+  }
 }
 
 @media (max-width: 520px) {
   .heroes-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
+  }
+  .heroes-prize-banner {
+    font-size: 0.82rem;
+    padding: 0.7rem 0.9rem;
+    flex-direction: column;
+    gap: 4px;
   }
   .hero-avatar-box {
     max-width: 90px;
