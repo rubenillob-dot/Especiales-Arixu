@@ -982,39 +982,6 @@ body.dia3-theme::before {
   border: 1px solid rgba(255, 255, 255, 0.25);
 }
 
-/* Manual Testing Group */
-.dock-manual-group {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.btn-vote-test {
-  border: none;
-  padding: 0.32rem 0.7rem;
-  font-size: 0.74rem;
-  font-weight: 800;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.btn-vote-test.btn-test-a {
-  background: rgba(255, 0, 122, 0.2);
-  border: 1px solid var(--sideA-primary);
-  color: #FF80BF;
-}
-
-.btn-vote-test.btn-test-b {
-  background: rgba(0, 210, 255, 0.2);
-  border: 1px solid var(--sideB-primary);
-  color: #80E5FF;
-}
-
-.btn-vote-test:hover {
-  transform: scale(1.06);
-}
-
 /* ==========================================================================
    9. EPIC WINNERS MODAL (LOS 3 ELEGIDOS)
    ========================================================================== */

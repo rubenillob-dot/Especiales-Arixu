@@ -200,9 +200,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnPrevDilemma = document.getElementById('btnPrevDilemma');
   const btnResetRound = document.getElementById('btnResetRound');
   const btnExtractWinners = document.getElementById('btnExtractWinners');
-  const btnTestVoteA = document.getElementById('btnTestVoteA');
-  const btnTestVoteB = document.getElementById('btnTestVoteB');
-  const btnSimulateVotes = document.getElementById('btnSimulateVotes');
 
   // Winners Modal Elements
   const winnersModalOverlay = document.getElementById('winnersModalOverlay');
@@ -928,28 +925,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnExtractWinners) {
     btnExtractWinners.addEventListener('click', () => {
       extractThreeWinners();
-    });
-  }
-
-  // Manual Test Buttons
-  if (btnTestVoteA) {
-    btnTestVoteA.addEventListener('click', () => {
-      if (!isVotingOpen) openVoting();
-      castVote('A', `Tester_${Math.floor(Math.random() * 1000)}`);
-    });
-  }
-
-  if (btnTestVoteB) {
-    btnTestVoteB.addEventListener('click', () => {
-      if (!isVotingOpen) openVoting();
-      castVote('B', `Tester_${Math.floor(Math.random() * 1000)}`);
-    });
-  }
-
-  // Simulate Audience
-  if (btnSimulateVotes) {
-    btnSimulateVotes.addEventListener('click', () => {
-      simulateAudienceVotes();
     });
   }
 
