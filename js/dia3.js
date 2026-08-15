@@ -1,20 +1,21 @@
 /* ==========================================================================
    ESPECIALES ARIXU - DÍA 3: QUÉ PREFIERES (DUELO DE DECISIONES) ENGINE
    Features:
-   1. 20 Iconic Polarized Dilemmas structured in 3 Pillars (Fortnite, Streamer Life, Salseo Sano)
+   1. 35 Iconic Polarized Dilemmas structured in Pillars (Fortnite x Twitch, Streamer Life, Salseo)
    2. 75% Confined Game-Area Split Duel with Territory Expansion Hover (65% vs 35%)
    3. 25% Twitch Communications Terminal (#imarixu live feed, vote logger & radar)
    4. Real-time Twitch IRC Chat Voting & Anti-Duplicate Vote Tracker
-   5. High-Impact Animated Percentage Reveals & Winner Crowning
-   6. Procedural Web Audio API Sound Synthesizer & Canvas Confetti Generator
-   7. Full Streamer Controls & Keyboard Shortcuts
+   5. Flow Control: "Abrir Votación" & "Cerrar Votación"
+   6. Hive Mind Scoring Tracker: global user accuracy across 35 rounds
+   7. Extraction of the 3 Chosen Winners (filtered >= 60% accuracy) + Modal & TXT Export
+   8. Procedural Web Audio API Sound Synthesizer & Canvas Confetti Generator
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
   'use strict';
 
   // ========================================================================
-  // 1. DATA: 35 DILEMAS: FORTNITE x STREAMER LIFE (1-35)
+  // 1. DATA: 35 DILEMAS (1-35)
   // ========================================================================
   const DILEMAS_DATA = [
     { id: 1, categoria: 'Fortnite x Twitch', opcionA: 'Caer en Pisos Picados, morir rápido y que el chat te llame manco', opcionB: 'Caer en los bordes, ganar la partida, pero que el chat se duerma de aburrimiento' },
@@ -55,18 +56,24 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   // ========================================================================
-  // 2. STATE MANAGEMENT
+  // 2. STATE MANAGEMENT & SCORING TRACKER
   // ========================================================================
   let currentDilemmaIndex = 0;
-  let isVotingOpen = true;
+  let isVotingOpen = false; // Closed by default until streamer opens it
   let isRevealed = false;
   let isAudioEnabled = true;
   let totalVoteMessagesReceived = 0;
 
-  // Votes Storage for Current Dilemma
-  let votesA = 0;
-  let votesB = 0;
-  const votedUsers = new Set(); // 1 vote per Twitch user per dilemma
+  // Global Hive Mind User Score Tracker (accumulated across all 35 rounds)
+  let puntuacionUsuarios = {};
+
+  // Sets for unique voters in the current active dilemma
+  let roundVotersA = new Set();
+  let roundVotersB = new Set();
+
+  const porcentajeMinimo = 0.60; // 60% accuracy filter
+  const totalRondas = 35;
+  let lastExtractedWinners = [];
 
   // Audio Context Synthesizer
   let audioCtx = null;
@@ -147,6 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function escapeHtml(str) {
+    if (typeof str !== 'string') return String(str);
     return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
 
@@ -185,15 +193,24 @@ document.addEventListener('DOMContentLoaded', () => {
   const radarTargetText = document.getElementById('radarTargetText');
 
   // Streamer Dock Buttons
-  const btnToggleVoting = document.getElementById('btnToggleVoting');
-  const btnToggleVotingText = document.getElementById('btnToggleVotingText');
+  const btnOpenVoting = document.getElementById('btnOpenVoting');
+  const btnCloseVoting = document.getElementById('btnCloseVoting');
   const btnRevealResults = document.getElementById('btnRevealResults');
   const btnNextDilemma = document.getElementById('btnNextDilemma');
   const btnPrevDilemma = document.getElementById('btnPrevDilemma');
   const btnResetRound = document.getElementById('btnResetRound');
+  const btnExtractWinners = document.getElementById('btnExtractWinners');
   const btnTestVoteA = document.getElementById('btnTestVoteA');
   const btnTestVoteB = document.getElementById('btnTestVoteB');
   const btnSimulateVotes = document.getElementById('btnSimulateVotes');
+
+  // Winners Modal Elements
+  const winnersModalOverlay = document.getElementById('winnersModalOverlay');
+  const btnCloseWinnersModal = document.getElementById('btnCloseWinnersModal');
+  const btnConfirmCloseModal = document.getElementById('btnConfirmCloseModal');
+  const btnDownloadTxtAgain = document.getElementById('btnDownloadTxtAgain');
+  const winnersPodiumList = document.getElementById('winnersPodiumList');
+  const winnersStatsSummary = document.getElementById('winnersStatsSummary');
 
   // ========================================================================
   // 4. RADAR & CHAT TERMINAL LOGGER
@@ -227,19 +244,62 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ========================================================================
-  // 5. RENDER DILEMMA FUNCTION
+  // 5. VOTING FLOW CONTROL (OPEN / CLOSE)
+  // ========================================================================
+  function openVoting() {
+    isVotingOpen = true;
+    if (btnOpenVoting) btnOpenVoting.classList.add('is-active');
+    if (btnCloseVoting) btnCloseVoting.classList.remove('is-active');
+
+    if (radarWsBadge) {
+      radarWsBadge.textContent = '🟢 VOTACIÓN ABIERTA';
+      radarWsBadge.style.color = '#00FA9A';
+      radarWsBadge.style.borderColor = '#00FA9A';
+    }
+
+    appendRadarTerminalLine('SISTEMA', `🟢 Votación ABIERTA para el Dilema #${currentDilemmaIndex + 1}. ¡El chat ya puede votar!`, 'sys');
+    playSound('vote');
+  }
+
+  function closeVoting() {
+    isVotingOpen = false;
+    if (btnCloseVoting) btnCloseVoting.classList.add('is-active');
+    if (btnOpenVoting) btnOpenVoting.classList.remove('is-active');
+
+    if (radarWsBadge) {
+      radarWsBadge.textContent = '🔴 VOTACIÓN CERRADA';
+      radarWsBadge.style.color = '#FF3366';
+      radarWsBadge.style.borderColor = '#FF3366';
+    }
+
+    appendRadarTerminalLine('SISTEMA', `🔴 Votación CERRADA para el Dilema #${currentDilemmaIndex + 1}.`, 'sys');
+    playSound('vote');
+  }
+
+  // ========================================================================
+  // 6. RENDER DILEMMA FUNCTION
   // ========================================================================
   function renderDilemma(index) {
     if (index < 0 || index >= DILEMAS_DATA.length) return;
     currentDilemmaIndex = index;
     const item = DILEMAS_DATA[index];
 
-    // Reset votes & state
-    votesA = 0;
-    votesB = 0;
-    votedUsers.clear();
+    // Reset round sets & state
+    roundVotersA.clear();
+    roundVotersB.clear();
     isRevealed = false;
-    isVotingOpen = true;
+
+    // Reset flow: closed until streamer clicks "Abrir Votación"
+    closeVoting();
+
+    // Check if we are at Round 35 (Index 34)
+    if (btnExtractWinners) {
+      if (index === DILEMAS_DATA.length - 1) {
+        btnExtractWinners.style.display = 'inline-flex';
+      } else {
+        btnExtractWinners.style.display = 'none';
+      }
+    }
 
     // Update Top Counter & Active Target
     if (stickyRoundNum) stickyRoundNum.textContent = index + 1;
@@ -270,21 +330,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (optionTextB) optionTextB.textContent = item.opcionB;
 
     // Reset Visual & Winning States
-    winnerCrownA.style.display = 'none';
-    winnerCrownB.style.display = 'none';
+    if (winnerCrownA) winnerCrownA.style.display = 'none';
+    if (winnerCrownB) winnerCrownB.style.display = 'none';
 
     // Reset Stats Blocks to Hidden
-    votingStatsA.classList.add('is-hidden-results');
-    votingStatsB.classList.add('is-hidden-results');
-    percentageNumA.textContent = '--%';
-    percentageNumB.textContent = '--%';
-    voteCountA.innerHTML = '<strong>0</strong> votos';
-    voteCountB.innerHTML = '<strong>0</strong> votos';
-    voteProgressFillA.style.width = '0%';
-    voteProgressFillB.style.width = '0%';
-
-    // Reset Dock Button Text
-    if (btnToggleVotingText) btnToggleVotingText.textContent = 'Cerrar Votación';
+    if (votingStatsA) votingStatsA.classList.add('is-hidden-results');
+    if (votingStatsB) votingStatsB.classList.add('is-hidden-results');
+    if (percentageNumA) percentageNumA.textContent = '--%';
+    if (percentageNumB) percentageNumB.textContent = '--%';
+    if (voteCountA) voteCountA.innerHTML = '<strong>0</strong> votos';
+    if (voteCountB) voteCountB.innerHTML = '<strong>0</strong> votos';
+    if (voteProgressFillA) voteProgressFillA.style.width = '0%';
+    if (voteProgressFillB) voteProgressFillB.style.width = '0%';
 
     // Reset Hover Expansion to 50/50
     if (optionCardA && optionCardB && centralDivider) {
@@ -293,18 +350,21 @@ document.addEventListener('DOMContentLoaded', () => {
       centralDivider.style.left = '50%';
     }
 
-    appendRadarTerminalLine('SISTEMA', `Dilema #${item.id} (${item.categoria}) cargado. Votación abierta en #imarixu...`, 'sys');
+    appendRadarTerminalLine('SISTEMA', `Dilema #${item.id} (${item.categoria}) cargado. Pulsa "🟢 Abrir Votación" para comenzar.`, 'sys');
     playSound('transition');
   }
 
   // ========================================================================
-  // 6. VOTE PROCESSING LOGIC
+  // 7. VOTE PROCESSING LOGIC (ANTI-DUPLICATE & LIVE FEED)
   // ========================================================================
   function castVote(option, username = 'Anonimo') {
     if (!isVotingOpen) return;
-    if (votedUsers.has(username.toLowerCase())) return;
+    const cleanUser = username.trim();
+    const userKey = cleanUser.toLowerCase();
 
-    votedUsers.add(username.toLowerCase());
+    // Prevent duplicate votes per user in current dilemma
+    if (roundVotersA.has(userKey) || roundVotersB.has(userKey)) return;
+
     totalVoteMessagesReceived++;
 
     if (radarMsgCount) {
@@ -312,16 +372,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (option === 'A') {
-      votesA++;
-      appendRadarTerminalLine(username, 'A', 'vote-a');
+      roundVotersA.add(userKey);
+      appendRadarTerminalLine(cleanUser, 'A', 'vote-a');
     } else if (option === 'B') {
-      votesB++;
-      appendRadarTerminalLine(username, 'B', 'vote-b');
+      roundVotersB.add(userKey);
+      appendRadarTerminalLine(cleanUser, 'B', 'vote-b');
     }
 
     // Update Live Count Labels
-    if (voteCountA) voteCountA.innerHTML = `<strong>${votesA}</strong> votos`;
-    if (voteCountB) voteCountB.innerHTML = `<strong>${votesB}</strong> votos`;
+    if (voteCountA) voteCountA.innerHTML = `<strong>${roundVotersA.size}</strong> votos`;
+    if (voteCountB) voteCountB.innerHTML = `<strong>${roundVotersB.size}</strong> votos`;
 
     // If already revealed, update percentages live
     if (isRevealed) {
@@ -332,54 +392,82 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ========================================================================
-  // 7. PERCENTAGE CALCULATION & REVEAL ANIMATION
+  // 8. PERCENTAGE CALCULATION & HIVE MIND SCORING
   // ========================================================================
   function revealResults() {
     isRevealed = true;
-    isVotingOpen = false;
+    closeVoting(); // Lock inputs automatically upon reveal
 
-    if (btnToggleVotingText) btnToggleVotingText.textContent = 'Reabrir Votación';
+    if (votingStatsA) votingStatsA.classList.remove('is-hidden-results');
+    if (votingStatsB) votingStatsB.classList.remove('is-hidden-results');
 
-    votingStatsA.classList.remove('is-hidden-results');
-    votingStatsB.classList.remove('is-hidden-results');
+    const countA = roundVotersA.size;
+    const countB = roundVotersB.size;
+
+    // Award +1 point to all voters of the winning option (Hive Mind Logic)
+    if (countA > countB) {
+      roundVotersA.forEach(u => {
+        puntuacionUsuarios[u] = (puntuacionUsuarios[u] || 0) + 1;
+      });
+      appendRadarTerminalLine('PUNTUACIÓN', `👑 Opción A ganadora (${countA} vs ${countB}). +1 punto para los ${countA} acertantes.`, 'sys');
+    } else if (countB > countA) {
+      roundVotersB.forEach(u => {
+        puntuacionUsuarios[u] = (puntuacionUsuarios[u] || 0) + 1;
+      });
+      appendRadarTerminalLine('PUNTUACIÓN', `👑 Opción B ganadora (${countB} vs ${countA}). +1 punto para los ${countB} acertantes.`, 'sys');
+    } else if (countA === countB && countA > 0) {
+      roundVotersA.forEach(u => {
+        puntuacionUsuarios[u] = (puntuacionUsuarios[u] || 0) + 1;
+      });
+      roundVotersB.forEach(u => {
+        puntuacionUsuarios[u] = (puntuacionUsuarios[u] || 0) + 1;
+      });
+      appendRadarTerminalLine('PUNTUACIÓN', `🤝 ¡Empate! +1 punto para todos los participantes (${countA + countB}).`, 'sys');
+    }
+
+    // If on last dilemma (round 35), ensure the final button is visible
+    if (currentDilemmaIndex === DILEMAS_DATA.length - 1 && btnExtractWinners) {
+      btnExtractWinners.style.display = 'inline-flex';
+    }
 
     calculateAndDisplayPercentages(true);
-    appendRadarTerminalLine('SISTEMA', `Resultados revelados para el Dilema #${currentDilemmaIndex + 1}.`, 'sys');
     playSound('reveal');
   }
 
   function calculateAndDisplayPercentages(animate = true) {
-    const total = votesA + votesB;
+    const countA = roundVotersA.size;
+    const countB = roundVotersB.size;
+    const total = countA + countB;
     let pctA = 50;
     let pctB = 50;
 
     if (total > 0) {
-      pctA = Math.round((votesA / total) * 100);
+      pctA = Math.round((countA / total) * 100);
       pctB = 100 - pctA;
     }
 
     // Winner Crown
-    winnerCrownA.style.display = 'none';
-    winnerCrownB.style.display = 'none';
+    if (winnerCrownA) winnerCrownA.style.display = 'none';
+    if (winnerCrownB) winnerCrownB.style.display = 'none';
 
-    if (votesA > votesB) {
-      winnerCrownA.style.display = 'inline-flex';
+    if (countA > countB) {
+      if (winnerCrownA) winnerCrownA.style.display = 'inline-flex';
       triggerConfetti();
-    } else if (votesB > votesA) {
-      winnerCrownB.style.display = 'inline-flex';
+    } else if (countB > countA) {
+      if (winnerCrownB) winnerCrownB.style.display = 'inline-flex';
       triggerConfetti();
     }
 
     // Progress Bar Fills
-    voteProgressFillA.style.width = `${pctA}%`;
-    voteProgressFillB.style.width = `${pctB}%`;
+    if (voteProgressFillA) voteProgressFillA.style.width = `${pctA}%`;
+    if (voteProgressFillB) voteProgressFillB.style.width = `${pctB}%`;
 
     if (animate) {
-      animateCounter(percentageNumA, pctA);
-      animateCounter(percentageNumB, pctB);
+      if (percentageNumA) animateCounter(percentageNumA, pctA);
+      if (percentageNumB) animateCounter(percentageNumB, pctB);
     } else {
-      percentageNumA.textContent = `${pctA}%`;
-      percentageNumB.textContent = `${pctB}%`;
+      if (percentageNumA) percentageNumA.textContent = `${pctA}%`;
+      if (percentageNumB) percentageNumB.textContent = `${pctB}%`;
     }
   }
 
@@ -405,10 +493,133 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ========================================================================
-  // 8. CONFINED HOVER TERRITORY EXPANSION (65% vs 35% INSIDE GAME-AREA)
+  // 9. EXTRACCIÓN DE LOS 3 ELEGIDOS & INFORME TXT
+  // ========================================================================
+  function extractThreeWinners() {
+    const allUsers = Object.keys(puntuacionUsuarios);
+    if (allUsers.length === 0) {
+      alert('⚠️ Aún no se han registrado votos puntuados en ningún dilema.');
+      return;
+    }
+
+    const minRequiredPoints = Math.ceil(totalRondas * porcentajeMinimo); // 21 puntos para el 60%
+    
+    // Filter users with accuracy >= 60%
+    const qualifiedUsers = allUsers.filter(u => (puntuacionUsuarios[u] / totalRondas) >= porcentajeMinimo);
+
+    // If less than 3 qualified, fallback gracefully to top scorers
+    let candidatePool = qualifiedUsers;
+    let usedFallback = false;
+
+    if (candidatePool.length < 3) {
+      usedFallback = true;
+      candidatePool = allUsers.sort((a, b) => puntuacionUsuarios[b] - puntuacionUsuarios[a]);
+    }
+
+    // Random selection of 3 winners from candidate pool
+    const shuffled = [...candidatePool].sort(() => 0.5 - Math.random());
+    const winners = shuffled.slice(0, Math.min(3, shuffled.length));
+    lastExtractedWinners = winners;
+
+    // Render winners in Modal
+    if (winnersPodiumList) {
+      winnersPodiumList.innerHTML = '';
+      winners.forEach((winner, idx) => {
+        const points = puntuacionUsuarios[winner] || 0;
+        const accuracyPct = ((points / totalRondas) * 100).toFixed(1);
+        const card = document.createElement('div');
+        card.className = `winner-podium-card winner-rank-${idx + 1}`;
+        card.innerHTML = `
+          <div class="winner-rank-badge">${idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉'}</div>
+          <div class="winner-card-name">@${escapeHtml(winner)}</div>
+          <div class="winner-card-score">${points} / ${totalRondas} aciertos (${accuracyPct}%)</div>
+        `;
+        winnersPodiumList.appendChild(card);
+      });
+    }
+
+    if (winnersStatsSummary) {
+      const qualifiedCount = qualifiedUsers.length;
+      const totalParticipants = allUsers.length;
+      winnersStatsSummary.innerHTML = `
+        Total de participantes registrados: <strong>${totalParticipants}</strong> | 
+        Clasificados con ≥60% (${minRequiredPoints}+ aciertos): <strong>${qualifiedCount}</strong>
+        ${usedFallback ? '<br><span style="color: #FFD166;">*Se incluyeron mejores puntuaciones generales para completar el podio de 3 ganadores.</span>' : ''}
+      `;
+    }
+
+    // Open Modal
+    if (winnersModalOverlay) {
+      winnersModalOverlay.classList.add('active');
+    }
+
+    // Trigger celebration & audio
+    triggerConfetti();
+    playSound('reveal');
+
+    // Automatically trigger TXT download
+    downloadWinnersTxtReport(winners, qualifiedUsers);
+  }
+
+  function downloadWinnersTxtReport(winners, qualifiedUsers) {
+    const minRequiredPoints = Math.ceil(totalRondas * porcentajeMinimo);
+    const dateStr = new Date().toLocaleString('es-ES');
+
+    let content = `=================================================================\n`;
+    content += `🏆 ESPECIALES IMARIXU - DÍA 3: QUÉ PREFIERES (MENTE COLMENA)\n`;
+    content += `=================================================================\n`;
+    content += `Fecha del sorteo: ${dateStr}\n`;
+    content += `Canal oficial: Twitch.tv/imarixu\n`;
+    content += `Total de Dilemas / Rondas: ${totalRondas}\n`;
+    content += `Criterio de clasificación: >= ${Math.round(porcentajeMinimo * 100)}% de acierto (${minRequiredPoints}+ aciertos)\n\n`;
+
+    content += `🎉 LOS 3 ELEGIDOS GANADORES DEL DÍA 3 (SORTEO FINAL):\n`;
+    winners.forEach((w, idx) => {
+      const pts = puntuacionUsuarios[w] || 0;
+      const pct = ((pts / totalRondas) * 100).toFixed(1);
+      content += `  ${idx + 1}. @${w} -> ${pts}/${totalRondas} aciertos (${pct}%)\n`;
+    });
+
+    content += `\n-----------------------------------------------------------------\n`;
+    content += `📊 USUARIOS CLASIFICADOS CON >= 60% DE ACIERTOS (${qualifiedUsers.length} usuarios):\n`;
+    if (qualifiedUsers.length > 0) {
+      qualifiedUsers
+        .sort((a, b) => puntuacionUsuarios[b] - puntuacionUsuarios[a])
+        .forEach((u, i) => {
+          const pts = puntuacionUsuarios[u];
+          const pct = ((pts / totalRondas) * 100).toFixed(1);
+          content += `  ${(i + 1).toString().padStart(2, '0')}. @${u.padEnd(20, ' ')} : ${pts}/${totalRondas} (${pct}%)\n`;
+        });
+    } else {
+      content += `  Ningún usuario alcanzó el 60% exacto.\n`;
+    }
+
+    content += `\n-----------------------------------------------------------------\n`;
+    content += `📜 RANKING GLOBAL COMPLETO DE PARTICIPANTES (${Object.keys(puntuacionUsuarios).length} usuarios):\n`;
+    Object.keys(puntuacionUsuarios)
+      .sort((a, b) => puntuacionUsuarios[b] - puntuacionUsuarios[a])
+      .forEach((u, i) => {
+        const pts = puntuacionUsuarios[u];
+        const pct = ((pts / totalRondas) * 100).toFixed(1);
+        content += `  ${(i + 1).toString().padStart(2, '0')}. @${u.padEnd(20, ' ')} : ${pts}/${totalRondas} (${pct}%)\n`;
+      });
+    content += `=================================================================\n`;
+
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ganadores_dia3_mente_colmena_${Date.now()}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // ========================================================================
+  // 10. CONFINED HOVER TERRITORY EXPANSION (65% vs 35% INSIDE GAME-AREA)
   // ========================================================================
   if (optionCardA && optionCardB && centralDivider) {
-    // Side A Hover (65% left, 35% right)
     optionCardA.addEventListener('mouseenter', () => {
       optionCardA.classList.add('is-hovered');
       optionCardB.classList.add('is-pushed');
@@ -421,7 +632,6 @@ document.addEventListener('DOMContentLoaded', () => {
       centralDivider.style.left = '50%';
     });
 
-    // Side B Hover (35% left, 65% right)
     optionCardB.addEventListener('mouseenter', () => {
       optionCardB.classList.add('is-hovered');
       optionCardA.classList.add('is-pushed');
@@ -436,7 +646,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ========================================================================
-  // 9. TWITCH IRC WEBSOCKET INTEGRATION (wss://irc-ws.chat.twitch.tv:443)
+  // 11. TWITCH IRC WEBSOCKET INTEGRATION (wss://irc-ws.chat.twitch.tv:443)
   // ========================================================================
   let ws = null;
   const channelName = "imarixu";
@@ -452,9 +662,9 @@ document.addEventListener('DOMContentLoaded', () => {
         ws.send(`JOIN #${channelName}`);
 
         if (radarWsBadge) {
-          radarWsBadge.textContent = '● RECEPTOR ACTIVO';
-          radarWsBadge.style.color = '#00FA9A';
-          radarWsBadge.style.borderColor = '#00FA9A';
+          radarWsBadge.textContent = isVotingOpen ? '🟢 VOTACIÓN ABIERTA' : '🔴 VOTACIÓN CERRADA';
+          radarWsBadge.style.color = isVotingOpen ? '#00FA9A' : '#FF3366';
+          radarWsBadge.style.borderColor = isVotingOpen ? '#00FA9A' : '#FF3366';
         }
         appendRadarTerminalLine('SISTEMA', `✔ Enlace con Twitch IRC conectado en #${channelName}. A la escucha...`, 'sys');
       };
@@ -541,7 +751,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ) {
           castVote('B', username);
         } else {
-          // Normal chat log
           appendRadarTerminalLine(username, message, 'user');
         }
       } else {
@@ -551,7 +760,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ========================================================================
-  // 10. CONFETTI CELEBRATION ENGINE
+  // 12. CONFETTI CELEBRATION ENGINE
   // ========================================================================
   const confettiCanvas = document.getElementById('confettiCanvas');
   let confettiCtx = null;
@@ -628,28 +837,33 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ========================================================================
-  // 11. SIMULATED VOTING GENERATOR (FOR OFFLINE / TEST SESSIONS)
+  // 13. SIMULATED VOTING GENERATOR (FOR OFFLINE / TEST SESSIONS)
   // ========================================================================
   function simulateAudienceVotes() {
-    const totalSimulated = Math.floor(Math.random() * 40) + 25; // 25-65 votes
+    if (!isVotingOpen) {
+      openVoting();
+    }
+    const totalSimulated = Math.floor(Math.random() * 35) + 20; // 20-55 votes
     const names = [
       'RubenDev', 'AriGamer', 'TwitchViewer', 'FortnitePro', 'SalseoFan', 
       'VicRoyale', 'LootMaster', 'ChatLover', 'ArixuSub', 'ClipGod',
-      'Builder99', 'NoBuildKing', 'SniperGhost', 'TiltedResident', 'ZeusFan'
+      'Builder99', 'NoBuildKing', 'SniperGhost', 'TiltedResident', 'ZeusFan',
+      'PedroGamer', 'LauraTwitch', 'CarlosFN', 'MartaArixu', 'NicoPro',
+      'SitoGamerz', 'NeusArtist', 'Jaratos', 'TwitchGod', 'FortniteQueen'
     ];
 
     for (let i = 0; i < totalSimulated; i++) {
-      const randomName = `${names[Math.floor(Math.random() * names.length)]}_${Math.floor(Math.random() * 999)}`;
+      const randomName = `${names[Math.floor(Math.random() * names.length)]}_${Math.floor(Math.random() * 99)}`;
       const randomOption = Math.random() > 0.48 ? 'A' : 'B';
       castVote(randomOption, randomName);
     }
   }
 
   // ========================================================================
-  // 12. STREAMER DOCK & INTERACTIVE EVENT LISTENERS
+  // 14. STREAMER DOCK & EVENT LISTENERS
   // ========================================================================
   
-  // Click on Option Cards to Vote / Select
+  // Click on Option Cards to Vote
   if (optionCardA) {
     optionCardA.addEventListener('click', () => {
       castVote('A', 'ImArixu (Streamer)');
@@ -662,15 +876,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Toggle Voting Button
-  if (btnToggleVoting) {
-    btnToggleVoting.addEventListener('click', () => {
-      isVotingOpen = !isVotingOpen;
-      if (btnToggleVotingText) {
-        btnToggleVotingText.textContent = isVotingOpen ? 'Cerrar Votación' : 'Abrir Votación';
-      }
-      appendRadarTerminalLine('SISTEMA', isVotingOpen ? 'Votación reabierta por el streamer.' : 'Votación cerrada por el streamer.', 'sys');
-      playSound('vote');
+  // Open Voting Button
+  if (btnOpenVoting) {
+    btnOpenVoting.addEventListener('click', () => {
+      openVoting();
+    });
+  }
+
+  // Close Voting Button
+  if (btnCloseVoting) {
+    btnCloseVoting.addEventListener('click', () => {
+      closeVoting();
     });
   }
 
@@ -687,7 +903,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (currentDilemmaIndex < DILEMAS_DATA.length - 1) {
         renderDilemma(currentDilemmaIndex + 1);
       } else {
-        alert('🎉 ¡Has completado los 35 dilemas de Qué Prefieres: Edición ImArixu!');
+        alert('🎉 ¡Has completado los 35 dilemas de Qué Prefieres: Edición ImArixu! Pulsa "🏆 Extraer 3 Elegidos" para el sorteo final.');
       }
     });
   }
@@ -708,15 +924,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Extraer 3 Elegidos Button
+  if (btnExtractWinners) {
+    btnExtractWinners.addEventListener('click', () => {
+      extractThreeWinners();
+    });
+  }
+
   // Manual Test Buttons
   if (btnTestVoteA) {
     btnTestVoteA.addEventListener('click', () => {
+      if (!isVotingOpen) openVoting();
       castVote('A', `Tester_${Math.floor(Math.random() * 1000)}`);
     });
   }
 
   if (btnTestVoteB) {
     btnTestVoteB.addEventListener('click', () => {
+      if (!isVotingOpen) openVoting();
       castVote('B', `Tester_${Math.floor(Math.random() * 1000)}`);
     });
   }
@@ -725,6 +950,36 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnSimulateVotes) {
     btnSimulateVotes.addEventListener('click', () => {
       simulateAudienceVotes();
+    });
+  }
+
+  // Modal Close Listeners
+  if (btnCloseWinnersModal) {
+    btnCloseWinnersModal.addEventListener('click', () => {
+      if (winnersModalOverlay) winnersModalOverlay.classList.remove('active');
+    });
+  }
+
+  if (btnConfirmCloseModal) {
+    btnConfirmCloseModal.addEventListener('click', () => {
+      if (winnersModalOverlay) winnersModalOverlay.classList.remove('active');
+    });
+  }
+
+  if (winnersModalOverlay) {
+    winnersModalOverlay.addEventListener('click', (e) => {
+      if (e.target === winnersModalOverlay) {
+        winnersModalOverlay.classList.remove('active');
+      }
+    });
+  }
+
+  if (btnDownloadTxtAgain) {
+    btnDownloadTxtAgain.addEventListener('click', () => {
+      if (lastExtractedWinners.length > 0) {
+        const qualifiedUsers = Object.keys(puntuacionUsuarios).filter(u => (puntuacionUsuarios[u] / totalRondas) >= porcentajeMinimo);
+        downloadWinnersTxtReport(lastExtractedWinners, qualifiedUsers);
+      }
     });
   }
 
@@ -759,6 +1014,10 @@ document.addEventListener('DOMContentLoaded', () => {
       castVote('A', 'ImArixu (Teclado)');
     } else if (key === '2' || key === 'b') {
       castVote('B', 'ImArixu (Teclado)');
+    } else if (key === 'o') {
+      openVoting();
+    } else if (key === 'c') {
+      closeVoting();
     } else if (e.code === 'Space') {
       e.preventDefault();
       revealResults();
@@ -776,13 +1035,15 @@ document.addEventListener('DOMContentLoaded', () => {
       renderDilemma(currentDilemmaIndex);
     } else if (key === 's') {
       simulateAudienceVotes();
+    } else if (key === 'e' && currentDilemmaIndex === DILEMAS_DATA.length - 1) {
+      extractThreeWinners();
     }
   });
 
   // ========================================================================
-  // 13. INITIALIZATION
+  // 15. INITIALIZATION
   // ========================================================================
   renderDilemma(0);
   initTwitchWebSocket();
-  console.log('⚔️ Duelo de Decisiones (75% Game / 25% Chat) iniciado.');
+  console.log('⚔️ Duelo de Decisiones (75% Game / 25% Chat) con Mente Colmena iniciado.');
 });

@@ -61,14 +61,15 @@
   </header>
 
   <!-- ======================================================================
-       REQUIREMENT 1: 2-COLUMN MAIN LAYOUT (75% GAME-AREA / 25% CHAT-AREA)
+       REQUIREMENT 1 & 2: CENTRAL FLOATING CONSOLE (.dashboard-panel)
+       75% Confined Game Area / 25% Chat Monitor within 20px Rounded Floating Glass
        ====================================================================== -->
-  <div class="dia3-main-layout">
+  <main class="dashboard-panel" id="dashboardPanel">
     
     <!-- LEFT 75% COLUMN: GAME AREA (CONFINED SPLIT DUEL STAGE) -->
     <div class="dia3-game-area" id="gameArea">
       
-      <main class="duel-split-stage" id="duelSplitStage">
+      <div class="duel-split-stage" id="duelSplitStage">
         
         <!-- LEFT HALF: OPTION A (Fiery Crimson / Twitch Neon Violet) -->
         <section class="duel-half side-a" id="optionCardA" tabindex="0" title="Votar o elegir Opción A">
@@ -141,9 +142,7 @@
 
           </div>
         </section>
-
-      </main>
-
+      </div>
     </div>
 
     <!-- RIGHT 25% COLUMN: REQUIREMENT 3 (MONITOR DE COMUNICACIONES CHAT TWITCH) -->
@@ -187,8 +186,7 @@
 
       </div>
     </aside>
-
-  </div>
+  </main>
 
   <!-- ======================================================================
        STREAMER FLOATING CONTROL DOCK (FOOTER)
@@ -198,9 +196,14 @@
     <!-- Primary Streamer Action Controls -->
     <div class="dock-controls-group">
       
-      <!-- Toggle Voting Open/Lock Button -->
-      <button class="btn-dock-cta btn-dock-toggle-voting" id="btnToggleVoting" title="Abrir o Cerrar votaciones del chat">
-        <i class="fas fa-lock-open"></i> <span id="btnToggleVotingText">Cerrar Votación</span>
+      <!-- Open Voting Flow Button -->
+      <button class="btn-dock-cta btn-dock-open-voting" id="btnOpenVoting" title="Abrir recepción de votos del chat">
+        <i class="fas fa-play"></i> 🟢 Abrir Votación
+      </button>
+
+      <!-- Close Voting Flow Button -->
+      <button class="btn-dock-cta btn-dock-close-voting" id="btnCloseVoting" title="Bloquear recepción de votos del chat">
+        <i class="fas fa-lock"></i> 🔴 Cerrar Votación
       </button>
 
       <!-- Reveal Percentages & Results Button -->
@@ -223,6 +226,11 @@
         <i class="fas fa-rotate-left"></i>
       </button>
 
+      <!-- Extraer 3 Elegidos Final Button (Shown at Round 35/35) -->
+      <button class="btn-dock-cta btn-dock-elegidos" id="btnExtractWinners" style="display: none;" title="Extraer los 3 ganadores aleatorios entre los clasificados">
+        <i class="fas fa-crown"></i> 🏆 Extraer 3 Elegidos
+      </button>
+
     </div>
 
     <!-- Manual Test & Streamer Votes -->
@@ -239,6 +247,40 @@
     </div>
 
   </footer>
+
+  <!-- Modal Épico: Los 3 Elegidos (Ganadores de la Mente Colmena) -->
+  <div class="dia3-modal-overlay" id="winnersModalOverlay">
+    <div class="dia3-modal-card">
+      <button class="dia3-modal-close" id="btnCloseWinnersModal" title="Cerrar modal">&times;</button>
+      
+      <div class="dia3-modal-trophy">
+        <i class="fas fa-trophy"></i>
+      </div>
+      
+      <span class="dia3-modal-badge">🏆 DÍA 3: QUÉ PREFIERES • MENTE COLMENA</span>
+      <h2 class="dia3-modal-title">¡LOS 3 ELEGIDOS DE LA COMUNIDAD!</h2>
+      <p class="dia3-modal-desc">
+        Entre todos los espectadores con más del <strong>60% de aciertos</strong> coincidiendo con la mayoría en los 35 dilemas, estos son los 3 ganadores seleccionados al azar:
+      </p>
+
+      <div class="dia3-winners-podium" id="winnersPodiumList">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <div class="dia3-modal-stats-summary" id="winnersStatsSummary">
+        <!-- Summary stats -->
+      </div>
+
+      <div class="dia3-modal-actions">
+        <button class="btn-modal-download" id="btnDownloadTxtAgain">
+          <i class="fas fa-download"></i> Descargar Informe TXT (.txt)
+        </button>
+        <button class="btn-modal-close-action" id="btnConfirmCloseModal">
+          <i class="fas fa-check"></i> Continuar
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- JavaScript Engine for Day 3 -->
   <script src="js/dia3.js"></script>
