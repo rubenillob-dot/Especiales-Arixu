@@ -65,14 +65,26 @@ html {
 }
 
 body {
-  background: 
-    radial-gradient(circle at 15% 20%, rgba(145, 70, 255, 0.15) 0%, transparent 45%),
-    radial-gradient(circle at 85% 80%, rgba(0, 245, 212, 0.08) 0%, transparent 45%),
-    linear-gradient(180deg, var(--bg-black) 0%, var(--bg-dark-1) 100%);
+  background: linear-gradient(-45deg, #090412 0%, #1c0836 22%, #38106a 45%, #180a2c 68%, #081726 85%, #230842 100%);
+  background-size: 400% 400%;
+  animation: gradientBackground 15s ease infinite;
   background-attachment: fixed;
   min-height: 100vh;
   position: relative;
   line-height: 1.5;
+  color: var(--text-main);
+}
+
+@keyframes gradientBackground {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* Subtle Cyber Grid Background Pattern */
@@ -84,11 +96,109 @@ body::before {
   width: 100vw;
   height: 100vh;
   background-image: 
-    linear-gradient(rgba(145, 70, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(145, 70, 255, 0.04) 1px, transparent 1px);
+    linear-gradient(rgba(145, 70, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(145, 70, 255, 0.05) 1px, transparent 1px);
   background-size: 40px 40px;
   pointer-events: none;
   z-index: 0;
+}
+
+/* Ambient Glow Orbs & Floating Twitch Polygons */
+.twitch-ambient-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.28;
+  animation: orbFloat 14s ease-in-out infinite alternate;
+}
+
+.orb-1 {
+  width: 480px;
+  height: 480px;
+  background: var(--twitch-purple);
+  top: -120px;
+  right: 5%;
+}
+
+.orb-2 {
+  width: 420px;
+  height: 420px;
+  background: var(--twitch-neon-cyan);
+  bottom: 5%;
+  left: -120px;
+  animation-duration: 18s;
+  opacity: 0.16;
+}
+
+.orb-3 {
+  width: 380px;
+  height: 380px;
+  background: var(--twitch-neon-pink);
+  top: 45%;
+  right: -80px;
+  animation-duration: 12s;
+  opacity: 0.2;
+}
+
+@keyframes orbFloat {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(50px, 70px) scale(1.15); }
+}
+
+.twitch-floating-particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: rgba(145, 70, 255, 0.2);
+  border: 1px solid rgba(169, 112, 255, 0.45);
+  transform: rotate(45deg);
+  animation: particleFloat 14s linear infinite;
+}
+
+.p-1 { left: 8%; top: 85%; animation-duration: 16s; width: 16px; height: 16px; }
+.p-2 { left: 28%; top: 92%; animation-duration: 22s; animation-delay: 2s; border-color: rgba(0, 245, 212, 0.5); background: rgba(0, 245, 212, 0.18); }
+.p-3 { left: 52%; top: 78%; animation-duration: 15s; animation-delay: 5s; width: 10px; height: 10px; }
+.p-4 { left: 74%; top: 88%; animation-duration: 20s; animation-delay: 1s; border-color: rgba(255, 0, 122, 0.5); background: rgba(255, 0, 122, 0.18); }
+.p-5 { left: 90%; top: 72%; animation-duration: 13s; animation-delay: 4s; }
+.p-6 { left: 38%; top: 96%; animation-duration: 24s; animation-delay: 3s; width: 20px; height: 20px; }
+
+@keyframes particleFloat {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.65;
+  }
+  85% {
+    opacity: 0.65;
+  }
+  100% {
+    transform: translateY(-100vh) rotate(360deg);
+    opacity: 0;
+  }
 }
 
 /* Scrollbar Styling */
@@ -540,6 +650,31 @@ body::before {
   color: #FFFFFF;
 }
 
+.highlight-twitch {
+  color: var(--twitch-neon-cyan);
+  font-weight: 800;
+  text-shadow: 0 0 12px rgba(0, 245, 212, 0.4);
+}
+
+.cta-body ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding-left: 0.25rem;
+  margin: 0.3rem 0;
+}
+
+.cta-body li {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #E2E2EC;
+}
+
+.cta-body li strong {
+  color: #FFFFFF;
+}
+
 .cta-highlight {
   font-size: 1.2rem;
   font-weight: 800;
@@ -577,6 +712,309 @@ body::before {
   background: linear-gradient(135deg, #A45CFF 0%, var(--twitch-purple) 100%);
   box-shadow: 0 0 40px rgba(145, 70, 255, 0.8), 0 0 20px var(--twitch-neon-cyan);
   border-color: #FFFFFF;
+}
+
+/* ==========================================================================
+   SALÓN DE LOS HÉROES (WALL OF HEROES - PREMIUM GAMER EDITION)
+   ========================================================================== */
+.heroes-section {
+  margin: 3.5rem 0 4.5rem;
+  position: relative;
+}
+
+.heroes-container-card {
+  background: radial-gradient(circle at 50% 20%, rgba(145, 70, 255, 0.16) 0%, rgba(0, 245, 212, 0.05) 45%, rgba(12, 12, 18, 0.85) 100%);
+  border: 1px solid rgba(145, 70, 255, 0.35);
+  border-radius: var(--radius-lg);
+  padding: 2.8rem 2rem 2.5rem;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 35px rgba(145, 70, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.heroes-container-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, var(--twitch-neon-yellow) 30%, var(--twitch-purple) 70%, transparent 100%);
+}
+
+.heroes-header {
+  text-align: center;
+  margin-bottom: 2.4rem;
+}
+
+.heroes-title {
+  font-size: 2.3rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #FFFFFF 0%, #FFE28A 35%, #FFD166 65%, #FF9E00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 0.5rem;
+  animation: titleGlowPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes titleGlowPulse {
+  0% {
+    filter: drop-shadow(0 0 8px rgba(255, 209, 102, 0.35));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(145, 70, 255, 0.6)) drop-shadow(0 0 12px rgba(0, 245, 212, 0.4));
+  }
+  100% {
+    filter: drop-shadow(0 0 8px rgba(255, 209, 102, 0.35));
+  }
+}
+
+.heroes-subtitle {
+  color: var(--text-muted);
+  font-size: 0.98rem;
+  letter-spacing: 0.2px;
+}
+
+.heroes-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1.1rem;
+}
+
+/* Base Card Style (Strict Equal Dimensions) */
+.hero-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.1rem 0.75rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  position: relative;
+  box-sizing: border-box;
+  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+              border-color 0.3s ease, 
+              box-shadow 0.35s ease, 
+              background 0.3s ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* Card Hover Dynamism */
+.hero-card:hover {
+  transform: scale(1.05) translateY(-6px) !important;
+  z-index: 5;
+}
+
+/* 2. Unlocked Winner Card (Jaratos & Future Heroes) */
+@keyframes heroFloating {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.hero-unlocked {
+  animation: heroFloating 3.5s ease-in-out infinite;
+  border: 1.5px solid var(--twitch-neon-cyan);
+  background: linear-gradient(180deg, rgba(26, 28, 44, 0.95) 0%, rgba(12, 30, 32, 0.92) 100%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 22px rgba(0, 245, 212, 0.4), inset 0 0 15px rgba(0, 245, 212, 0.12);
+}
+
+.hero-unlocked:hover {
+  border-color: #FFFFFF;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8), 0 0 35px var(--twitch-neon-cyan), 0 0 20px var(--twitch-purple-glow);
+}
+
+.hero-unlocked .hero-avatar-box {
+  border-radius: 50%;
+  border: 2px solid var(--twitch-neon-cyan);
+  box-shadow: 0 0 16px rgba(0, 245, 212, 0.65), inset 0 0 8px rgba(0, 245, 212, 0.4);
+  position: relative;
+}
+
+.hero-verified-badge {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 22px;
+  height: 22px;
+  background: linear-gradient(135deg, var(--twitch-neon-yellow) 0%, #FF9E00 100%);
+  color: #0A0A0E;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  border: 2px solid #0E0E14;
+  box-shadow: 0 0 10px rgba(255, 209, 102, 0.8);
+}
+
+/* 3. Locked Hologram Cards (Pending Days 2-7) */
+.hero-locked {
+  opacity: 0.55;
+  border: 1.5px dashed rgba(0, 245, 212, 0.35);
+  background: rgba(12, 16, 24, 0.65);
+}
+
+.hero-locked:hover {
+  opacity: 1;
+  border-color: var(--twitch-neon-cyan);
+  border-style: solid;
+  background: rgba(18, 24, 38, 0.9);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.75), 0 0 25px rgba(0, 245, 212, 0.6);
+}
+
+/* Hologram Pulse Animation */
+@keyframes hologramPulse {
+  0%, 100% {
+    transform: scale(0.95);
+    opacity: 0.45;
+    filter: drop-shadow(0 0 3px rgba(0, 245, 212, 0.2));
+    color: rgba(0, 245, 212, 0.6);
+  }
+  50% {
+    transform: scale(1.12);
+    opacity: 0.95;
+    filter: drop-shadow(0 0 12px rgba(0, 245, 212, 0.8));
+    color: var(--twitch-neon-cyan);
+  }
+}
+
+.hero-locked .hero-placeholder-inner {
+  animation: hologramPulse 2s ease-in-out infinite;
+}
+
+/* Avatar Box */
+.hero-avatar-box {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-width: 105px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 0.9rem;
+  background: #0B0B10;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hero-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hero-avatar-box.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 14, 20, 0.85);
+  border: 1px dashed rgba(0, 245, 212, 0.25);
+  border-radius: 50%;
+}
+
+.hero-placeholder-inner {
+  font-size: 1.8rem;
+  color: var(--text-dim);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-card-footer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.hero-card-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.hero-card-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: var(--radius-pill);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.badge-winner {
+  background: linear-gradient(135deg, rgba(0, 245, 212, 0.25) 0%, rgba(145, 70, 255, 0.3) 100%);
+  border: 1px solid var(--twitch-neon-cyan);
+  color: var(--twitch-neon-cyan);
+  box-shadow: 0 0 12px rgba(0, 245, 212, 0.3);
+}
+
+.badge-locked {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 245, 212, 0.2);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Responsividad para Salón de los Héroes */
+@media (max-width: 1150px) {
+  .heroes-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .heroes-container-card {
+    padding: 2rem 1.2rem 1.8rem;
+  }
+  .heroes-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8rem;
+  }
+  .heroes-title {
+    font-size: 1.7rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .heroes-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+  .hero-avatar-box {
+    max-width: 90px;
+  }
+  .hero-card {
+    padding: 0.85rem 0.5rem 0.95rem;
+  }
+  .hero-card-name {
+    font-size: 0.88rem;
+  }
+  .hero-card-badge {
+    font-size: 0.65rem;
+    padding: 3px 6px;
+  }
 }
 
 /* SECTION 2: Interactive 7-Day Grid Panel */
@@ -843,8 +1281,8 @@ body::before {
 footer {
   border-top: 1px solid var(--border-color);
   background: var(--bg-black);
-  padding: 2.5rem 0 1.5rem;
-  color: var(--text-dim);
+  padding: 2.25rem 0 2rem;
+  color: rgba(255, 255, 255, 0.7);
   font-size: 0.85rem;
 }
 
@@ -862,19 +1300,30 @@ footer {
   gap: 12px;
 }
 
+.footer-left span {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  letter-spacing: 0.2px;
+}
+
 .footer-right {
   display: flex;
-  gap: 1rem;
+  align-items: center;
+  gap: 1.5rem;
 }
 
 .footer-right a {
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  font-weight: 600;
   text-decoration: none;
-  transition: color 0.3s ease;
+  transition: color 0.3s ease, opacity 0.2s ease;
 }
 
 .footer-right a:hover {
   color: var(--twitch-purple);
+  opacity: 1;
 }
 
 /* Modal Popup System */
@@ -1168,5 +1617,326 @@ footer {
   }
   .ruleta-banner-visual {
     margin-top: 1rem;
+  }
+}
+
+/* ==========================================================================
+   INTERACTIVE MASCOT: SIMBA THE DACHSHUND (TECKEL NEGRO PIXEL-ART)
+   ========================================================================== */
+.simba-mascot-wrapper {
+  position: fixed;
+  bottom: 12px;
+  left: 40px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  pointer-events: auto;
+  transition: filter 0.25s ease;
+}
+
+.simba-mascot-wrapper:hover {
+  filter: drop-shadow(0 0 14px rgba(145, 70, 255, 0.9)) drop-shadow(0 0 8px rgba(0, 245, 212, 0.7));
+}
+
+/* Pixel Art Sprite Container */
+.simba-sprite-box {
+  position: relative;
+  width: 92px;
+  height: 50px;
+  transform-origin: center bottom;
+  transition: transform 0.15s ease-out;
+}
+
+.simba-pixel-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  display: block;
+  transform: scaleX(var(--simba-dir, 1));
+  transform-origin: center center;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.55));
+}
+
+/* Idle Breathing Animation */
+.simba-sprite-box.idle {
+  animation: simbaBreathing 2.2s ease-in-out infinite alternate;
+}
+
+@keyframes simbaBreathing {
+  0% {
+    transform: translateY(0) scaleY(1);
+  }
+  100% {
+    transform: translateY(-2px) scaleY(1.03);
+  }
+}
+
+/* Walking / Trotting Animation (Fast & Agile) */
+.simba-sprite-box.walking {
+  animation: simbaTrot 0.22s steps(3) infinite alternate;
+}
+
+@keyframes simbaTrot {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-3px) rotate(2.5deg);
+  }
+  100% {
+    transform: translateY(0) rotate(-2.5deg);
+  }
+}
+
+/* Jumping Animation (TranslateY -20px and return) */
+.simba-sprite-box.jumping {
+  animation: simbaJump 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes simbaJump {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  40% {
+    transform: translateY(-20px) scale(1.08, 0.95);
+  }
+  70% {
+    transform: translateY(-6px) scale(0.98, 1.02);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Click / Bark Reaction Animation */
+.simba-sprite-box.barking {
+  animation: simbaBarkJump 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes simbaBarkJump {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  35% {
+    transform: translateY(-18px) scale(1.15) rotate(-5deg);
+  }
+  65% {
+    transform: translateY(-8px) scale(1.08) rotate(3deg);
+  }
+  100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
+
+/* Eating / Chewing Bone Animation */
+.simba-sprite-box.eating {
+  animation: simbaEatChew 0.28s ease-in-out infinite alternate;
+}
+
+@keyframes simbaEatChew {
+  0% {
+    transform: translateY(2px) rotate(2deg) scale(1, 0.96);
+  }
+  50% {
+    transform: translateY(5px) rotate(4deg) scale(1.02, 0.92);
+  }
+  100% {
+    transform: translateY(1px) rotate(-2deg) scale(0.98, 1);
+  }
+}
+
+/* Pooping / Squatting Animation */
+.simba-sprite-box.pooping {
+  animation: simbaSquatPose 0.4s ease-out forwards;
+}
+
+@keyframes simbaSquatPose {
+  0% {
+    transform: translateY(0) scale(1, 1);
+  }
+  100% {
+    transform: translateY(6px) scale(0.96, 0.74) skewX(-4deg);
+  }
+}
+
+/* Comic Speech Bubble */
+.simba-speech-bubble {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px) scale(0.85);
+  background: #FFFFFF;
+  color: #0A0A0E;
+  padding: 8px 15px;
+  border-radius: 14px;
+  font-family: var(--font-sans), 'Outfit', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 800;
+  white-space: nowrap;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 18px rgba(145, 70, 255, 0.5);
+  border: 2px solid var(--twitch-purple);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+              transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 10000;
+}
+
+.simba-speech-bubble.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+.simba-bubble-tail {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 8px solid #FFFFFF;
+}
+
+.simba-bubble-tail::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: -7px;
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 8px solid var(--twitch-purple);
+  z-index: -1;
+}
+
+/* Poop Emoji Dropped on Screen */
+.simba-poop-item {
+  position: fixed;
+  bottom: 12px;
+  font-size: 1.35rem;
+  line-height: 1;
+  z-index: 9995;
+  pointer-events: auto;
+  cursor: pointer;
+  user-select: none;
+  animation: poopDropIn 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: opacity 0.8s ease, transform 0.3s ease;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.65));
+}
+
+.simba-poop-item:hover {
+  transform: scale(1.3) rotate(12deg);
+}
+
+.simba-poop-item.fading-out {
+  opacity: 0;
+  transform: scale(0.5);
+}
+
+@keyframes poopDropIn {
+  0% {
+    transform: scale(0) translateY(-16px);
+    opacity: 0;
+  }
+  65% {
+    transform: scale(1.3) translateY(2px);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Bone Item for Eating Animation */
+.simba-bone-item {
+  position: fixed;
+  bottom: 12px;
+  font-size: 1.4rem;
+  line-height: 1;
+  z-index: 9996;
+  pointer-events: none;
+  user-select: none;
+  animation: boneSpawnIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6));
+}
+
+.simba-bone-item.consumed {
+  transform: scale(0) translateY(-12px) rotate(45deg);
+  opacity: 0;
+}
+
+@keyframes boneSpawnIn {
+  0% {
+    transform: scale(0) translateY(-18px) rotate(-35deg);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.3) translateY(2px) rotate(10deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+/* Munch Particle Effects */
+.simba-munch-particle {
+  position: fixed;
+  bottom: 24px;
+  font-size: 0.95rem;
+  line-height: 1;
+  z-index: 9997;
+  pointer-events: none;
+  user-select: none;
+  animation: munchFloatUp 0.65s ease-out forwards;
+}
+
+@keyframes munchFloatUp {
+  0% {
+    transform: translateY(0) scale(0.4);
+    opacity: 1;
+  }
+  60% {
+    transform: translateY(-16px) scale(1.2);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-28px) scale(0.8);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .simba-mascot-wrapper {
+    bottom: 8px;
+    left: 15px;
+  }
+  .simba-sprite-box {
+    width: 76px;
+    height: 42px;
+  }
+  .simba-speech-bubble {
+    bottom: 50px;
+    font-size: 0.8rem;
+    padding: 6px 10px;
+  }
+  .simba-poop-item,
+  .simba-bone-item {
+    font-size: 1.15rem;
+    bottom: 8px;
   }
 }

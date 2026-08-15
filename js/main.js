@@ -138,4 +138,413 @@ document.addEventListener('DOMContentLoaded', () => {
       numEl.childNodes[0].nodeValue = count.toLocaleString();
     }, 40);
   });
+
+  /* ==========================================================================
+     INTERACTIVE MASCOT: SIMBA (AUTONOMOUS BLACK DACHSHUND / TECKEL NEGRO)
+     ========================================================================== */
+  const simbaMascot = document.getElementById('simba-mascot');
+  const simbaSprite = document.getElementById('simbaSprite');
+  const simbaSpeech = document.getElementById('simbaSpeech');
+  const simbaText = document.getElementById('simbaText');
+
+  if (simbaMascot && simbaSprite && simbaSpeech && simbaText) {
+    let simbaX = 60; // Initial position (px from left)
+    let currentDirection = 1; // 1: facing right, -1: facing left
+    let currentState = 'IDLE'; // 'IDLE' | 'WALK' | 'JUMP' | 'POOP' | 'EAT'
+    let speechTimer = null;
+    let isUserInteracting = false;
+    let walkAnimationId = null;
+    let stateTimeoutId = null;
+    let poopTimeoutId = null;
+    let eatTimeoutId = null;
+    let activeBoneEl = null;
+
+    // Expanded dialogue array
+    const simbaPhrases = [
+      "¡Hola chat! 🐶",
+      "Usen el Código Arixu",
+      "Ari, dame de comer...",
+      "¡Den like al stream!",
+      "¡Ese Partner!",
+      "Guau guau",
+      "Estoy aburrido..."
+    ];
+
+    // Initial setup
+    simbaMascot.style.left = `${simbaX}px`;
+    simbaSprite.style.setProperty('--simba-dir', '1');
+
+    // Sound synthesis fallback & audio player for barking
+    function playBarkAudio() {
+      try {
+        const barkSound = new Audio('assets/bark.mp3');
+        barkSound.volume = 0.6;
+        const playPromise = barkSound.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => playSyntheticWoof());
+        }
+      } catch (e) {
+        playSyntheticWoof();
+      }
+    }
+
+    function playSyntheticWoof() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        const now = ctx.currentTime;
+        osc.frequency.setValueAtTime(460, now);
+        osc.frequency.exponentialRampToValueAtTime(160, now + 0.22);
+        gain.gain.setValueAtTime(0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.25);
+      } catch (err) {
+        // Fallback silently
+      }
+    }
+
+    // Munch crunch sound synthesis for eating bone
+    function playMunchAudio() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const now = ctx.currentTime;
+        [0, 0.13, 0.26].forEach((timeOffset, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = idx % 2 === 0 ? 'triangle' : 'sine';
+          osc.frequency.setValueAtTime(540 + idx * 70, now + timeOffset);
+          osc.frequency.exponentialRampToValueAtTime(260, now + timeOffset + 0.08);
+          gain.gain.setValueAtTime(0.2, now + timeOffset);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + timeOffset + 0.08);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + timeOffset);
+          osc.stop(now + timeOffset + 0.09);
+        });
+      } catch (err) {
+        // Fallback silently
+      }
+    }
+
+    // Function to display speech bubble with random or custom text
+    function showSpeech(text = null, duration = 3000) {
+      if (speechTimer) clearTimeout(speechTimer);
+      const chosenText = text || simbaPhrases[Math.floor(Math.random() * simbaPhrases.length)];
+      simbaText.textContent = chosenText;
+      simbaSpeech.classList.add('active');
+
+      speechTimer = setTimeout(() => {
+        simbaSpeech.classList.remove('active');
+      }, duration);
+    }
+
+    // Direction flip handler
+    function setDirection(dir) {
+      currentDirection = dir;
+      simbaSprite.style.setProperty('--simba-dir', dir > 0 ? '1' : '-1');
+    }
+
+    // Clear active state animations and timeouts
+    function clearCurrentState() {
+      if (walkAnimationId) {
+        cancelAnimationFrame(walkAnimationId);
+        walkAnimationId = null;
+      }
+      if (poopTimeoutId) {
+        clearTimeout(poopTimeoutId);
+        poopTimeoutId = null;
+      }
+      if (eatTimeoutId) {
+        clearTimeout(eatTimeoutId);
+        eatTimeoutId = null;
+      }
+      if (activeBoneEl && activeBoneEl.parentNode) {
+        activeBoneEl.parentNode.removeChild(activeBoneEl);
+        activeBoneEl = null;
+      }
+      simbaSprite.classList.remove('walking', 'jumping', 'pooping', 'barking', 'eating');
+    }
+
+    // Set sprite animation class helper
+    function setSpriteClass(className) {
+      simbaSprite.classList.remove('idle', 'walking', 'jumping', 'pooping', 'barking', 'eating');
+      simbaSprite.classList.add(className);
+    }
+
+    // Spawn Static Poop Emoji on Screen
+    function dropPoop() {
+      const poop = document.createElement('div');
+      poop.className = 'simba-poop-item';
+      poop.textContent = '💩';
+      poop.setAttribute('title', '¡Simba ha dejado un regalito!');
+
+      // Calculate position behind Simba based on facing direction
+      const poopLeft = currentDirection > 0 ? simbaX + 8 : simbaX + 62;
+      poop.style.left = `${Math.max(10, poopLeft)}px`;
+
+      document.body.appendChild(poop);
+
+      // Fade out before removal
+      setTimeout(() => {
+        poop.classList.add('fading-out');
+      }, 9200);
+
+      // Remove after 10 seconds
+      setTimeout(() => {
+        if (poop.parentNode) {
+          poop.parentNode.removeChild(poop);
+        }
+      }, 10000);
+
+      // Interactive Easter egg: squish on click
+      poop.addEventListener('click', () => {
+        poop.style.transform = 'scale(1.4) rotate(15deg)';
+        setTimeout(() => {
+          poop.classList.add('fading-out');
+          setTimeout(() => {
+            if (poop.parentNode) poop.parentNode.removeChild(poop);
+          }, 300);
+        }, 150);
+      });
+    }
+
+    // Spawn floating munch particles
+    function spawnMunchParticle(leftPos, char = '✨') {
+      const particle = document.createElement('div');
+      particle.className = 'simba-munch-particle';
+      particle.textContent = char;
+      particle.style.left = `${leftPos}px`;
+      document.body.appendChild(particle);
+      setTimeout(() => {
+        if (particle.parentNode) particle.parentNode.removeChild(particle);
+      }, 700);
+    }
+
+    // STATE: IDLE (Short breather)
+    function executeIdle() {
+      currentState = 'IDLE';
+      setSpriteClass('idle');
+    }
+
+    // STATE: WALK (Fast & agile trotting across the full horizontal page)
+    function executeWalk() {
+      currentState = 'WALK';
+      setSpriteClass('walking');
+
+      const minX = 15;
+      const maxX = Math.max(minX + 60, window.innerWidth - 105);
+
+      let targetX;
+      // 60% chance to pick a location anywhere across the entire width of the page
+      // 40% chance of a long exploratory stride (180px to 650px)
+      if (Math.random() < 0.60) {
+        targetX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
+      } else {
+        const walkDistance = Math.floor(Math.random() * 470) + 180;
+        let dir = Math.random() < 0.5 ? 1 : -1;
+        if (simbaX < minX + 150) dir = 1;
+        if (simbaX > maxX - 150) dir = -1;
+        targetX = Math.max(minX, Math.min(maxX, simbaX + (dir * walkDistance)));
+      }
+
+      // If target is too close to current spot, choose a destination on the opposite half of the screen
+      if (Math.abs(targetX - simbaX) < 50) {
+        targetX = simbaX > (window.innerWidth / 2)
+          ? Math.floor(Math.random() * (Math.max(minX + 50, (window.innerWidth / 2) - 80) - minX)) + minX
+          : Math.floor(Math.random() * (maxX - (window.innerWidth / 2))) + Math.floor(window.innerWidth / 2);
+      }
+
+      targetX = Math.max(minX, Math.min(maxX, targetX));
+      const actualDir = targetX >= simbaX ? 1 : -1;
+      setDirection(actualDir);
+
+      // Adaptive trotting speed (3.6 to 4.2 px per frame for lively crossing)
+      const distance = Math.abs(targetX - simbaX);
+      const stepSpeed = distance > 400 ? 4.2 : 3.6;
+      
+      function stepWalk() {
+        if (isUserInteracting) return;
+
+        const diff = targetX - simbaX;
+        if (Math.abs(diff) > stepSpeed) {
+          simbaX += actualDir * stepSpeed;
+          simbaMascot.style.left = `${Math.round(simbaX)}px`;
+          walkAnimationId = requestAnimationFrame(stepWalk);
+        } else {
+          simbaX = targetX;
+          simbaMascot.style.left = `${Math.round(simbaX)}px`;
+          walkAnimationId = null;
+          executeIdle();
+        }
+      }
+
+      walkAnimationId = requestAnimationFrame(stepWalk);
+    }
+
+    // STATE: JUMP (Vertical spring jump)
+    function executeJump() {
+      currentState = 'JUMP';
+      setSpriteClass('jumping');
+
+      setTimeout(() => {
+        if (currentState === 'JUMP' && !isUserInteracting) {
+          executeIdle();
+        }
+      }, 550);
+    }
+
+    // STATE: EAT BONE (Eating & Chewing animation)
+    function executeEat() {
+      currentState = 'EAT';
+      setSpriteClass('eating');
+
+      // Place bone right in front of Simba's snout
+      const bone = document.createElement('div');
+      bone.className = 'simba-bone-item';
+      bone.textContent = '🦴';
+      bone.setAttribute('title', '¡Simba disfrutando de su huesito!');
+
+      const boneLeft = currentDirection > 0 ? simbaX + 76 : simbaX - 16;
+      const clampedBoneLeft = Math.max(10, Math.min(window.innerWidth - 45, boneLeft));
+      bone.style.left = `${clampedBoneLeft}px`;
+
+      document.body.appendChild(bone);
+      activeBoneEl = bone;
+
+      // Play munch crunch sounds
+      playMunchAudio();
+      spawnMunchParticle(clampedBoneLeft + 4, '✨');
+
+      // Second crunch wave
+      setTimeout(() => {
+        if (currentState === 'EAT' && !isUserInteracting) {
+          playMunchAudio();
+          spawnMunchParticle(clampedBoneLeft + (currentDirection > 0 ? 8 : -2), '😋');
+        }
+      }, 1000);
+
+      // Third crunch wave & dialogue chance
+      setTimeout(() => {
+        if (currentState === 'EAT' && !isUserInteracting) {
+          spawnMunchParticle(clampedBoneLeft + 4, '🦴');
+          if (Math.random() < 0.45) {
+            showSpeech("¡Ñam ñam! 🦴", 2500);
+          }
+        }
+      }, 1800);
+
+      // Finish eating: bone is consumed
+      eatTimeoutId = setTimeout(() => {
+        if (currentState === 'EAT' && !isUserInteracting) {
+          bone.classList.add('consumed');
+          setTimeout(() => {
+            if (bone.parentNode) bone.parentNode.removeChild(bone);
+            if (activeBoneEl === bone) activeBoneEl = null;
+          }, 400);
+
+          executeIdle();
+        }
+      }, 2600);
+    }
+
+    // STATE: POOP (Occasional squat)
+    function executePoop() {
+      currentState = 'POOP';
+      setSpriteClass('pooping');
+
+      // Drop poop emoji halfway through the 3-second squat
+      poopTimeoutId = setTimeout(() => {
+        if (currentState === 'POOP') {
+          dropPoop();
+        }
+      }, 1200);
+
+      // Stand back up and return to IDLE after 3 seconds
+      setTimeout(() => {
+        if (currentState === 'POOP' && !isUserInteracting) {
+          executeIdle();
+        }
+      }, 3000);
+    }
+
+    // Autonomy State Decision Engine
+    function decideNextAction() {
+      if (isUserInteracting) return;
+
+      clearCurrentState();
+
+      // 30% probability of showing a dialogue bubble on state change
+      if (Math.random() < 0.30) {
+        showSpeech();
+      }
+
+      // Action probabilities: WALK (42%), EAT (24%), JUMP (16%), IDLE (12%), POOP (6%)
+      const rand = Math.random();
+      if (rand < 0.42) {
+        executeWalk();
+      } else if (rand < 0.66) {
+        executeEat();
+      } else if (rand < 0.82) {
+        executeJump();
+      } else if (rand < 0.94) {
+        executeIdle();
+      } else {
+        executePoop();
+      }
+    }
+
+    // Autonomous behavior loop: runs dynamically every 2.2 to 4.5 seconds
+    function scheduleNextBehavior() {
+      if (stateTimeoutId) clearTimeout(stateTimeoutId);
+      const delay = Math.floor(Math.random() * (4500 - 2200 + 1)) + 2200;
+      stateTimeoutId = setTimeout(() => {
+        decideNextAction();
+        scheduleNextBehavior();
+      }, delay);
+    }
+
+    // User Click Interactivity: interrupts current state, barks, jumps, and forces dialogue
+    simbaMascot.addEventListener('click', () => {
+      isUserInteracting = true;
+      clearCurrentState();
+
+      // Play sound
+      playBarkAudio();
+
+      // Bark/jump animation
+      setSpriteClass('barking');
+
+      // Force dialogue
+      showSpeech(null, 3000);
+
+      // Restore idle state and resume behavior cycle after bark animation
+      setTimeout(() => {
+        isUserInteracting = false;
+        executeIdle();
+        scheduleNextBehavior();
+      }, 480);
+    });
+
+    // Handle browser window resize to keep Simba in bounds
+    window.addEventListener('resize', () => {
+      const maxX = Math.max(20, window.innerWidth - 105);
+      if (simbaX > maxX) {
+        simbaX = maxX;
+        simbaMascot.style.left = `${Math.round(simbaX)}px`;
+      }
+    });
+
+    // Start autonomy loop
+    executeIdle();
+    scheduleNextBehavior();
+  }
 });
