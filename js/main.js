@@ -9,8 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const daysData = {
     1: {
       title: "Día 1: La Bomba de Tiempo",
-      status: "¡EN VIVO AHORA!",
-      statusClass: "tag-active",
+      status: '<i class="fas fa-check"></i> COMPLETADO',
+      statusClass: "tag-completed",
       link: "dia1.html",
       badge: "RETOS DE CHAT & ADRENALINA",
       desc: "Desactiva el reactor en equipo antes de que el contador llegue a cero. El chat debe ingresar comandos y resolver acertijos en vivo para evitar la explosión y salvar a ImArixu de la penalización."
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
       statusClass: "tag-active",
       link: "dia3.html",
       badge: "DILEMAS & DEBATE EN DIRECTO",
-      desc: "20 dilemas interactivos sobre Fortnite, la vida del streamer en Twitch y salseo sano. ¡Votación en vivo con el chat de Twitch!"
+      desc: "35 dilemas interactivos sobre Fortnite, la vida del streamer en Twitch y salseo sano. ¡Votación en vivo con el chat de Twitch!"
     },
     4: {
       title: "Día 4: Trivial: Historia de Fortnite",
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (data) {
         modalTitle.textContent = data.title;
         modalBadge.textContent = data.badge;
-        modalStatus.textContent = data.status;
+        modalStatus.innerHTML = data.status;
         modalStatus.className = `day-status-tag ${data.statusClass}`;
         modalDesc.textContent = data.desc;
         
