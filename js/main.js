@@ -17,8 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     2: {
       title: "Día 2: Fortnite-Guessr",
-      status: "¡EN VIVO AHORA!",
-      statusClass: "tag-active",
+      status: '<i class="fas fa-check"></i> COMPLETADO',
+      statusClass: "tag-completed",
       link: "dia2.html",
       badge: "RECONOCIMIENTO DE MAPA",
       desc: "Demuestra que conoces la isla. Adivina las 20 ubicaciones exactas a través del visor de reconocimiento satelital de Fortnite."
