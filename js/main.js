@@ -49,11 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     6: {
       title: "Día 6: ¿Quién es ese Streamer?",
-      status: "PRÓXIMAMENTE - BLOQUEADO",
-      statusClass: "tag-locked",
-      link: "#",
-      badge: "ADIVINA AL CREADOR",
-      desc: "Adivina al creador de contenido de Fortnite viendo solo una parte de su cuerpo, silueta o avatar característico."
+      status: "¡DISPONIBLE AHORA!",
+      statusClass: "tag-active",
+      link: "dia6.html",
+      badge: "ADIVINA AL CREADOR (TWITCH x YOUTUBE)",
+      desc: "Adivina al creador de contenido de Twitch y YouTube viendo solo una parte de su cuerpo, accesorios o tatuajes con el chat en directo."
     },
     7: {
       title: "Día 7: Elimina una Opción",
