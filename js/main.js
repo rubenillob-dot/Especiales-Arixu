@@ -40,20 +40,20 @@ document.addEventListener('DOMContentLoaded', () => {
       desc: "Cultura general de la isla. 35 preguntas de eventos, armas míticas, vehículos y fase final de Muerte Súbita (Puntos x2) con sistema Kahoot y chat de Twitch."
     },
     5: {
-      title: "Día 5: El Sonido de la Batalla",
+      title: "Día 5: ¿Quién es ese Streamer?",
+      status: "¡DISPONIBLE AHORA!",
+      statusClass: "tag-active",
+      link: "dia5.html",
+      badge: "ADIVINA AL CREADOR (TWITCH x YOUTUBE)",
+      desc: "Adivina al creador de contenido de Twitch y YouTube viendo solo una parte de su cuerpo, accesorios o tatuajes con el chat en directo."
+    },
+    6: {
+      title: "Día 6: El Sonido de la Batalla",
       status: "PRÓXIMAMENTE - BLOQUEADO",
       statusClass: "tag-locked",
       link: "#",
       badge: "DESAFÍO AUDITIVO A CIEGAS",
       desc: "Agudiza el oído. Adivina de qué arma, consumible o ítem es el efecto de sonido a ciegas sin ver la pantalla."
-    },
-    6: {
-      title: "Día 6: ¿Quién es ese Streamer?",
-      status: "¡DISPONIBLE AHORA!",
-      statusClass: "tag-active",
-      link: "dia6.html",
-      badge: "ADIVINA AL CREADOR (TWITCH x YOUTUBE)",
-      desc: "Adivina al creador de contenido de Twitch y YouTube viendo solo una parte de su cuerpo, accesorios o tatuajes con el chat en directo."
     },
     7: {
       title: "Día 7: Elimina una Opción",
