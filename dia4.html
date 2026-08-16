@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Día 4: Trivial Historia de Fortnite | Especiales ImArixu</title>
+  <meta name="description" content="Día 4: Trivial de Historia, Mapas y Lore de Fortnite con sistema interactivo Kahoot y chat en directo en Twitch de ImArixu.">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/dia4.css">
+  <!-- FontAwesome Icons for Gamer UI -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body class="dia4-theme">
+
+  <!-- Background Zero Point Energy & Rift Butterflies Canvas -->
+  <canvas id="zeroPointCanvas" aria-hidden="true"></canvas>
+
+  <!-- Fullscreen Confetti Canvas for Winners & Celebrations -->
+  <canvas id="confettiCanvas" aria-hidden="true"></canvas>
+
+  <!-- ======================================================================
+       1. TOP STICKY HUD HEADER (FLOATING GLASS PILL)
+       ====================================================================== -->
+  <header class="dia4-sticky-header">
+    
+    <!-- Brand & Hub Navigation -->
+    <div class="header-brand-group">
+      <a href="index.html" class="btn-nav-hub" title="Volver a la portada de Especiales">
+        <i class="fas fa-arrow-left"></i> Hub
+      </a>
+      <img src="assets/arixu_avatar.png" alt="ImArixu Avatar" class="brand-mini-avatar">
+      <div class="brand-title-badge">
+        ARIXU <span>• TRIVIAL FORTNITE</span>
+      </div>
+    </div>
+
+    <!-- Category Pillar Badge -->
+    <div class="category-theme-badge" id="headerCategoryTag">
+      <i class="fas fa-landmark"></i>
+      <span id="headerCategoryText">EVENTOS EN VIVO</span>
+    </div>
+
+    <!-- Round / Question Counter -->
+    <div class="sticky-round-counter">
+      <i class="fas fa-question-circle" style="color: #00F5D4;"></i>
+      <span>PREGUNTA: <strong class="counter-highlight" id="headerQuestionNum">1</strong> / 35</span>
+    </div>
+
+    <!-- Header Actions (Audio, Fullscreen, Ruleta) -->
+    <div class="header-actions-group">
+      <button class="hud-tool-btn" id="btnAudioToggle" title="Activar/Desactivar efectos de sonido">
+        <i class="fas fa-volume-up"></i> Audio: ON
+      </button>
+
+      <button class="hud-tool-btn" id="btnFullscreenToggle" title="Modo Pantalla Completa">
+        <i class="fas fa-expand"></i> Fullscreen
+      </button>
+
+      <a href="ruleta.html" class="hud-tool-btn" title="Ir a la Ruleta Oficial">
+        <i class="fas fa-dice"></i> Ruleta
+      </a>
+    </div>
+
+  </header>
+
+  <!-- ======================================================================
+       2. CENTRAL FLOATING CONSOLE PANEL (.dashboard-panel)
+       75% Left (Game Arena) / 25% Right (Chat Radar & Live Leaderboard)
+       ====================================================================== -->
+  <main class="dashboard-panel" id="dashboardPanel">
+
+    <!-- LEFT 75%: GAME ARENA -->
+    <div class="dia4-game-area" id="gameArea">
+
+      <!-- TOP: Question Enunciation -->
+      <section class="trivial-question-container" id="trivialQuestionContainer">
+        <div class="banner-muerte-subita" id="bannerMuerteSubita">
+          🔥 PREGUNTA EXTREMA: ¡PUNTOS X2! 🔥
+        </div>
+        <div class="question-meta-row">
+          <span class="question-number-pill" id="questionNumberBadge">PREGUNTA #1 / 35</span>
+          <span class="question-category-tag" id="questionCategoryBadge">EVENTOS EN VIVO</span>
+        </div>
+        <h1 class="trivial-question-title" id="questionText">
+          ¿Qué objeto impactó contra Polvorín Polvoriento (Dusty Depot) al inicio de la Temporada 4 del Capítulo 1?
+        </h1>
+      </section>
+
+      <!-- MIDDLE: Circular 40s Countdown Timer & Round Status Bar -->
+      <section class="timer-section-wrapper">
+        
+        <!-- Circular SVG Timer -->
+        <div class="circular-timer-box">
+          <svg class="circular-timer-svg" viewBox="0 0 84 84">
+            <circle class="timer-circle-bg" cx="42" cy="42" r="37"></circle>
+            <circle class="timer-circle-progress" id="timerCircleProgress" cx="42" cy="42" r="37"></circle>
+          </svg>
+          <div class="timer-number-display" id="timerSecondsDisplay">
+            40<span class="sec-unit">s</span>
+          </div>
+        </div>
+
+        <!-- Linear Progress Meter & Status -->
+        <div class="linear-meter-box">
+          <div class="meter-header-info">
+            <span class="meter-status-tag" id="meterStatusText">
+              <span class="status-dot"></span> EN ESPERA DEL STREAMER
+            </span>
+            <span id="meterVotesCounter"><strong>0</strong> VOTOS</span>
+          </div>
+          <div class="meter-bar-track">
+            <div class="meter-bar-fill" id="meterBarFill"></div>
+          </div>
+        </div>
+
+        <!-- Result Banner (Shown when round ends) -->
+        <div class="round-result-banner" id="roundResultBanner">
+          <div class="result-correct-label">
+            <i class="fas fa-check-circle" style="color: #00FA9A;"></i> Respuesta Correcta: <span id="resultCorrectText"><strong>B) Un meteorito</strong></span>
+          </div>
+          <div class="result-acertantes-badge">
+            <i class="fas fa-users"></i> Acertantes: <span id="resultAcertantesCount"><strong>0</strong></span>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- BOTTOM: 2x2 Kahoot Vibrant Answer Grid -->
+      <section class="trivial-options-grid" id="optionsGrid">
+
+        <!-- OPTION A (Crimson Red / Triangle) -->
+        <button class="option-card option-a" id="optionCardA" tabindex="0" title="Opción A: Tecla [ 1 ] o [ A ]">
+          <div class="option-card-header">
+            <span class="option-shape-pill">
+              <span class="option-shape-icon">▲</span> OPCIÓN A
+            </span>
+            <span class="option-key-hint">[ 1 ] o [ A ]</span>
+          </div>
+          <div class="option-answer-text" id="optionTextA">
+            Un misil
+          </div>
+          <div class="option-stats-row" id="optionStatsA">
+            <span class="option-votes-count" id="optionVotesA">0 votos</span>
+            <span class="option-percentage-badge" id="optionPctA">0%</span>
+          </div>
+        </button>
+
+        <!-- OPTION B (Cobalt Blue / Diamond) -->
+        <button class="option-card option-b" id="optionCardB" tabindex="0" title="Opción B: Tecla [ 2 ] o [ B ]">
+          <div class="option-card-header">
+            <span class="option-shape-pill">
+              <span class="option-shape-icon">◆</span> OPCIÓN B
+            </span>
+            <span class="option-key-hint">[ 2 ] o [ B ]</span>
+          </div>
+          <div class="option-answer-text" id="optionTextB">
+            Un meteorito
+          </div>
+          <div class="option-stats-row" id="optionStatsB">
+            <span class="option-votes-count" id="optionVotesB">0 votos</span>
+            <span class="option-percentage-badge" id="optionPctB">0%</span>
+          </div>
+        </button>
+
+        <!-- OPTION C (Amber Yellow / Circle) -->
+        <button class="option-card option-c" id="optionCardC" tabindex="0" title="Opción C: Tecla [ 3 ] o [ C ]">
+          <div class="option-card-header">
+            <span class="option-shape-pill">
+              <span class="option-shape-icon">●</span> OPCIÓN C
+            </span>
+            <span class="option-key-hint">[ 3 ] o [ C ]</span>
+          </div>
+          <div class="option-answer-text" id="optionTextC">
+            Un cubo morado
+          </div>
+          <div class="option-stats-row" id="optionStatsC">
+            <span class="option-votes-count" id="optionVotesC">0 votos</span>
+            <span class="option-percentage-badge" id="optionPctC">0%</span>
+          </div>
+        </button>
+
+        <!-- OPTION D (Lime Green / Square) -->
+        <button class="option-card option-d" id="optionCardD" tabindex="0" title="Opción D: Tecla [ 4 ] o [ D ]">
+          <div class="option-card-header">
+            <span class="option-shape-pill">
+              <span class="option-shape-icon">■</span> OPCIÓN D
+            </span>
+            <span class="option-key-hint">[ 4 ] o [ D ]</span>
+          </div>
+          <div class="option-answer-text" id="optionTextD">
+            Un ovni
+          </div>
+          <div class="option-stats-row" id="optionStatsD">
+            <span class="option-votes-count" id="optionVotesD">0 votos</span>
+            <span class="option-percentage-badge" id="optionPctD">0%</span>
+          </div>
+        </button>
+
+      </section>
+
+    </div>
+
+    <!-- RIGHT 25%: TWITCH CHAT RADAR & LIVE LEADERBOARD -->
+    <aside class="dia4-chat-area" id="chatArea">
+      
+      <!-- Terminal Header -->
+      <div class="radar-terminal-header">
+        <div class="radar-header-info">
+          <div class="radar-scope-mini">
+            <div class="radar-sweep-beam"></div>
+            <div class="radar-scope-cross"></div>
+          </div>
+          <div>
+            <h3 class="radar-title">MONITOR DE VOTACIÓN</h3>
+            <span class="radar-subtitle">TWITCH IRC // #imarixu</span>
+          </div>
+        </div>
+        <span class="radar-ws-badge" id="radarWsBadge">🔴 RONDA EN ESPERA</span>
+      </div>
+
+      <!-- Navigation Tabs (Chat vs Leaderboard) -->
+      <div class="terminal-nav-tabs">
+        <button class="term-tab-btn active" id="tabChatBtn">
+          <i class="fas fa-comments"></i> Chat en Vivo
+        </button>
+        <button class="term-tab-btn" id="tabLeaderboardBtn">
+          <i class="fas fa-trophy"></i> Clasificación
+        </button>
+      </div>
+
+      <!-- Telemetry Sub-bar -->
+      <div class="radar-status-bar">
+        <span>ENLACE: <strong>443.00 MHz</strong></span>
+        <span id="radarTotalVotesBadge"><strong>0</strong> MSGS_RECV</span>
+      </div>
+
+      <!-- Live Terminal Chat Feed -->
+      <div class="radar-chat-feed" id="radarChatMessages">
+        <div class="terminal-line sys">
+          <span class="terminal-coord">[SYS_INIT]</span> Motor de Trivial listo. Pulsa 'Empezar Ronda' para abrir la votación de 40s en #imarixu...
+        </div>
+      </div>
+
+      <!-- Live Leaderboard Container (Tab 2) -->
+      <div class="radar-leaderboard-feed" id="radarLeaderboardFeed">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <!-- Terminal Footer -->
+      <div class="radar-terminal-footer">
+        <div class="radar-active-target-text" id="radarActiveTargetText">
+          <span class="radar-ping-dot"></span> PREGUNTA: <strong>#01</strong> // EVENTOS EN VIVO
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- ======================================================================
+       3. STREAMER FLOATING CONTROL DOCK (FOOTER)
+       ====================================================================== -->
+  <footer class="dia4-streamer-dock">
+    
+    <div class="dock-controls-group">
+      
+      <!-- Primary Action: Start 40s Round -->
+      <button class="btn-dock-start-round" id="btnStartRound" title="Empezar ronda de 40 segundos y abrir recepción de votos del chat (Espacio / Enter)">
+        <i class="fas fa-play"></i> ▶️ Empezar Ronda
+      </button>
+
+      <!-- Force Close / Reveal -->
+      <button class="btn-dock-secondary btn-dock-close-round" id="btnCloseRound" disabled title="Forzar cierre de ronda y calcular resultados anticipadamente">
+        <i class="fas fa-stop"></i> Cerrar Ronda
+      </button>
+
+      <!-- Next Question Button -->
+      <button class="btn-dock-secondary" id="btnNextQuestion" title="Avanzar a la siguiente pregunta (Tecla N)">
+        Siguiente <i class="fas fa-arrow-right"></i> <span class="btn-key-tag">N</span>
+      </button>
+
+      <!-- Prev Question Button -->
+      <button class="btn-dock-secondary" id="btnPrevQuestion" title="Retroceder a la pregunta anterior (Tecla P)">
+        <i class="fas fa-arrow-left"></i> Anterior <span class="btn-key-tag">P</span>
+      </button>
+
+      <!-- Reset Question Button -->
+      <button class="btn-dock-secondary" id="btnResetRound" title="Reiniciar la pregunta actual">
+        <i class="fas fa-rotate-left"></i>
+      </button>
+
+      <!-- Quick Test Simulation Button -->
+      <button class="btn-dock-secondary" id="btnSimulateVotes" title="Simular votos de espectadores del chat para pruebas">
+        <i class="fas fa-bolt"></i> Simular Votos
+      </button>
+
+      <!-- Final Podium Button -->
+      <button class="btn-dock-secondary btn-dock-podium" id="btnShowPodium" style="display: none;" title="Abrir el podio final con los 3 ganadores">
+        <i class="fas fa-crown"></i> 🏆 Ver Podio Final
+      </button>
+
+    </div>
+
+  </footer>
+
+  <!-- ======================================================================
+       4. EPIC TOP 3 PODIUM MODAL
+       ====================================================================== -->
+  <div class="dia4-modal-overlay" id="podiumModalOverlay">
+    <div class="dia4-modal-card">
+      <button class="dia4-modal-close" id="btnClosePodiumModal" title="Cerrar modal">&times;</button>
+      
+      <div class="podium-hero-badge">
+        <i class="fas fa-trophy"></i> DÍA 04 • HISTORIA DE FORTNITE
+      </div>
+      <h2 class="podium-modal-title">¡CAMPEONES DEL TRIVIAL!</h2>
+      <p class="podium-modal-subtitle">
+        Los 3 mayores expertos en el lore, eventos y secretos de la isla de Fortnite según la puntuación de velocidad estilo Kahoot:
+      </p>
+
+      <!-- 3D Podium Columns -->
+      <div class="podium-3d-stage">
+        
+        <!-- 2nd Place (Silver) -->
+        <div class="podium-column rank-2">
+          <div class="podium-user-badge">
+            <div class="podium-rank-icon">🥈</div>
+            <div class="podium-user-name" id="podiumSecondUser">---</div>
+            <div class="podium-user-points" id="podiumSecondPoints">0 PTS</div>
+            <div class="podium-user-accuracy" id="podiumSecondAccuracy">0/35 aciertos</div>
+          </div>
+          <div class="podium-pedestal">2</div>
+        </div>
+
+        <!-- 1st Place (Gold - Tallest) -->
+        <div class="podium-column rank-1">
+          <div class="podium-user-badge">
+            <div class="podium-rank-icon">🥇</div>
+            <div class="podium-user-name" id="podiumFirstUser">---</div>
+            <div class="podium-user-points" id="podiumFirstPoints">0 PTS</div>
+            <div class="podium-user-accuracy" id="podiumFirstAccuracy">0/35 aciertos</div>
+          </div>
+          <div class="podium-pedestal">1</div>
+        </div>
+
+        <!-- 3rd Place (Bronze) -->
+        <div class="podium-column rank-3">
+          <div class="podium-user-badge">
+            <div class="podium-rank-icon">🥉</div>
+            <div class="podium-user-name" id="podiumThirdUser">---</div>
+            <div class="podium-user-points" id="podiumThirdPoints">0 PTS</div>
+            <div class="podium-user-accuracy" id="podiumThirdAccuracy">0/35 aciertos</div>
+          </div>
+          <div class="podium-pedestal">3</div>
+        </div>
+
+      </div>
+
+      <!-- Podium Modal Actions -->
+      <div class="podium-modal-actions">
+        <button class="btn-podium-download" id="btnDownloadTxtReport">
+          <i class="fas fa-download"></i> Descargar Informe TXT (.txt)
+        </button>
+        <button class="btn-podium-close" id="btnRestartGame">
+          <i class="fas fa-rotate-left"></i> Reiniciar Trivial
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- JavaScript Engine for Day 4 -->
+  <script src="js/dia4.js"></script>
+</body>
+</html>

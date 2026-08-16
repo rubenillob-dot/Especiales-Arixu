@@ -33,11 +33,11 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     4: {
       title: "Día 4: Trivial: Historia de Fortnite",
-      status: "PRÓXIMAMENTE - BLOQUEADO",
-      statusClass: "tag-locked",
-      link: "#",
-      badge: "TRIVIAL & NOSTALGIA",
-      desc: "Cultura general de la isla. ¿Recuerdas los eventos, pases de batalla y cambios de mapa de las primeras temporadas?"
+      status: "¡DISPONIBLE AHORA!",
+      statusClass: "tag-active",
+      link: "dia4.html",
+      badge: "TRIVIAL & LORE FORTNITE",
+      desc: "Cultura general de la isla. 35 preguntas de eventos, armas míticas, vehículos y fase final de Muerte Súbita (Puntos x2) con sistema Kahoot y chat de Twitch."
     },
     5: {
       title: "Día 5: El Sonido de la Batalla",
