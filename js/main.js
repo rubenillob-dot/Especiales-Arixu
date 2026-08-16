@@ -49,11 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     6: {
       title: "Día 6: El Sonido de la Batalla",
-      status: "PRÓXIMAMENTE - BLOQUEADO",
-      statusClass: "tag-locked",
-      link: "#",
-      badge: "DESAFÍO AUDITIVO A CIEGAS",
-      desc: "Agudiza el oído. Adivina de qué arma, consumible o ítem es el efecto de sonido a ciegas sin ver la pantalla."
+      status: "¡DISPONIBLE AHORA!",
+      statusClass: "tag-active",
+      link: "dia6.html",
+      badge: "DESAFÍO AUDITIVO A CIEGAS (20 RONDAS)",
+      desc: "Agudiza el oído. 20 rondas de efectos de sonido de armas, consumibles, bailes y eventos míticos de Fortnite con votación interactiva A, B o C en el chat."
     },
     7: {
       title: "Día 7: Elimina una Opción",

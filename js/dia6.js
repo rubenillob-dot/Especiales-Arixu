@@ -2,223 +2,276 @@ document.addEventListener('DOMContentLoaded', () => {
   'use strict';
 
   // ========================================================================
-  // 1. BASE DE DATOS: 17 CREADORES DE CONTENIDO (TWITCH x YOUTUBE)
+  // 1. BASE DE DATOS: 20 RONDAS DE SONIDOS (FORTNITE CLÁSICO)
   // ========================================================================
-  const STREAMERS_DATA = [
+  const SOUNDS_DATA = [
     {
       id: 1,
-      nombre: "SoyAche",
-      pista: "GORRO DE LANA / LOOK",
-      plataforma: "Twitch: @soyache | YouTube: @SoyAche",
-      imgRecorte: "assets/streamers/Streamers Recortados/Ache.png",
-      imgCompleto: "assets/streamers/Streamer Sin recortar/Ache.png",
-      aliases: ["ache", "soyache", "soy ache", "achex", "hache", "el ache"]
+      titulo: "¿Qué sonido icónico de Fortnite estás escuchando?",
+      categoria: "OBJETO / COFRE",
+      audioSrc: "assets/sonidos dia6/apertura_cofre.mp3",
+      fallbackSrc: "sonidos dia6/apertura_cofre.mp3",
+      opciones: {
+        A: "Apertura de Cofre Mítico / Legendario",
+        B: "Suministro Aéreo Aterrizando",
+        C: "Activación de Máquina Expendedora"
+      },
+      correcta: "A"
     },
     {
       id: 2,
-      nombre: "Anerius",
-      pista: "TATUAJE EN EL BRAZO",
-      plataforma: "Twitch: @anerius | YouTube: @Anerius",
-      imgRecorte: "assets/streamers/Streamers Recortados/Anerius.png",
-      imgCompleto: "assets/streamers/Streamer Sin recortar/Anerius.png",
-      aliases: ["anerius", "ane", "aneriuss", "la ane"]
+      titulo: "¿A qué baile mítico de la taquilla pertenece esta melodía?",
+      categoria: "GESTO / BAILE",
+      audioSrc: "assets/sonidos dia6/baile_default.mp3",
+      fallbackSrc: "sonidos dia6/baile_default.mp3",
+      opciones: {
+        A: "Baile Floss (Hilo Dental)",
+        B: "Baile Default (Baila Paso a Paso)",
+        C: "Baile Electro Shuffle"
+      },
+      correcta: "B"
     },
     {
       id: 3,
-      nombre: "AriGameplays",
-      pista: "MAQUILLAJE / OJO ICÓNICO",
-      plataforma: "Twitch: @arigameplays | YouTube: @AriGameplays",
-      imgRecorte: "assets/streamers/Streamers Recortados/arigameplays.png",
-      imgCompleto: "assets/streamers/Streamer Sin recortar/arigameplays.png",
-      aliases: ["arigameplays", "ari gameplays", "arigameplay", "abril garza", "arigame"]
+      titulo: "¿Qué mítica escopeta de combate está disparando?",
+      categoria: "ARMA / ESCOPETA",
+      audioSrc: "assets/sonidos dia6/Escopeta PUMP (SPAS).MP3",
+      fallbackSrc: "sonidos dia6/Escopeta PUMP (SPAS).MP3",
+      opciones: {
+        A: "Escopeta de Corredera / SPAS",
+        B: "Escopeta de Carga",
+        C: "Escopeta de Doble Cañón"
+      },
+      correcta: "A"
     },
     {
       id: 4,
-      nombre: "AuronPlay",
-      pista: "TATUAJE / RODOLFO",
-      plataforma: "Twitch: @auronplay | YouTube: @AuronPlay",
-      imgRecorte: "assets/streamers/Streamers Recortados/auronplay.png",
-      imgCompleto: "assets/streamers/Streamer Sin recortar/auronplay.png",
-      aliases: ["auron", "auronplay", "auron play", "raul alvarez", "abduzcan", "rodolfo"]
+      titulo: "¿Qué escopeta de cadencia rápida suena en este disparo?",
+      categoria: "ARMA / ESCOPETA",
+      audioSrc: "assets/sonidos dia6/ESCOPETA TACTICA.MP3",
+      fallbackSrc: "sonidos dia6/ESCOPETA TACTICA.MP3",
+      opciones: {
+        A: "Escopeta Pesada",
+        B: "Escopeta de Tambor",
+        C: "Escopeta Táctica"
+      },
+      correcta: "C"
     },
     {
       id: 5,
-      nombre: "Fernanfloo",
-      pista: "GORRA VERDE CARACTERÍSTICA",
-      plataforma: "YouTube: @Fernanfloo | Twitch: @fernanfloo",
-      imgRecorte: "assets/streamers/Streamers Recortados/fernanfloo.png",
-      imgCompleto: "assets/streamers/Streamer Sin recortar/fernanfloo.png",
-      aliases: ["fernan", "fernanfloo", "fernanflo", "luis fernando", "curly"]
+      titulo: "¿Qué consumible de supervivencia se está bebiendo?",
+      categoria: "CONSUMIBLE / ESCUDO",
+      audioSrc: "assets/sonidos dia6/escudo.mp3",
+      fallbackSrc: "sonidos dia6/escudo.mp3",
+      opciones: {
+        A: "Poción de Escudo Grande (50 de Escudo)",
+        B: "Salpicón Saludable (Chug Splash)",
+        C: "Bidón de Plasma"
+      },
+      correcta: "A"
     },
     {
       id: 6,
-      nombre: "TheGrefg",
-      pista: "PEINADO / PELO ICÓNICO",
-      plataforma: "Twitch: @thegrefg | YouTube: @TheGrefg",
-      imgRecorte: "assets/streamers/Streamers Recortados/grefg.png",
-      imgCompleto: "assets/streamers/Streamer Sin recortar/grefg.png",
-      aliases: ["grefg", "thegrefg", "the grefg", "david canovas", "el grefg", "gref"]
+      titulo: "¿Qué fusil especial produce este disparo de impacto explosivo?",
+      categoria: "ARMA / FUSIL ESPECIAL",
+      audioSrc: "assets/sonidos dia6/FUSIL DE REPETICION EXPLOSIVO.MP3",
+      fallbackSrc: "sonidos dia6/FUSIL DE REPETICION EXPLOSIVO.MP3",
+      opciones: {
+        A: "Lanzagranadas Cuádruple",
+        B: "Fusil de Repetición Explosivo",
+        C: "Arco Explosivo de Dinamita"
+      },
+      correcta: "B"
     },
     {
       id: 7,
-      nombre: "Jelty",
-      pista: "TRAJE ESLAND",
-      plataforma: "Twitch: @jelty | YouTube: @Jelty",
-      imgRecorte: "assets/streamers/Streamers Recortados/jelty.png",
-      imgCompleto: "assets/streamers/Streamer Sin recortar/jelty.png",
-      aliases: ["jelty", "jesus navas", "el jelty", "jeltyy"]
+      titulo: "¿Qué fusil futurista de precisión estás oyendo?",
+      categoria: "ARMA / FUSIL DE ASALTO",
+      audioSrc: "assets/sonidos dia6/FUSIL HOLOTORNADO.MP3",
+      fallbackSrc: "sonidos dia6/FUSIL HOLOTORNADO.MP3",
+      opciones: {
+        A: "Fusil Holotornado",
+        B: "Fusil de Pulsos de la OI",
+        C: "Fusil de Energía Stark"
+      },
+      correcta: "A"
     },
     {
       id: 8,
-      nombre: "Lolito FDEZ",
-      pista: "RASGO FACIAL / BARBA",
-      plataforma: "Twitch: @lolitofdez | YouTube: @LOLiTOFDEZ",
-      imgRecorte: "assets/streamers/Streamers Recortados/lolito.jpg",
-      imgCompleto: "assets/streamers/Streamer Sin recortar/lolitofdz.png",
-      aliases: ["lolito", "lolitofdez", "lolito fdez", "manuel fernandez", "el lolito"]
+      titulo: "¿Qué objeto de movilidad legendario se acaba de disparar?",
+      categoria: "MOVILIDAD / UTILIDAD",
+      audioSrc: "assets/sonidos dia6/GANCHO.MP3",
+      fallbackSrc: "sonidos dia6/GANCHO.MP3",
+      opciones: {
+        A: "Guantelete de Spider-Man",
+        B: "Gancho Desplegable (Grappler)",
+        C: "Espada Cinética"
+      },
+      correcta: "B"
     },
     {
       id: 9,
-      nombre: "Ninja",
-      pista: "BANDANA AMARILLA / AZUL",
-      plataforma: "Twitch: @ninja | YouTube: @Ninja",
-      imgRecorte: "assets/streamers/Streamers Recortados/ninja.png",
-      imgCompleto: "assets/streamers/Streamer Sin recortar/ninja.png",
-      aliases: ["ninja", "tyler blevins", "tyler ninja", "el ninja"]
+      titulo: "¿Qué variante exótica de fusil dispara con este sonido?",
+      categoria: "ARMA / EXÓTICA",
+      audioSrc: "assets/sonidos dia6/HOLOTORNADO EXOTICO.MP3",
+      fallbackSrc: "sonidos dia6/HOLOTORNADO EXOTICO.MP3",
+      opciones: {
+        A: "Fusil Holotornado Exótico",
+        B: "Fusil de Tirador Rastreador",
+        C: "Fusil de Ráfaga de Asalto"
+      },
+      correcta: "A"
     },
     {
       id: 10,
-      nombre: "Papivisen",
-      pista: "MIRADA / OJOS",
-      plataforma: "Twitch: @papivisen | YouTube: @Papivisen",
-      imgRecorte: "assets/streamers/Streamers Recortados/Papivisen.png",
-      imgCompleto: "assets/streamers/Streamer Sin recortar/Papivisen.png",
-      aliases: ["papivisen", "papi visen", "visen", "papi gavi"]
+      titulo: "¿Qué objeto de defensa táctica se despliega?",
+      categoria: "DEFENSA / UTILIDAD",
+      audioSrc: "assets/sonidos dia6/MINIESCUDO BURBUJA.MP3",
+      fallbackSrc: "sonidos dia6/MINIESCUDO BURBUJA.MP3",
+      opciones: {
+        A: "Fuerte Portátil",
+        B: "Miniescudo Burbuja (Burbuja Protectora)",
+        C: "Grieta Portátil"
+      },
+      correcta: "B"
     },
     {
       id: 11,
-      nombre: "Rados",
-      pista: "PLANTA / FONDO STREAM",
-      plataforma: "Twitch: @radosss | YouTube: @Rados",
-      imgRecorte: "assets/streamers/Streamers Recortados/rados.png",
-      imgCompleto: "assets/streamers/Streamer Sin recortar/rados.png",
-      aliases: ["rados", "radosss", "el rados", "rado"]
+      titulo: "¿Qué objeto de amortiguación y rebote se activa?",
+      categoria: "MOVILIDAD / OBJETO",
+      audioSrc: "assets/sonidos dia6/MINIPLATAFORMA DE IMPACTO.MP3",
+      fallbackSrc: "sonidos dia6/MINIPLATAFORMA DE IMPACTO.MP3",
+      opciones: {
+        A: "Miniplataforma de Impacto (Crash Pad)",
+        B: "Trampolín Elástico Clásico",
+        C: "Granada de Choque"
+      },
+      correcta: "A"
     },
     {
       id: 12,
-      nombre: "Rivers GG",
-      pista: "POLLITOS / ACCESORIO",
-      plataforma: "Twitch: @rivers_gg | YouTube: @RiversGG",
-      imgRecorte: "assets/streamers/Streamers Recortados/Riverss Mexico.png",
-      imgCompleto: "assets/streamers/Streamer Sin recortar/Riverss Mexico.png",
-      aliases: ["rivers", "riversgg", "rivers_gg", "samy rivers", "sammy rivers", "la rivers", "samy", "rivers mexico"]
+      titulo: "¿Qué suceso crucial de partida representa este sonido?",
+      categoria: "SUCESO / COMBATE",
+      audioSrc: "assets/sonidos dia6/muerte.mp3",
+      fallbackSrc: "sonidos dia6/muerte.mp3",
+      opciones: {
+        A: "Reaparición en Autobús de Reinicio",
+        B: "Jugador Derribado / Eliminación por Dron",
+        C: "Activación de Baliza de Reanimación"
+      },
+      correcta: "B"
     },
     {
       id: 13,
-      nombre: "ElRubius",
-      pista: "GAFAS & RASGO CARACTERÍSTICO",
-      plataforma: "Twitch: @rubius | YouTube: @elrubiusOMG",
-      imgRecorte: "assets/streamers/Streamers Recortados/rubius.png",
-      imgCompleto: "assets/streamers/Streamer Sin recortar/rubius.jpg",
-      aliases: ["rubius", "elrubius", "el rubius", "elrubiusomg", "ruben doblas", "rubendoblas"]
+      titulo: "¿Qué pistola de ráfaga y fuego rápido se escucha?",
+      categoria: "ARMA / PISTOLA",
+      audioSrc: "assets/sonidos dia6/PISTOLA ASALTADORA.MP3",
+      fallbackSrc: "sonidos dia6/PISTOLA ASALTADORA.MP3",
+      opciones: {
+        A: "Cañón de Mano (Deagle)",
+        B: "Pistola Asaltadora",
+        C: "Pistola con Silenciador"
+      },
+      correcta: "B"
     },
     {
       id: 14,
-      nombre: "Té Verde Con Limón",
-      pista: "LOGOTIPO / AVATAR",
-      plataforma: "Twitch: @teverdeconlimon",
-      imgRecorte: "assets/streamers/Streamers Recortados/teverdeconlimon.png",
-      imgCompleto: "assets/streamers/Streamer Sin recortar/teverdeconlimon.png",
-      aliases: ["te verde con limon", "teverde", "te verde", "teverdeconlimon", "te con limon"]
+      titulo: "¿Qué arma de disparo pesado y contundente es?",
+      categoria: "ARMA / REVÓLVER",
+      audioSrc: "assets/sonidos dia6/REVOLVER ASOLADOR.MP3",
+      fallbackSrc: "sonidos dia6/REVOLVER ASOLADOR.MP3",
+      opciones: {
+        A: "Revólver Asolador",
+        B: "Pistola de Mecha",
+        C: "Revólver de Seis Balas"
+      },
+      correcta: "A"
     },
     {
       id: 15,
-      nombre: "Willyrex",
-      pista: "OJOS CARACTERÍSTICOS",
-      plataforma: "YouTube: @Willyrex | Twitch: @willyrex",
-      imgRecorte: "assets/streamers/Streamers Recortados/willy.png",
-      imgCompleto: "assets/streamers/Streamer Sin recortar/willy.jpg",
-      aliases: ["willy", "willyrex", "elwillyrex", "guillermo diaz", "el willy"]
+      titulo: "¿Qué fusil de asalto sigiloso está disparando?",
+      categoria: "ARMA / FUSIL SIGILOSO",
+      audioSrc: "assets/sonidos dia6/SCAR SILENCIADA.MP3",
+      fallbackSrc: "sonidos dia6/SCAR SILENCIADA.MP3",
+      opciones: {
+        A: "Fusil de Asalto Silenciado (SCAR Silenciada)",
+        B: "Subfusil con Silenciador",
+        C: "Pistola de Rastreo Silenciosa"
+      },
+      correcta: "A"
     },
     {
       id: 16,
-      nombre: "Hiper",
-      pista: "MASCOTA / LOGO DEL CANAL",
-      plataforma: "Twitch: @elhiper | YouTube: @Hiper",
-      imgRecorte: "assets/streamers/Streamers Recortados/logohiper.jpg",
-      imgCompleto: "assets/streamers/Streamer Sin recortar/hiper.jpg",
-      aliases: ["hiper", "elhiper", "el hiper", "hiperop", "hiper_op"]
+      titulo: "¿Qué fusil legendario de oro dispara con este sonido mítico?",
+      categoria: "ARMA / FUSIL LEGENDARIO",
+      audioSrc: "assets/sonidos dia6/SCAR.mp3",
+      fallbackSrc: "sonidos dia6/SCAR.mp3",
+      opciones: {
+        A: "Fusil de Ráfaga FAMAS",
+        B: "Fusil de Asalto M16 Clásico",
+        C: "Fusil de Asalto SCAR Legendaria"
+      },
+      correcta: "C"
     },
     {
       id: 17,
-      nombre: "DanielaRodbau",
-      pista: "SOMBRERO / ESTILO ICÓNICO",
-      plataforma: "TikTok / Twitch: @danielarodbau",
-      imgRecorte: "assets/streamers/Streamers Recortados/sombrerodaniela.jpg",
-      imgCompleto: "assets/streamers/Streamer Sin recortar/daniela.jpg",
-      aliases: ["daniela", "danielarodbau", "daniela rodbau", "dani", "rodbau", "danielarod"]
+      titulo: "¿Qué subfusil de cadencia adaptable está en combate?",
+      categoria: "ARMA / SUBFUSIL",
+      audioSrc: "assets/sonidos dia6/SUBFUSIL FLEXIBLE.MP3",
+      fallbackSrc: "sonidos dia6/SUBFUSIL FLEXIBLE.MP3",
+      opciones: {
+        A: "Subfusil Flexible",
+        B: "Subfusil de Ráfaga",
+        C: "Subfusil Compacto P90"
+      },
+      correcta: "A"
     },
     {
       id: 18,
-      nombre: "Dang3rclips",
-      pista: "CLIPS / SETUP DE STREAMING",
-      plataforma: "TikTok / Twitch: @dang3rclips",
-      imgRecorte: "assets/streamers/Streamers Recortados/Dang3rclips.png",
-      imgCompleto: "assets/streamers/Streamer Sin recortar/Dang3rclips.jpg",
-      aliases: ["dang3rclips", "dangerclips", "danger clips", "dang3r clips", "danger", "dang3r"]
+      titulo: "¿Qué arma mítica de la Agencia suena con este repiqueteo?",
+      categoria: "ARMA / MÍTICA DE MIDAS",
+      audioSrc: "assets/sonidos dia6/SUBFUSIL TAMBOR DE MIDAS.MP3",
+      fallbackSrc: "sonidos dia6/SUBFUSIL TAMBOR DE MIDAS.MP3",
+      opciones: {
+        A: "Minigun Legendaria de Brutus",
+        B: "Subfusil Tambor Mítico de Midas",
+        C: "Fusil de Asalto Pesado de Meowscles"
+      },
+      correcta: "B"
     },
     {
       id: 19,
-      nombre: "Don Angelillo",
-      pista: "BARBA / ESTILO ELEGANTE",
-      plataforma: "Twitch: @donangelillo | YouTube: @DonAngelillo",
-      imgRecorte: "assets/streamers/Streamers Recortados/Don Angelillo.png",
-      imgCompleto: "assets/streamers/Streamer Sin recortar/Don Angelillo.jpg",
-      aliases: ["don angelillo", "angelillo", "donangelillo", "don angel", "angel"]
+      titulo: "¿Qué peligro ambiental de la isla está aproximándose?",
+      categoria: "EVENTO / TORMENTA",
+      audioSrc: "assets/sonidos dia6/tormenta.mp3",
+      fallbackSrc: "sonidos dia6/tormenta.mp3",
+      opciones: {
+        A: "Cierre / Daño de la Tormenta",
+        B: "Zona de Gravedad Cero de Kevin",
+        C: "Invasión de Platillo Volador"
+      },
+      correcta: "A"
     },
     {
       id: 20,
-      nombre: "Happy happy Gal",
-      pista: "AURICULARES / SONRISA CARACTERÍSTICA",
-      plataforma: "Twitch: @happyhappygal | YouTube: @HappyHappyGal",
-      imgRecorte: "assets/streamers/Streamers Recortados/Happy happy Gal.png",
-      imgCompleto: "assets/streamers/Streamer Sin recortar/Happy happy Gal.jpg",
-      aliases: ["happy happy gal", "happy happy", "happyhappygal", "happy gal", "happy"]
-    },
-    {
-      id: 21,
-      nombre: "Knooby",
-      pista: "TATUAJE / ESTILO GAMER",
-      plataforma: "Twitch: @knooby | YouTube: @Knooby",
-      imgRecorte: "assets/streamers/Streamers Recortados/Knooby.png",
-      imgCompleto: "assets/streamers/Streamer Sin recortar/Knooby.jpg",
-      aliases: ["knooby", "knoby", "knoobyy", "el knooby", "knoob"]
-    },
-    {
-      id: 22,
-      nombre: "RecurdOp",
-      pista: "LOOK / DETALLE CARACTERÍSTICO",
-      plataforma: "Twitch: @recurdop | YouTube: @RecurdOp",
-      imgRecorte: "assets/streamers/Streamers Recortados/RecurdOp.png",
-      imgCompleto: "assets/streamers/Streamer Sin recortar/RecurdOp.jpg",
-      aliases: ["recurdop", "recurd", "recurd op", "el recurd", "recurd_op"]
-    },
-    {
-      id: 23,
-      nombre: "ImArixu",
-      pista: "👑 ¡LA ANFITRIONA DEL ESPECIAL!",
-      plataforma: "Twitch: @imarixu | YouTube: @ImArixu",
-      imgRecorte: "assets/streamers/Streamers Recortados/Ari.jpg",
-      imgCompleto: "assets/streamers/Streamer Sin recortar/arixu.jpg",
-      aliases: ["ari", "arixu", "imarixu", "im arixu", "arichu", "arixuu", "ari xu"]
+      titulo: "¿Qué momento culminante de partida desata este sonido triunfal?",
+      categoria: "FINAL / VICTORIA",
+      audioSrc: "assets/sonidos dia6/victoria_magistral.mp3",
+      fallbackSrc: "sonidos dia6/victoria_magistral.mp3",
+      opciones: {
+        A: "Primera Sangre de la Partida",
+        B: "Victoria Magistral (#1 Victory Royale)",
+        C: "Misión Semanal Completada"
+      },
+      correcta: "B"
     }
   ];
 
   // ========================================================================
   // 2. ESTADO DEL JUEGO
   // ========================================================================
-  const ROUND_DURATION_SEC = 35;
-  let currentStreamerIndex = 0;
+  const ROUND_DURATION_SEC = 20;
+  let currentRoundIndex = 0;
   let isRoundActive = false;
   let isRevealed = false;
   let secondsRemaining = ROUND_DURATION_SEC;
@@ -226,22 +279,25 @@ document.addEventListener('DOMContentLoaded', () => {
   let isAudioEnabled = true;
   let totalChatMessages = 0;
 
-  // Set of viewers who have guessed correctly in the CURRENT round
-  let roundHits = new Set();
+  // Votes in the CURRENT round: { A: Set(usernames), B: Set(usernames), C: Set(usernames) }
+  let currentRoundVotes = { A: new Set(), B: new Set(), C: new Set() };
+  let usersVotedInRound = new Map(); // username -> option
 
-  // Cumulative Leaderboard: { [username]: { displayName, totalScore, correctCount } }
+  // Cumulative Leaderboard: { [username]: { displayName, score, correctCount } }
   let userScores = {};
 
-  // Web Audio Synthesizer
+  // Audio Synthesizer
   let audioCtx = null;
 
   function initAudio() {
     if (!audioCtx) {
-      const AudioClass = window.AudioContext || window.webkitAudioContext;
-      if (AudioClass) audioCtx = new AudioClass();
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (AudioContextClass) {
+        audioCtx = new AudioContextClass();
+      }
     }
     if (audioCtx && audioCtx.state === 'suspended') {
-      audioCtx.resume();
+      audioCtx.resume().catch(() => {});
     }
   }
 
@@ -250,156 +306,112 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       initAudio();
       if (!audioCtx) return;
+
       const now = audioCtx.currentTime;
 
-      if (type === 'start') {
+      if (type === 'tick') {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(260, now);
-        osc.frequency.exponentialRampToValueAtTime(640, now + 0.3);
-        gain.gain.setValueAtTime(0.2, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc.frequency.setValueAtTime(800, now);
+        gain.gain.setValueAtTime(0.04, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
         osc.start(now);
-        osc.stop(now + 0.35);
-
-      } else if (type === 'hit') {
-        // High pleasant chime when viewer guesses
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(880, now);
-        osc.frequency.setValueAtTime(1320, now + 0.08);
-        gain.gain.setValueAtTime(0.15, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start(now);
-        osc.stop(now + 0.25);
-
-      } else if (type === 'tick') {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(600, now);
-        gain.gain.setValueAtTime(0.05, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start(now);
-        osc.stop(now + 0.03);
-
+        osc.stop(now + 0.05);
       } else if (type === 'warning') {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(400, now);
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(980, now);
         gain.gain.setValueAtTime(0.08, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
         osc.start(now);
-        osc.stop(now + 0.06);
-
+        osc.stop(now + 0.13);
+      } else if (type === 'start') {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(440, now);
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.18);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.23);
       } else if (type === 'reveal') {
-        // Grand reveal triumph fanfare
-        const notes = [523.25, 659.25, 783.99, 1046.50];
-        notes.forEach((freq, idx) => {
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
           osc.type = 'triangle';
-          osc.frequency.setValueAtTime(freq, now + idx * 0.08);
-          gain.gain.setValueAtTime(0.2, now + idx * 0.08);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.6);
+          osc.frequency.setValueAtTime(freq, now + i * 0.08);
+          gain.gain.setValueAtTime(0.1, now + i * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.35);
           osc.connect(gain);
           gain.connect(audioCtx.destination);
-          osc.start(now + idx * 0.08);
-          osc.stop(now + idx * 0.08 + 0.65);
-        });
-
-      } else if (type === 'podium') {
-        const chords = [440, 554.37, 659.25, 880, 1108.73];
-        chords.forEach((freq, idx) => {
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(freq, now + idx * 0.06);
-          gain.gain.setValueAtTime(0.18, now + idx * 0.06);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 1.2);
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
-          osc.start(now + idx * 0.06);
-          osc.stop(now + idx * 0.06 + 1.3);
+          osc.start(now + i * 0.08);
+          osc.stop(now + i * 0.08 + 0.36);
         });
       }
-    } catch (e) {
-      console.warn('Audio play error:', e);
-    }
-  }
-
-  function cleanString(str) {
-    if (typeof str !== 'string') return '';
-    return str
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9]/g, "");
-  }
-
-  function escapeHtml(str) {
-    if (typeof str !== 'string') return String(str);
-    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    } catch (e) {}
   }
 
   // ========================================================================
   // 3. DOM ELEMENTS
   // ========================================================================
-  // Header
-  const headerStreamerNum = document.getElementById('headerStreamerNum');
+  const headerSoundNum = document.getElementById('headerSoundNum');
   const btnAudioToggle = document.getElementById('btnAudioToggle');
   const btnFullscreenToggle = document.getElementById('btnFullscreenToggle');
 
   // Meta & Stage
-  const streamerNumberBadge = document.getElementById('streamerNumberBadge');
-  const streamerHintBadge = document.getElementById('streamerHintBadge');
-  const streamerStatusBadge = document.getElementById('streamerStatusBadge');
-  const streamerTitleText = document.getElementById('streamerTitleText');
-  const streamerMediaBox = document.getElementById('streamerMediaBox');
-  const streamerImage = document.getElementById('streamerImage');
-  if (streamerImage) {
-    streamerImage.onerror = function() {
-      const src = this.getAttribute('src');
-      if (src && src.includes('assets/streamers/')) {
-        this.src = src.replace('assets/streamers/', 'streamers/');
-      } else if (src && src.startsWith('streamers/')) {
-        this.src = 'assets/' + src;
-      }
-    };
-  }
+  const soundNumberBadge = document.getElementById('soundNumberBadge');
+  const soundCategoryBadge = document.getElementById('soundCategoryBadge');
+  const soundStatusBadge = document.getElementById('soundStatusBadge');
+  const soundTitleText = document.getElementById('soundTitleText');
+  const audioVisualizerBox = document.getElementById('audioVisualizerBox');
+  const audioPlayTrigger = document.getElementById('audioPlayTrigger');
+  const audioStateIcon = document.getElementById('audioStateIcon');
+  const audioStateText = document.getElementById('audioStateText');
+  const secretAudioPlayer = document.getElementById('secretAudioPlayer');
   const flashOverlay = document.getElementById('flashOverlay');
   const revealResultBanner = document.getElementById('revealResultBanner');
-  const revealNameText = document.getElementById('revealNameText');
+  const revealTitleText = document.getElementById('revealTitleText');
   const revealCorrectCount = document.getElementById('revealCorrectCount');
-  const revealPlatformText = document.getElementById('revealPlatformText');
+  const revealAnswerName = document.getElementById('revealAnswerName');
 
   // Timer
   const timerCircleProgress = document.getElementById('timerCircleProgress');
   const timerSecondsDisplay = document.getElementById('timerSecondsDisplay');
   const timerStatusLabel = document.getElementById('timerStatusLabel');
 
-  // Streamer Dock Buttons
+  // Options
+  const optionCardA = document.getElementById('optionCardA');
+  const optionCardB = document.getElementById('optionCardB');
+  const optionCardC = document.getElementById('optionCardC');
+  const optTextA = document.getElementById('optTextA');
+  const optTextB = document.getElementById('optTextB');
+  const optTextC = document.getElementById('optTextC');
+  const optVotesA = document.getElementById('optVotesA');
+  const optVotesB = document.getElementById('optVotesB');
+  const optVotesC = document.getElementById('optVotesC');
+
+  // Dock Buttons
   const btnStartRound = document.getElementById('btnStartRound');
-  const btnRevealStreamer = document.getElementById('btnRevealStreamer');
-  const btnPrevStreamer = document.getElementById('btnPrevStreamer');
-  const btnNextStreamer = document.getElementById('btnNextStreamer');
+  const btnRevealSound = document.getElementById('btnRevealSound');
+  const btnPrevRound = document.getElementById('btnPrevRound');
+  const btnNextRound = document.getElementById('btnNextRound');
   const btnResetRound = document.getElementById('btnResetRound');
   const btnShowPodium = document.getElementById('btnShowPodium');
 
   // Radar & Leaderboard
   const tabChatBtn = document.getElementById('tabChatBtn');
   const tabLeaderboardBtn = document.getElementById('tabLeaderboardBtn');
+  const tabChatContent = document.getElementById('tabChatContent');
+  const tabLeaderboardContent = document.getElementById('tabLeaderboardContent');
   const radarChatMessages = document.getElementById('radarChatMessages');
   const radarLeaderboardFeed = document.getElementById('radarLeaderboardFeed');
   const chatCountBadge = document.getElementById('chatCountBadge');
@@ -424,116 +436,120 @@ document.addEventListener('DOMContentLoaded', () => {
   const podiumThirdPoints = document.getElementById('podiumThirdPoints');
   const podiumThirdAccuracy = document.getElementById('podiumThirdAccuracy');
 
-  // ========================================================================
-  // 4. RADAR TERMINAL LOGGER
-  // ========================================================================
-  function appendRadarTerminalLine(author, message, type = 'sys') {
-    if (!radarChatMessages) return;
+  // Audio Fallback Handler
+  if (secretAudioPlayer) {
+    secretAudioPlayer.onerror = function() {
+      const src = this.getAttribute('src');
+      if (src && src.startsWith('assets/sonidos dia6/')) {
+        this.src = src.replace('assets/sonidos dia6/', 'sonidos dia6/');
+      } else if (src && src.startsWith('sonidos dia6/')) {
+        this.src = 'assets/' + src;
+      }
+    };
 
-    const line = document.createElement('div');
-    line.className = `terminal-line ${type}`;
-
-    if (type === 'sys') {
-      line.innerHTML = `<span class="terminal-coord" style="color:#00FA9A;">[SISTEMA]</span> <span class="terminal-msg">${escapeHtml(message)}</span>`;
-    } else if (type === 'hit') {
-      line.innerHTML = `<span class="terminal-coord" style="color:#00FA9A; font-weight:900;">[¡ACIERTO! 🎯]</span> <span class="terminal-author">@${escapeHtml(author)}</span> adivinó: <strong>${escapeHtml(message)}</strong> (+1 pto)`;
-    } else {
-      line.innerHTML = `<span class="terminal-author">@${escapeHtml(author)}:</span> ${escapeHtml(message)}`;
-    }
-
-    radarChatMessages.appendChild(line);
-
-    totalChatMessages++;
-    if (chatCountBadge) chatCountBadge.textContent = totalChatMessages;
-
-    radarChatMessages.scrollTo({
-      top: radarChatMessages.scrollHeight,
-      behavior: 'smooth'
-    });
-
-    if (radarChatMessages.children.length > 120) {
-      radarChatMessages.removeChild(radarChatMessages.firstChild);
-    }
+    secretAudioPlayer.onended = function() {
+      if (audioVisualizerBox) audioVisualizerBox.classList.remove('playing');
+      if (audioStateText && isRoundActive) audioStateText.textContent = 'REPRODUCCIÓN COMPLETADA';
+    };
   }
 
   // ========================================================================
-  // 5. RENDER STREAMER FUNCTION
+  // 4. RENDER ROUND
   // ========================================================================
-  function renderStreamer(index) {
-    if (index < 0 || index >= STREAMERS_DATA.length) return;
-    currentStreamerIndex = index;
-    const sData = STREAMERS_DATA[index];
+  function renderRound(index) {
+    if (index < 0 || index >= SOUNDS_DATA.length) return;
 
-    // Reset Round State
+    currentRoundIndex = index;
     isRoundActive = false;
     isRevealed = false;
     secondsRemaining = ROUND_DURATION_SEC;
-    roundHits.clear();
     clearInterval(timerInterval);
     timerInterval = null;
 
-    // Header updates
-    if (headerStreamerNum) headerStreamerNum.textContent = `${index + 1}`;
+    currentRoundVotes = { A: new Set(), B: new Set(), C: new Set() };
+    usersVotedInRound.clear();
 
-    // Meta updates
-    if (streamerNumberBadge) streamerNumberBadge.textContent = `STREAMER #${index + 1} / ${STREAMERS_DATA.length}`;
-    if (streamerHintBadge) streamerHintBadge.innerHTML = `<i class="fas fa-search"></i> PISTA: ${sData.pista}`;
-    if (streamerStatusBadge) {
-      streamerStatusBadge.innerHTML = `<span class="pulse-dot"></span> EN ESPERA`;
-      streamerStatusBadge.style.color = '#00FA9A';
-      streamerStatusBadge.style.borderColor = '#00FA9A';
+    const roundData = SOUNDS_DATA[index];
+
+    // Header & Meta
+    if (headerSoundNum) headerSoundNum.textContent = index + 1;
+    if (soundNumberBadge) soundNumberBadge.textContent = `SONIDO #${index + 1} / ${SOUNDS_DATA.length}`;
+    if (soundCategoryBadge) soundCategoryBadge.innerHTML = `<i class="fas fa-compact-disc"></i> CATEGORÍA: ${roundData.categoria}`;
+    if (soundStatusBadge) {
+      soundStatusBadge.innerHTML = `<span class="pulse-dot"></span> EN ESPERA`;
+      soundStatusBadge.style.color = '#00E5FF';
+      soundStatusBadge.style.borderColor = '#00E5FF';
     }
-    if (streamerTitleText) {
-      streamerTitleText.textContent = `¿Quién es este Creador de Contenido? ¡Escribe su nombre en el chat!`;
+    if (soundTitleText) soundTitleText.textContent = `🎧 ${roundData.titulo}`;
+
+    // Audio Visualizer Reset
+    if (audioVisualizerBox) audioVisualizerBox.classList.remove('playing');
+    if (audioStateText) audioStateText.textContent = 'LISTO PARA REPRODUCIR';
+    if (secretAudioPlayer) {
+      secretAudioPlayer.pause();
+      secretAudioPlayer.currentTime = 0;
+      secretAudioPlayer.src = roundData.audioSrc;
+      secretAudioPlayer.load();
     }
 
-    // Media & Image updates
-    if (streamerMediaBox) {
-      streamerMediaBox.classList.remove('revealed');
-    }
-    if (streamerImage) {
-      streamerImage.src = sData.imgRecorte;
-    }
-    if (revealResultBanner) {
-      revealResultBanner.classList.remove('active');
-    }
+    // Reveal Banner Reset
+    if (revealResultBanner) revealResultBanner.classList.remove('active');
 
-    // Timer reset
+    // Options Reset
+    [optionCardA, optionCardB, optionCardC].forEach(card => {
+      if (card) {
+        card.classList.remove('correct', 'incorrect');
+      }
+    });
+
+    if (optTextA) optTextA.textContent = roundData.opciones.A;
+    if (optTextB) optTextB.textContent = roundData.opciones.B;
+    if (optTextC) optTextC.textContent = roundData.opciones.C;
+
+    updateVoteCountsDisplay();
+
+    // Timer visuals reset
     updateTimerVisuals(ROUND_DURATION_SEC);
-    if (timerStatusLabel) timerStatusLabel.textContent = 'TIEMPO EN ESPERA';
+    if (timerStatusLabel) timerStatusLabel.textContent = 'TIEMPO';
 
-    // Buttons
+    // Controls
     if (btnStartRound) {
       btnStartRound.disabled = false;
-      btnStartRound.innerHTML = `<i class="fas fa-play"></i> ▶️ Iniciar Ronda (${ROUND_DURATION_SEC}s)`;
+      btnStartRound.innerHTML = `<i class="fas fa-play"></i> ▶️ Reproducir Sonido (${ROUND_DURATION_SEC}s)`;
     }
-    if (btnRevealStreamer) {
-      btnRevealStreamer.disabled = true;
+    if (btnRevealSound) {
+      btnRevealSound.disabled = true;
     }
 
-    // Footer info
+    // Radar stats
     if (radarActiveRoundLabel) {
-      radarActiveRoundLabel.innerHTML = `Ronda: <strong>${index + 1} / ${STREAMERS_DATA.length}</strong>`;
+      radarActiveRoundLabel.innerHTML = `Sonido: <strong>${index + 1} / ${SOUNDS_DATA.length}</strong>`;
     }
     if (radarRoundHitsBadge) {
       radarRoundHitsBadge.innerHTML = `🎯 Aciertos: <strong>0</strong>`;
     }
 
-    appendRadarTerminalLine('SISTEMA', `📌 Streamer #${index + 1} cargado. Pulsa 'Iniciar Ronda' para abrir la adivinanza en el chat.`, 'sys');
+    appendRadarTerminalLine('SISTEMA', `📌 Sonido #${index + 1} cargado. Pulsa 'Reproducir Sonido' para abrir votaciones en el chat.`, 'sys');
     updateLiveLeaderboard();
   }
 
+  function updateVoteCountsDisplay() {
+    if (optVotesA) optVotesA.textContent = `${currentRoundVotes.A.size} votos`;
+    if (optVotesB) optVotesB.textContent = `${currentRoundVotes.B.size} votos`;
+    if (optVotesC) optVotesC.textContent = `${currentRoundVotes.C.size} votos`;
+  }
+
   // ========================================================================
-  // 6. TIMER ENGINE
+  // 5. TIMER ENGINE
   // ========================================================================
   function updateTimerVisuals(seconds) {
-    const totalCircumference = 232;
+    const totalCircumference = 226;
     const fractionRemaining = Math.max(0, seconds / ROUND_DURATION_SEC);
     const strokeOffset = totalCircumference * (1 - fractionRemaining);
 
     if (timerCircleProgress) {
       timerCircleProgress.style.strokeDashoffset = strokeOffset;
-      if (seconds <= 10 && isRoundActive) {
+      if (seconds <= 5 && isRoundActive) {
         timerCircleProgress.classList.add('danger');
       } else {
         timerCircleProgress.classList.remove('danger');
@@ -542,8 +558,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (timerSecondsDisplay) {
       timerSecondsDisplay.innerHTML = `${Math.ceil(seconds)}<span class="sec-unit">s</span>`;
-      if (seconds <= 10 && isRoundActive) {
-        timerSecondsDisplay.style.color = '#FFCC00';
+      if (seconds <= 5 && isRoundActive) {
+        timerSecondsDisplay.style.color = '#FF2A6D';
       } else {
         timerSecondsDisplay.style.color = '#FFFFFF';
       }
@@ -553,28 +569,43 @@ document.addEventListener('DOMContentLoaded', () => {
   function startRound() {
     if (isRoundActive) return;
 
+    initAudio();
     isRoundActive = true;
     isRevealed = false;
     secondsRemaining = ROUND_DURATION_SEC;
-    roundHits.clear();
+    currentRoundVotes = { A: new Set(), B: new Set(), C: new Set() };
+    usersVotedInRound.clear();
+    updateVoteCountsDisplay();
+
+    // Play secret audio clip
+    if (secretAudioPlayer) {
+      secretAudioPlayer.currentTime = 0;
+      secretAudioPlayer.play().then(() => {
+        if (audioVisualizerBox) audioVisualizerBox.classList.add('playing');
+        if (audioStateText) audioStateText.textContent = 'REPRODUCIENDO SONIDO...';
+      }).catch(() => {
+        if (audioVisualizerBox) audioVisualizerBox.classList.add('playing');
+        if (audioStateText) audioStateText.textContent = 'ESCUCHA EN DIRECTO';
+      });
+    }
 
     if (btnStartRound) {
       btnStartRound.disabled = true;
-      btnStartRound.innerHTML = `<i class="fas fa-spinner fa-spin"></i> 🟢 Ronda en Curso`;
+      btnStartRound.innerHTML = `<i class="fas fa-spinner fa-spin"></i> 🟢 Votación en Curso`;
     }
-    if (btnRevealStreamer) {
-      btnRevealStreamer.disabled = false;
-    }
-
-    if (streamerStatusBadge) {
-      streamerStatusBadge.innerHTML = `<span class="pulse-dot" style="background:#FF0055; box-shadow:0 0 8px #FF0055;"></span> 🟢 ADIVINANZA EN CURSO`;
-      streamerStatusBadge.style.color = '#FF0055';
-      streamerStatusBadge.style.borderColor = '#FF0055';
+    if (btnRevealSound) {
+      btnRevealSound.disabled = false;
     }
 
-    if (timerStatusLabel) timerStatusLabel.textContent = '¡ESCRIBE EN EL CHAT!';
+    if (soundStatusBadge) {
+      soundStatusBadge.innerHTML = `<span class="pulse-dot" style="background:#00FA9A; box-shadow:0 0 8px #00FA9A;"></span> 🟢 VOTACIÓN EN DIRECTO`;
+      soundStatusBadge.style.color = '#00FA9A';
+      soundStatusBadge.style.borderColor = '#00FA9A';
+    }
 
-    appendRadarTerminalLine('SISTEMA', `🚀 ¡RONDA INICIADA! Tienes ${ROUND_DURATION_SEC} segundos para adivinar el streamer en el chat de Twitch.`, 'sys');
+    if (timerStatusLabel) timerStatusLabel.textContent = 'VOTA: A, B o C';
+
+    appendRadarTerminalLine('SISTEMA', `🚀 ¡AUDIO REPRODUCIÉNDOSE! Tienes ${ROUND_DURATION_SEC} segundos para votar A, B o C en el chat.`, 'sys');
     playSound('start');
 
     const startTime = performance.now();
@@ -600,6 +631,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
+      // Time Expired
       if (remainingMs <= 0) {
         clearInterval(timerInterval);
         timerInterval = null;
@@ -607,30 +639,25 @@ document.addEventListener('DOMContentLoaded', () => {
         secondsRemaining = 0;
         updateTimerVisuals(0);
 
-        if (streamerStatusBadge) {
-          streamerStatusBadge.innerHTML = `<span class="pulse-dot" style="background:#FFD166; box-shadow:0 0 8px #FFD166;"></span> ⏳ ESPERANDO REVELACIÓN`;
-          streamerStatusBadge.style.color = '#FFD166';
-          streamerStatusBadge.style.borderColor = '#FFD166';
+        if (soundStatusBadge) {
+          soundStatusBadge.innerHTML = `<span class="pulse-dot" style="background:#FFD600; box-shadow:0 0 8px #FFD600;"></span> ⏳ ESPERANDO REVELACIÓN`;
+          soundStatusBadge.style.color = '#FFD600';
+          soundStatusBadge.style.borderColor = '#FFD600';
         }
 
-        if (timerStatusLabel) {
-          timerStatusLabel.textContent = 'TIEMPO AGOTADO - ESPERANDO REVELACIÓN';
-        }
+        if (timerStatusLabel) timerStatusLabel.textContent = 'TIEMPO AGOTADO';
+        if (btnRevealSound) btnRevealSound.disabled = false;
 
-        if (btnRevealStreamer) {
-          btnRevealStreamer.disabled = false;
-        }
-
-        appendRadarTerminalLine('SISTEMA', '⏱️ ¡TIEMPO AGOTADO! Votaciones del chat cerradas. Pulsa "👁️ Revelar Streamer" para mostrar la identidad.', 'sys');
+        appendRadarTerminalLine('SISTEMA', '⏱️ ¡TIEMPO AGOTADO! Votaciones cerradas. Pulsa "👁️ Revelar Respuesta" para ver la opción correcta.', 'sys');
         playSound('warning');
       }
     }, 100);
   }
 
   // ========================================================================
-  // 7. REVEAL STREAMER FUNCTION
+  // 6. REVEAL ANSWER & SCORE CALCULATION
   // ========================================================================
-  function revealStreamer() {
+  function revealAnswer() {
     if (isRevealed) return;
 
     clearInterval(timerInterval);
@@ -640,65 +667,87 @@ document.addEventListener('DOMContentLoaded', () => {
     secondsRemaining = 0;
     updateTimerVisuals(0);
 
-    const sData = STREAMERS_DATA[currentStreamerIndex];
+    const roundData = SOUNDS_DATA[currentRoundIndex];
+    const correctLetter = roundData.correcta;
+    const correctOptionName = roundData.opciones[correctLetter];
+    const correctVoters = currentRoundVotes[correctLetter] || new Set();
 
-    // White Flash Dramatic Effect
+    // Flash Overlay
     if (flashOverlay) {
       flashOverlay.classList.add('flash-active');
-      setTimeout(() => {
-        flashOverlay.classList.remove('flash-active');
-      }, 120);
+      setTimeout(() => flashOverlay.classList.remove('flash-active'), 120);
     }
 
-    // Swap Image to Complete
-    if (streamerImage) {
-      streamerImage.src = sData.imgCompleto;
-    }
-    if (streamerMediaBox) {
-      streamerMediaBox.classList.add('revealed');
-    }
+    // Highlight Correct Card & Dim Incorrects
+    const cards = { A: optionCardA, B: optionCardB, C: optionCardC };
+    ['A', 'B', 'C'].forEach(letter => {
+      const card = cards[letter];
+      if (card) {
+        if (letter === correctLetter) {
+          card.classList.add('correct');
+          card.classList.remove('incorrect');
+        } else {
+          card.classList.add('incorrect');
+          card.classList.remove('correct');
+        }
+      }
+    });
 
-    // Show Announcement Banner
-    if (revealNameText) {
-      revealNameText.textContent = `🎉 ¡ES ${sData.nombre.toUpperCase()}!`;
+    // Score 1 point for each correct voter
+    correctVoters.forEach(username => {
+      if (!userScores[username]) {
+        userScores[username] = { displayName: username, score: 0, correctCount: 0 };
+      }
+      userScores[username].score += 1;
+      userScores[username].correctCount += 1;
+    });
+
+    // Show Reveal Banner
+    if (revealTitleText) {
+      revealTitleText.textContent = `🎉 ¡RESPUESTA CORRECTA: OPCIÓN ${correctLetter}!`;
     }
     if (revealCorrectCount) {
-      revealCorrectCount.innerHTML = `<i class="fas fa-users"></i> Acertantes: <strong>${roundHits.size}</strong>`;
+      revealCorrectCount.innerHTML = `<i class="fas fa-users"></i> Acertantes: <strong>${correctVoters.size}</strong>`;
     }
-    if (revealPlatformText) {
-      revealPlatformText.innerHTML = `<i class="fas fa-video"></i> ${escapeHtml(sData.plataforma)}`;
+    if (revealAnswerName) {
+      revealAnswerName.innerHTML = `<i class="fas fa-check-circle"></i> ${escapeHtml(correctOptionName)}`;
     }
     if (revealResultBanner) {
       revealResultBanner.classList.add('active');
     }
 
-    if (streamerStatusBadge) {
-      streamerStatusBadge.innerHTML = `<span class="pulse-dot" style="background:#00FA9A;"></span> 🎯 REVELADO`;
-      streamerStatusBadge.style.color = '#00FA9A';
-      streamerStatusBadge.style.borderColor = '#00FA9A';
+    if (soundStatusBadge) {
+      soundStatusBadge.innerHTML = `<span class="pulse-dot" style="background:#00FA9A;"></span> 🎯 REVELADO`;
+      soundStatusBadge.style.color = '#00FA9A';
+      soundStatusBadge.style.borderColor = '#00FA9A';
     }
 
     if (btnStartRound) {
       btnStartRound.disabled = true;
       btnStartRound.innerHTML = `<i class="fas fa-check"></i> Ronda Finalizada`;
     }
-    if (btnRevealStreamer) {
-      btnRevealStreamer.disabled = true;
+    if (btnRevealSound) {
+      btnRevealSound.disabled = true;
     }
 
-    appendRadarTerminalLine('SISTEMA', `⭐ ¡STREAMER REVELADO! El creador es: ${sData.nombre}. Acertantes: ${roundHits.size}`, 'sys');
-    playSound('reveal');
+    if (radarRoundHitsBadge) {
+      radarRoundHitsBadge.innerHTML = `🎯 Aciertos: <strong>${correctVoters.size}</strong>`;
+    }
 
-    // Auto open podium on last streamer
-    if (currentStreamerIndex === STREAMERS_DATA.length - 1) {
+    appendRadarTerminalLine('SISTEMA', `⭐ ¡SONIDO REVELADO! La respuesta era [${correctLetter}]: ${correctOptionName}. Acertantes: ${correctVoters.size}`, 'sys');
+    playSound('reveal');
+    updateLiveLeaderboard();
+
+    // Auto open podium on round 20
+    if (currentRoundIndex === SOUNDS_DATA.length - 1) {
       setTimeout(() => {
         openPodiumModal();
-      }, 3000);
+      }, 3500);
     }
   }
 
   // ========================================================================
-  // 8. CHAT GUESS TRACKER & VALIDATION
+  // 7. TWITCH CHAT RADAR & VOTE TRACKER
   // ========================================================================
   function processIncomingChatMessage(rawUser, rawMessage) {
     if (!rawUser || !rawMessage) return;
@@ -706,202 +755,193 @@ document.addEventListener('DOMContentLoaded', () => {
     const userKey = username.toLowerCase();
     const message = rawMessage.trim();
 
-    // If round is not active, just log normally to terminal
     if (!isRoundActive || isRevealed) {
       appendRadarTerminalLine(username, message, 'chat');
       return;
     }
 
-    const sData = STREAMERS_DATA[currentStreamerIndex];
-    const cleanMsg = cleanString(message);
+    // Check if user already voted in this round
+    if (usersVotedInRound.has(userKey)) {
+      appendRadarTerminalLine(username, message, 'chat');
+      return;
+    }
 
-    // Check if the message matches any of the streamer's aliases
-    const isHit = sData.aliases.some(alias => {
-      const cleanAlias = cleanString(alias);
-      return cleanMsg.includes(cleanAlias);
-    });
+    // Check for Vote A, B or C
+    const norm = message.toLowerCase().trim();
+    let detectedVote = null;
 
-    if (isHit) {
-      // Check if user already got the point in this round
-      if (!roundHits.has(userKey)) {
-        roundHits.add(userKey);
+    if (norm === 'a' || norm === '!a' || norm === '1' || norm.startsWith('opcion a') || norm.startsWith('opción a')) {
+      detectedVote = 'A';
+    } else if (norm === 'b' || norm === '!b' || norm === '2' || norm.startsWith('opcion b') || norm.startsWith('opción b')) {
+      detectedVote = 'B';
+    } else if (norm === 'c' || norm === '!c' || norm === '3' || norm.startsWith('opcion c') || norm.startsWith('opción c')) {
+      detectedVote = 'C';
+    } else {
+      // Check partial match with option texts
+      const roundData = SOUNDS_DATA[currentRoundIndex];
+      const optA = roundData.opciones.A.toLowerCase();
+      const optB = roundData.opciones.B.toLowerCase();
+      const optC = roundData.opciones.C.toLowerCase();
 
-        if (!userScores[userKey]) {
-          userScores[userKey] = {
-            displayName: username,
-            totalScore: 0,
-            correctCount: 0
-          };
-        }
-
-        userScores[userKey].totalScore += 1;
-        userScores[userKey].correctCount += 1;
-
-        if (radarRoundHitsBadge) {
-          radarRoundHitsBadge.innerHTML = `🎯 Aciertos: <strong>${roundHits.size}</strong>`;
-        }
-
-        appendRadarTerminalLine(username, sData.nombre, 'hit');
-        playSound('hit');
-        updateLiveLeaderboard();
-      } else {
-        appendRadarTerminalLine(username, message, 'chat');
+      if (norm.length >= 4) {
+        if (optA.includes(norm)) detectedVote = 'A';
+        else if (optB.includes(norm)) detectedVote = 'B';
+        else if (optC.includes(norm)) detectedVote = 'C';
       }
+    }
+
+    if (detectedVote) {
+      usersVotedInRound.set(userKey, detectedVote);
+      currentRoundVotes[detectedVote].add(username);
+      updateVoteCountsDisplay();
+      appendRadarTerminalLine(username, `Votó por la opción [${detectedVote}]`, 'vote', detectedVote);
     } else {
       appendRadarTerminalLine(username, message, 'chat');
     }
   }
 
+  function appendRadarTerminalLine(user, text, type = 'chat', voteTag = null) {
+    if (!radarChatMessages) return;
+
+    totalChatMessages++;
+    if (chatCountBadge) chatCountBadge.textContent = totalChatMessages;
+
+    const row = document.createElement('div');
+    row.className = `radar-log-msg ${type}-msg`;
+
+    if (type === 'sys') {
+      row.innerHTML = `<span class="log-badge-sys">[SISTEMA]</span> <span class="log-text">${escapeHtml(text)}</span>`;
+    } else if (type === 'vote') {
+      const tagClass = `vote-${voteTag.toLowerCase()}`;
+      row.innerHTML = `<span class="log-user">${escapeHtml(user)}:</span> <span class="log-vote-tag ${tagClass}">Opción ${voteTag}</span>`;
+    } else {
+      row.innerHTML = `<span class="log-user">${escapeHtml(user)}:</span> <span>${escapeHtml(text)}</span>`;
+    }
+
+    radarChatMessages.appendChild(row);
+
+    while (radarChatMessages.children.length > 70) {
+      radarChatMessages.removeChild(radarChatMessages.firstChild);
+    }
+    radarChatMessages.scrollTop = radarChatMessages.scrollHeight;
+  }
+
   // ========================================================================
-  // 9. LIVE LEADERBOARD
+  // 8. LIVE LEADERBOARD
   // ========================================================================
   function updateLiveLeaderboard() {
     if (!radarLeaderboardFeed) return;
 
-    const ranked = Object.values(userScores).sort((a, b) => b.totalScore - a.totalScore);
-    if (lbTotalUsers) lbTotalUsers.textContent = ranked.length;
+    const sortedUsers = Object.values(userScores).sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return b.correctCount - a.correctCount;
+    });
 
-    radarLeaderboardFeed.innerHTML = '';
+    if (lbTotalUsers) lbTotalUsers.textContent = sortedUsers.length;
 
-    if (ranked.length === 0) {
+    if (sortedUsers.length === 0) {
       radarLeaderboardFeed.innerHTML = `
-        <div class="leaderboard-empty-state">
-          <i class="fas fa-medal"></i>
-          <p>El ranking se actualizará en tiempo real cuando el chat adivine los streamers.</p>
+        <div class="lb-empty-placeholder">
+          <i class="fas fa-info-circle"></i> Vota en el chat durante los 20 segundos para aparecer en la clasificación en directo.
         </div>
       `;
       return;
     }
 
-    ranked.slice(0, 15).forEach((u, index) => {
-      const row = document.createElement('div');
-      const rankClass = index === 0 ? 'rank-1' : index === 1 ? 'rank-2' : index === 2 ? 'rank-3' : '';
-      row.className = `leaderboard-row ${rankClass}`;
+    radarLeaderboardFeed.innerHTML = '';
+    sortedUsers.slice(0, 30).forEach((u, i) => {
+      const rank = i + 1;
+      const item = document.createElement('div');
+      item.className = `lb-item rank-${rank <= 3 ? rank : 'other'}`;
 
-      const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`;
-      row.innerHTML = `
+      let medal = `#${rank}`;
+      if (rank === 1) medal = '🥇';
+      else if (rank === 2) medal = '🥈';
+      else if (rank === 3) medal = '🥉';
+
+      item.innerHTML = `
         <div class="lb-user-info">
-          <span class="lb-rank">${medal}</span>
-          <span class="lb-name" title="@${escapeHtml(u.displayName)}">@${escapeHtml(u.displayName)}</span>
+          <span class="lb-rank-badge">${medal}</span>
+          <span class="lb-username">${escapeHtml(u.displayName)}</span>
         </div>
-        <div style="text-align: right;">
-          <span class="lb-score">${u.totalScore} pts</span>
-          <div style="font-size: 0.65rem; color: #94A3B8;">${u.correctCount}/${STREAMERS_DATA.length} acertados</div>
-        </div>
+        <span class="lb-score-pill">${u.score} pt${u.score === 1 ? 'o' : 's'}</span>
       `;
-      radarLeaderboardFeed.appendChild(row);
-    });
-  }
-
-  // Tab Toggle
-  if (tabChatBtn && tabLeaderboardBtn && radarChatMessages && radarLeaderboardFeed) {
-    tabChatBtn.addEventListener('click', () => {
-      tabChatBtn.classList.add('active');
-      tabLeaderboardBtn.classList.remove('active');
-      radarChatMessages.style.display = 'flex';
-      radarLeaderboardFeed.classList.remove('active');
-    });
-
-    tabLeaderboardBtn.addEventListener('click', () => {
-      tabLeaderboardBtn.classList.add('active');
-      tabChatBtn.classList.remove('active');
-      radarChatMessages.style.display = 'none';
-      radarLeaderboardFeed.classList.add('active');
-      updateLiveLeaderboard();
+      radarLeaderboardFeed.appendChild(item);
     });
   }
 
   // ========================================================================
-  // 10. TOP 3 PODIUM & TXT REPORT
+  // 9. TOP 3 PODIUM MODAL & TXT REPORT
   // ========================================================================
   function openPodiumModal() {
-    const ranked = Object.values(userScores).sort((a, b) => b.totalScore - a.totalScore);
-    const totalS = STREAMERS_DATA.length;
+    if (!podiumModalOverlay) return;
 
-    // 1st Place
-    if (ranked[0]) {
-      if (podiumFirstUser) podiumFirstUser.textContent = `@${ranked[0].displayName}`;
-      if (podiumFirstPoints) podiumFirstPoints.textContent = `${ranked[0].totalScore} PTS`;
-      if (podiumFirstAccuracy) podiumFirstAccuracy.textContent = `${ranked[0].correctCount}/${totalS} aciertos (${((ranked[0].correctCount/totalS)*100).toFixed(0)}%)`;
-    } else {
-      if (podiumFirstUser) podiumFirstUser.textContent = 'Sin participantes';
-      if (podiumFirstPoints) podiumFirstPoints.textContent = '0 PTS';
-      if (podiumFirstAccuracy) podiumFirstAccuracy.textContent = `0/${totalS}`;
-    }
+    const sortedUsers = Object.values(userScores).sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return b.correctCount - a.correctCount;
+    });
 
-    // 2nd Place
-    if (ranked[1]) {
-      if (podiumSecondUser) podiumSecondUser.textContent = `@${ranked[1].displayName}`;
-      if (podiumSecondPoints) podiumSecondPoints.textContent = `${ranked[1].totalScore} PTS`;
-      if (podiumSecondAccuracy) podiumSecondAccuracy.textContent = `${ranked[1].correctCount}/${totalS} aciertos (${((ranked[1].correctCount/totalS)*100).toFixed(0)}%)`;
-    } else {
-      if (podiumSecondUser) podiumSecondUser.textContent = '---';
-      if (podiumSecondPoints) podiumSecondPoints.textContent = '0 PTS';
-      if (podiumSecondAccuracy) podiumSecondAccuracy.textContent = `0/${totalS}`;
-    }
+    const top1 = sortedUsers[0] || { displayName: 'Sin Ganador', score: 0, correctCount: 0 };
+    const top2 = sortedUsers[1] || { displayName: 'Sin Ganador', score: 0, correctCount: 0 };
+    const top3 = sortedUsers[2] || { displayName: 'Sin Ganador', score: 0, correctCount: 0 };
 
-    // 3rd Place
-    if (ranked[2]) {
-      if (podiumThirdUser) podiumThirdUser.textContent = `@${ranked[2].displayName}`;
-      if (podiumThirdPoints) podiumThirdPoints.textContent = `${ranked[2].totalScore} PTS`;
-      if (podiumThirdAccuracy) podiumThirdAccuracy.textContent = `${ranked[2].correctCount}/${totalS} aciertos (${((ranked[2].correctCount/totalS)*100).toFixed(0)}%)`;
-    } else {
-      if (podiumThirdUser) podiumThirdUser.textContent = '---';
-      if (podiumThirdPoints) podiumThirdPoints.textContent = '0 PTS';
-      if (podiumThirdAccuracy) podiumThirdAccuracy.textContent = `0/${totalS}`;
-    }
+    if (podiumFirstUser) podiumFirstUser.textContent = top1.displayName;
+    if (podiumFirstPoints) podiumFirstPoints.textContent = `${top1.score} PTS`;
+    if (podiumFirstAccuracy) podiumFirstAccuracy.textContent = `${top1.correctCount}/${SOUNDS_DATA.length} aciertos`;
 
-    if (podiumModalOverlay) {
-      podiumModalOverlay.classList.add('active');
-    }
+    if (podiumSecondUser) podiumSecondUser.textContent = top2.displayName;
+    if (podiumSecondPoints) podiumSecondPoints.textContent = `${top2.score} PTS`;
+    if (podiumSecondAccuracy) podiumSecondAccuracy.textContent = `${top2.correctCount}/${SOUNDS_DATA.length} aciertos`;
 
-    playSound('podium');
-    triggerConfetti(5000);
+    if (podiumThirdUser) podiumThirdUser.textContent = top3.displayName;
+    if (podiumThirdPoints) podiumThirdPoints.textContent = `${top3.score} PTS`;
+    if (podiumThirdAccuracy) podiumThirdAccuracy.textContent = `${top3.correctCount}/${SOUNDS_DATA.length} aciertos`;
+
+    podiumModalOverlay.classList.add('active');
+    triggerConfetti();
+    playSound('reveal');
   }
 
   function closePodiumModal() {
-    if (podiumModalOverlay) {
-      podiumModalOverlay.classList.remove('active');
-    }
+    if (podiumModalOverlay) podiumModalOverlay.classList.remove('active');
   }
 
   function downloadPodiumTxtReport() {
-    const ranked = Object.values(userScores).sort((a, b) => b.totalScore - a.totalScore);
+    const sortedUsers = Object.values(userScores).sort((a, b) => b.score - a.score);
     const dateStr = new Date().toLocaleString('es-ES');
-    const totalS = STREAMERS_DATA.length;
 
-    let report = `=================================================================\n`;
-    report += `🏆 ESPECIALES IMARIXU - DÍA 6: ¿QUIÉN ES ESE STREAMER?\n`;
-    report += `=================================================================\n`;
-    report += `Fecha del Evento: ${dateStr}\n`;
-    report += `Canal Oficial: Twitch.tv/imarixu\n`;
-    report += `Total de Streamers Jugados: ${totalS}\n`;
-    report += `Total de Participantes Registrados: ${ranked.length}\n\n`;
+    let report = `====================================================================\n`;
+    report += `   ESPECIALES IMARIXU - DÍA 06: EL SONIDO DE LA BATALLA\n`;
+    report += `   INFORME OFICIAL DE RESULTADOS Y CLASIFICACIÓN DEL CHAT\n`;
+    report += `   Fecha: ${dateStr}\n`;
+    report += `   Total de Rondas Auditivas: ${SOUNDS_DATA.length}\n`;
+    report += `====================================================================\n\n`;
 
-    report += `🎉 PODIO FINAL - TOP 3 DETECTIVES DEL CHAT:\n`;
-    if (ranked[0]) report += `  🥇 1er Puesto: @${ranked[0].displayName} -> ${ranked[0].totalScore} Puntos (${ranked[0].correctCount}/${totalS} aciertos)\n`;
-    if (ranked[1]) report += `  🥈 2do Puesto: @${ranked[1].displayName} -> ${ranked[1].totalScore} Puntos (${ranked[1].correctCount}/${totalS} aciertos)\n`;
-    if (ranked[2]) report += `  🥉 3er Puesto: @${ranked[2].displayName} -> ${ranked[2].totalScore} Puntos (${ranked[2].correctCount}/${totalS} aciertos)\n`;
+    report += `🏆 TOP 3 CAMPEONES DEL DIRECTO:\n`;
+    report += `  🥇 1º PUESTO: ${sortedUsers[0]?.displayName || 'N/A'} - ${sortedUsers[0]?.score || 0} Puntos (${sortedUsers[0]?.correctCount || 0}/${SOUNDS_DATA.length} aciertos)\n`;
+    report += `  🥈 2º PUESTO: ${sortedUsers[1]?.displayName || 'N/A'} - ${sortedUsers[1]?.score || 0} Puntos (${sortedUsers[1]?.correctCount || 0}/${SOUNDS_DATA.length} aciertos)\n`;
+    report += `  🥉 3º PUESTO: ${sortedUsers[2]?.displayName || 'N/A'} - ${sortedUsers[2]?.score || 0} Puntos (${sortedUsers[2]?.correctCount || 0}/${SOUNDS_DATA.length} aciertos)\n\n`;
 
-    report += `\n-----------------------------------------------------------------\n`;
-    report += `📊 TABLA CLASIFICATORIA GENERAL COMPLETA:\n`;
-    ranked.forEach((u, idx) => {
-      const pos = (idx + 1).toString().padStart(2, '0');
-      const user = u.displayName.padEnd(22, ' ');
-      const pts = `${u.totalScore} pts`.padStart(8, ' ');
-      const acc = `${u.correctCount}/${totalS}`.padStart(6, ' ');
-      const pct = ((u.correctCount / totalS) * 100).toFixed(1);
-      report += `  ${pos}. @${user} | ${pts} | Aciertos: ${acc} (${pct}%)\n`;
+    report += `📋 CLASIFICACIÓN GENERAL COMPLETA:\n`;
+    report += `Pos | Nombre de Usuario           | Puntos | Aciertos\n`;
+    report += `--------------------------------------------------------------------\n`;
+
+    sortedUsers.forEach((u, idx) => {
+      const rank = String(idx + 1).padEnd(3);
+      const name = String(u.displayName).padEnd(28);
+      const pts = String(u.score).padStart(4);
+      const hits = String(u.correctCount).padStart(4);
+      report += `${rank} | ${name} | ${pts} pts | ${hits}/${SOUNDS_DATA.length}\n`;
     });
 
-    report += `\n=================================================================\n`;
-    report += `Especiales ImArixu • Sistema Oficial Multiplataforma Twitch x YouTube\n`;
+    report += `\n====================================================================\n`;
+    report += `¡Gracias por participar en el Especial del Día 06 de ImArixu!\n`;
 
     const blob = new Blob([report], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `Adivina_El_Streamer_Informe_Dia6_${Date.now()}.txt`;
+    link.download = `informe_dia06_sonido_imarixu_${Date.now()}.txt`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -909,317 +949,170 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ========================================================================
-  // 11. TWITCH IRC WEBSOCKET CONNECTION
+  // 10. CONFETTI EFFECT
   // ========================================================================
-  function initTwitchWebSocket() {
-    const wsUrl = 'wss://irc-ws.chat.twitch.tv:443';
-    let socket;
-
-    try {
-      socket = new WebSocket(wsUrl);
-    } catch (err) {
-      console.warn('No se pudo abrir WebSocket con Twitch:', err);
-      if (radarWsTag) {
-        radarWsTag.textContent = '🟠 MODO SIMULADO';
-        radarWsTag.style.color = '#FFB703';
-      }
-      return;
-    }
-
-    socket.onopen = () => {
-      socket.send('CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership');
-      socket.send('PASS oauth:anonymous_guest_user');
-      socket.send(`NICK justinfan${Math.floor(Math.random() * 80000 + 10000)}`);
-      socket.send('JOIN #imarixu');
-
-      if (radarWsTag) {
-        radarWsTag.textContent = '🟢 EN VIVO (#imarixu)';
-        radarWsTag.style.color = '#00FA9A';
-      }
-      appendRadarTerminalLine('SISTEMA', '📡 Conectado con éxito al chat en vivo de Twitch (#imarixu).', 'sys');
-    };
-
-    socket.onmessage = (event) => {
-      const lines = event.data.split('\r\n');
-      lines.forEach(line => {
-        if (!line) return;
-
-        if (line.startsWith('PING')) {
-          socket.send('PONG :tmi.twitch.tv');
-          return;
-        }
-
-        if (line.includes('PRIVMSG')) {
-          parseTwitchPrivmsg(line);
-        }
-      });
-    };
-
-    socket.onerror = () => {
-      if (radarWsTag) {
-        radarWsTag.textContent = '🔴 ERROR WS';
-        radarWsTag.style.color = '#FF3366';
-      }
-    };
-
-    socket.onclose = () => {
-      if (radarWsTag) {
-        radarWsTag.textContent = '🟡 RECONECTANDO...';
-        radarWsTag.style.color = '#FFD166';
-      }
-      setTimeout(initTwitchWebSocket, 5000);
-    };
-
-    function parseTwitchPrivmsg(rawIrcLine) {
-      let displayName = '';
-      let message = '';
-
-      const matchTags = rawIrcLine.match(/display-name=([^;]+)/);
-      if (matchTags && matchTags[1]) {
-        displayName = matchTags[1];
-      }
-
-      if (!displayName) {
-        const matchUser = rawIrcLine.match(/:([a-zA-Z0-9_]+)!/);
-        if (matchUser && matchUser[1]) {
-          displayName = matchUser[1];
-        }
-      }
-
-      const msgIndex = rawIrcLine.indexOf('PRIVMSG');
-      if (msgIndex !== -1) {
-        const colonIndex = rawIrcLine.indexOf(' :', msgIndex);
-        if (colonIndex !== -1) {
-          message = rawIrcLine.substring(colonIndex + 2);
-        }
-      }
-
-      if (displayName && message) {
-        processIncomingChatMessage(displayName, message);
-      }
-    }
-  }
-
-  // ========================================================================
-  // 12. GALA BACKGROUND ICONS CANVAS
-  // ========================================================================
-  function initGalaCanvas() {
-    const canvas = document.getElementById('galaCanvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
-
-    const icons = ['play', 'mic', 'monitor', 'chat', 'youtube', 'twitch'];
-    const colors = ['rgba(145, 70, 255, 0.18)', 'rgba(255, 0, 0, 0.16)', 'rgba(255, 215, 0, 0.14)', 'rgba(0, 245, 212, 0.14)'];
-
-    const particleCount = 36;
-    const particles = [];
-
-    for (let i = 0; i < particleCount; i++) {
-      particles.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        baseX: Math.random() * width,
-        size: Math.random() * 16 + 12,
-        speedY: -(Math.random() * 0.4 + 0.2),
-        ampX: Math.random() * 30 + 10,
-        freqX: Math.random() * 0.01 + 0.004,
-        phase: Math.random() * Math.PI * 2,
-        type: icons[Math.floor(Math.random() * icons.length)],
-        color: colors[Math.floor(Math.random() * colors.length)],
-        alpha: Math.random() * 0.4 + 0.2,
-        rotation: Math.random() * Math.PI * 2,
-        rotSpeed: (Math.random() - 0.5) * 0.015
-      });
-    }
-
-    let frame = 0;
-
-    function render() {
-      ctx.clearRect(0, 0, width, height);
-      frame++;
-
-      particles.forEach(p => {
-        p.y += p.speedY;
-        p.x = p.baseX + Math.sin(frame * p.freqX + p.phase) * p.ampX;
-        p.rotation += p.rotSpeed;
-
-        if (p.y < -40) {
-          p.y = height + 40;
-          p.baseX = Math.random() * width;
-          p.x = p.baseX;
-        }
-
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rotation);
-        ctx.fillStyle = p.color;
-        ctx.strokeStyle = p.color;
-        ctx.lineWidth = 2;
-        ctx.globalAlpha = p.alpha;
-
-        const s = p.size;
-
-        if (p.type === 'play') {
-          // Play Triangle
-          ctx.beginPath();
-          ctx.moveTo(-s * 0.5, -s * 0.6);
-          ctx.lineTo(s * 0.6, 0);
-          ctx.lineTo(-s * 0.5, s * 0.6);
-          ctx.closePath();
-          ctx.fill();
-        } else if (p.type === 'monitor') {
-          // Screen Outline
-          ctx.strokeRect(-s * 0.7, -s * 0.5, s * 1.4, s);
-          ctx.beginPath();
-          ctx.moveTo(-s * 0.3, s * 0.5);
-          ctx.lineTo(s * 0.3, s * 0.5);
-          ctx.stroke();
-        } else if (p.type === 'chat') {
-          // Chat Bubble
-          ctx.beginPath();
-          ctx.arc(0, -s * 0.1, s * 0.5, 0, Math.PI * 2);
-          ctx.fill();
-        } else {
-          // Glowing Diamond Glyph
-          ctx.beginPath();
-          ctx.moveTo(0, -s * 0.7);
-          ctx.lineTo(s * 0.7, 0);
-          ctx.lineTo(0, s * 0.7);
-          ctx.lineTo(-s * 0.7, 0);
-          ctx.closePath();
-          ctx.fill();
-        }
-
-        ctx.restore();
-      });
-
-      requestAnimationFrame(render);
-    }
-
-    requestAnimationFrame(render);
-
-    window.addEventListener('resize', () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-    });
-  }
-
-  // ========================================================================
-  // 13. CANVAS CONFETTI EFFECT
-  // ========================================================================
-  function triggerConfetti(duration = 4000) {
+  function triggerConfetti() {
     const canvas = document.getElementById('confettiCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    const colors = ['#FF0055', '#9146FF', '#FFD700', '#00FA9A', '#FFFFFF', '#FF3333'];
-    const confettiCount = 130;
-    const confetti = [];
+    const pieces = [];
+    const colors = ['#00E5FF', '#FFD600', '#FF2A6D', '#00FA9A', '#FFFFFF'];
 
-    for (let i = 0; i < confettiCount; i++) {
-      confetti.push({
+    for (let i = 0; i < 120; i++) {
+      pieces.push({
         x: Math.random() * canvas.width,
-        y: Math.random() * -canvas.height,
-        size: Math.random() * 8 + 6,
+        y: Math.random() * canvas.height - canvas.height,
+        r: Math.random() * 6 + 4,
+        d: Math.random() * 120 + 10,
         color: colors[Math.floor(Math.random() * colors.length)],
-        velX: (Math.random() - 0.5) * 4,
-        velY: Math.random() * 4 + 3,
-        rotation: Math.random() * 360,
-        rotSpeed: (Math.random() - 0.5) * 8
+        tilt: Math.floor(Math.random() * 10) - 10,
+        tiltAngleInc: Math.random() * 0.07 + 0.05,
+        tiltAngle: 0
       });
     }
 
-    const startTime = performance.now();
+    let animationFrame;
+    let counter = 0;
 
-    function render(now) {
+    function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const elapsed = now - startTime;
+      pieces.forEach(p => {
+        ctx.beginPath();
+        ctx.lineWidth = p.r / 2;
+        ctx.strokeStyle = p.color;
+        ctx.moveTo(p.x + p.tilt + p.r, p.y);
+        ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r);
+        ctx.stroke();
 
-      confetti.forEach(p => {
-        p.x += p.velX;
-        p.y += p.velY;
-        p.rotation += p.rotSpeed;
-
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate((p.rotation * Math.PI) / 180);
-        ctx.fillStyle = p.color;
-        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
-        ctx.restore();
+        p.tiltAngle += p.tiltAngleInc;
+        p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2;
+        p.tilt = Math.sin(p.tiltAngle) * 15;
       });
 
-      if (elapsed < duration) {
-        requestAnimationFrame(render);
+      counter++;
+      if (counter < 240) {
+        animationFrame = requestAnimationFrame(draw);
       } else {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
     }
-
-    requestAnimationFrame(render);
+    draw();
   }
 
   // ========================================================================
-  // 14. MOCK SIMULATOR FOR TESTING
+  // 11. TWITCH WEBSOCKET IRC CONNECTION
   // ========================================================================
-  function simulateMockChat() {
-    if (!isRoundActive) {
-      startRound();
-    }
+  function connectTwitchChat() {
+    const channel = 'imarixu';
+    const wsUrl = 'wss://irc-ws.chat.twitch.tv:443';
 
-    const mockViewers = [
-      'Jaratos', 'Vivi', 'SitoGamerz', 'Neus_Art', 'RubenDev', 'ArixuFan99',
-      'TwitchUser12', 'GalaKing', 'PeelyPro', 'NinjaFan', 'GrefgArmy', 'IbaiLover'
-    ];
+    try {
+      const socket = new WebSocket(wsUrl);
 
-    const currentS = STREAMERS_DATA[currentStreamerIndex];
+      socket.onopen = () => {
+        socket.send('CAP REQ :twitch.tv/tags twitch.tv/commands');
+        socket.send(`NICK justinfan${Math.floor(Math.random() * 80000 + 10000)}`);
+        socket.send(`JOIN #${channel}`);
+        if (radarWsTag) {
+          radarWsTag.textContent = 'IRC CONECTADO';
+          radarWsTag.style.color = '#00FA9A';
+        }
+      };
 
-    mockViewers.forEach((viewer, idx) => {
-      setTimeout(() => {
-        if (!isRoundActive) return;
-        // 70% probability of saying the correct name
-        const msg = Math.random() < 0.7 ? currentS.nombre : 'quien sera ese??';
-        processIncomingChatMessage(viewer, msg);
-      }, (idx + 1) * 400);
-    });
+      socket.onmessage = (event) => {
+        const raw = event.data;
+        if (raw.startsWith('PING')) {
+          socket.send('PONG :tmi.twitch.tv');
+          return;
+        }
+
+        const lines = raw.split('\r\n');
+        lines.forEach(line => {
+          if (!line) return;
+          if (line.includes('PRIVMSG')) {
+            const userMatch = line.match(/:([^!]+)!/);
+            const msgIndex = line.indexOf(`PRIVMSG #${channel} :`);
+            if (userMatch && msgIndex !== -1) {
+              const username = userMatch[1];
+              const msg = line.substring(msgIndex + `PRIVMSG #${channel} :`.length);
+              processIncomingChatMessage(username, msg);
+            }
+          }
+        });
+      };
+
+      socket.onerror = () => {
+        if (radarWsTag) {
+          radarWsTag.textContent = 'IRC RECONECTANDO';
+          radarWsTag.style.color = '#FFD600';
+        }
+      };
+
+      socket.onclose = () => {
+        setTimeout(connectTwitchChat, 4000);
+      };
+    } catch (e) {}
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
   }
 
   // ========================================================================
-  // 15. EVENT LISTENERS & CONTROLS
+  // 12. EVENT LISTENERS & CONTROLS
   // ========================================================================
   if (btnStartRound) {
     btnStartRound.addEventListener('click', startRound);
   }
-
-  if (btnRevealStreamer) {
-    btnRevealStreamer.addEventListener('click', revealStreamer);
+  if (btnRevealSound) {
+    btnRevealSound.addEventListener('click', revealAnswer);
+  }
+  if (audioPlayTrigger) {
+    audioPlayTrigger.addEventListener('click', () => {
+      if (!isRoundActive && !isRevealed) {
+        startRound();
+      } else if (secretAudioPlayer) {
+        if (secretAudioPlayer.paused) {
+          secretAudioPlayer.play().catch(() => {});
+          if (audioVisualizerBox) audioVisualizerBox.classList.add('playing');
+        } else {
+          secretAudioPlayer.pause();
+          if (audioVisualizerBox) audioVisualizerBox.classList.remove('playing');
+        }
+      }
+    });
   }
 
-  if (btnNextStreamer) {
-    btnNextStreamer.addEventListener('click', () => {
-      if (currentStreamerIndex < STREAMERS_DATA.length - 1) {
-        renderStreamer(currentStreamerIndex + 1);
+  if (btnNextRound) {
+    btnNextRound.addEventListener('click', () => {
+      if (currentRoundIndex < SOUNDS_DATA.length - 1) {
+        renderRound(currentRoundIndex + 1);
       } else {
         openPodiumModal();
       }
     });
   }
 
-  if (btnPrevStreamer) {
-    btnPrevStreamer.addEventListener('click', () => {
-      if (currentStreamerIndex > 0) {
-        renderStreamer(currentStreamerIndex - 1);
+  if (btnPrevRound) {
+    btnPrevRound.addEventListener('click', () => {
+      if (currentRoundIndex > 0) {
+        renderRound(currentRoundIndex - 1);
       }
     });
   }
 
   if (btnResetRound) {
     btnResetRound.addEventListener('click', () => {
-      renderStreamer(currentStreamerIndex);
+      renderRound(currentRoundIndex);
     });
   }
 
@@ -1232,8 +1125,8 @@ document.addEventListener('DOMContentLoaded', () => {
     btnAudioToggle.addEventListener('click', () => {
       isAudioEnabled = !isAudioEnabled;
       btnAudioToggle.innerHTML = isAudioEnabled
-        ? '<i class="fas fa-volume-up"></i> Audio: ON'
-        : '<i class="fas fa-volume-mute"></i> Audio: OFF';
+        ? '<i class="fas fa-volume-up"></i> FX: ON'
+        : '<i class="fas fa-volume-mute"></i> FX: OFF';
     });
   }
 
@@ -1247,7 +1140,35 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Podium Modal Actions
+  // Tabs
+  if (tabChatBtn && tabLeaderboardBtn) {
+    tabChatBtn.addEventListener('click', () => {
+      tabChatBtn.classList.add('active');
+      tabLeaderboardBtn.classList.remove('active');
+      if (tabChatContent) tabChatContent.classList.add('active');
+      if (tabLeaderboardContent) tabLeaderboardContent.classList.remove('active');
+    });
+
+    tabLeaderboardBtn.addEventListener('click', () => {
+      tabLeaderboardBtn.classList.add('active');
+      tabChatBtn.classList.remove('active');
+      if (tabLeaderboardContent) tabLeaderboardContent.classList.add('active');
+      if (tabChatContent) tabChatContent.classList.remove('active');
+    });
+  }
+
+  // Option Cards Manual Clicks (Streamer testing/interaction)
+  [optionCardA, optionCardB, optionCardC].forEach(btn => {
+    if (btn) {
+      btn.addEventListener('click', () => {
+        if (!isRoundActive) return;
+        const opt = btn.getAttribute('data-option');
+        processIncomingChatMessage('Streamer', opt);
+      });
+    }
+  });
+
+  // Modal Actions
   if (btnClosePodiumModal) btnClosePodiumModal.addEventListener('click', closePodiumModal);
   if (btnModalDismiss) btnModalDismiss.addEventListener('click', closePodiumModal);
   if (btnDownloadTxtReport) btnDownloadTxtReport.addEventListener('click', downloadPodiumTxtReport);
@@ -1255,7 +1176,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btnRestartGame.addEventListener('click', () => {
       userScores = {};
       closePodiumModal();
-      renderStreamer(0);
+      renderRound(0);
     });
   }
 
@@ -1268,33 +1189,22 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!isRoundActive && !isRevealed && secondsRemaining === ROUND_DURATION_SEC) {
         startRound();
       } else if (!isRevealed) {
-        revealStreamer();
+        revealAnswer();
       }
     } else if (e.key === 'n' || e.key === 'N' || e.key === 'ArrowRight') {
-      if (currentStreamerIndex < STREAMERS_DATA.length - 1) {
-        renderStreamer(currentStreamerIndex + 1);
+      if (currentRoundIndex < SOUNDS_DATA.length - 1) {
+        renderRound(currentRoundIndex + 1);
       }
     } else if (e.key === 'p' || e.key === 'P' || e.key === 'ArrowLeft') {
-      if (currentStreamerIndex > 0) {
-        renderStreamer(currentStreamerIndex - 1);
+      if (currentRoundIndex > 0) {
+        renderRound(currentRoundIndex - 1);
       }
     }
   });
 
-  // Handle Resize for Confetti
-  window.addEventListener('resize', () => {
-    const canvas = document.getElementById('confettiCanvas');
-    if (canvas) {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-  });
-
   // ========================================================================
-  // 16. INITIALIZATION
+  // 13. INITIALIZATION
   // ========================================================================
-  initGalaCanvas();
-  renderStreamer(0);
-  initTwitchWebSocket();
-  console.log('⚡ Especiales ImArixu - Día 6: ¿Quién es ese Streamer? Initialized');
+  renderRound(0);
+  connectTwitchChat();
 });
