@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
       plataforma: "Twitch: @arigameplays | YouTube: @AriGameplays",
       imgRecorte: "assets/streamers/Streamers Recortados/arigameplays.png",
       imgCompleto: "assets/streamers/Streamer Sin recortar/arigameplays.png",
-      aliases: ["arigameplays", "ari gameplays", "arigameplay", "abril garza", "ari", "arigame"]
+      aliases: ["arigameplays", "ari gameplays", "arigameplay", "abril garza", "arigame"]
     },
     {
       id: 4,
@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
       pista: "GAFAS & RASGO CARACTERÍSTICO",
       plataforma: "Twitch: @rubius | YouTube: @elrubiusOMG",
       imgRecorte: "assets/streamers/Streamers Recortados/rubius.png",
-      imgCompleto: "assets/streamers/Streamer Sin recortar/rubius.png",
+      imgCompleto: "assets/streamers/Streamer Sin recortar/rubius.jpg",
       aliases: ["rubius", "elrubius", "el rubius", "elrubiusomg", "ruben doblas", "rubendoblas"]
     },
     {
@@ -148,6 +148,33 @@ document.addEventListener('DOMContentLoaded', () => {
       imgRecorte: "assets/streamers/Streamers Recortados/willy.png",
       imgCompleto: "assets/streamers/Streamer Sin recortar/willy.jpg",
       aliases: ["willy", "willyrex", "elwillyrex", "guillermo diaz", "el willy"]
+    },
+    {
+      id: 17,
+      nombre: "Hiper",
+      pista: "MASCOTA / LOGO DEL CANAL",
+      plataforma: "Twitch: @elhiper | YouTube: @Hiper",
+      imgRecorte: "assets/streamers/Streamers Recortados/logohiper.jpg",
+      imgCompleto: "assets/streamers/Streamer Sin recortar/hiper.jpg",
+      aliases: ["hiper", "elhiper", "el hiper", "hiperop", "hiper_op"]
+    },
+    {
+      id: 18,
+      nombre: "DanielaRodbau",
+      pista: "SOMBRERO / ESTILO ICÓNICO",
+      plataforma: "TikTok / Twitch: @danielarodbau",
+      imgRecorte: "assets/streamers/Streamers Recortados/sombrerodaniela.jpg",
+      imgCompleto: "assets/streamers/Streamer Sin recortar/daniela.jpg",
+      aliases: ["daniela", "danielarodbau", "daniela rodbau", "dani", "rodbau", "danielarod"]
+    },
+    {
+      id: 19,
+      nombre: "ImArixu",
+      pista: "👑 ¡LA ANFITRIONA DEL ESPECIAL!",
+      plataforma: "Twitch: @imarixu | YouTube: @ImArixu",
+      imgRecorte: "assets/streamers/Streamers Recortados/Ari.jpg",
+      imgCompleto: "assets/streamers/Streamer Sin recortar/arixu.jpg",
+      aliases: ["ari", "arixu", "imarixu", "im arixu", "arichu", "arixuu", "ari xu"]
     }
   ];
 
@@ -332,7 +359,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnPrevStreamer = document.getElementById('btnPrevStreamer');
   const btnNextStreamer = document.getElementById('btnNextStreamer');
   const btnResetRound = document.getElementById('btnResetRound');
-  const btnSimulateChat = document.getElementById('btnSimulateChat');
   const btnShowPodium = document.getElementById('btnShowPodium');
 
   // Radar & Leaderboard
@@ -541,7 +567,26 @@ document.addEventListener('DOMContentLoaded', () => {
       if (remainingMs <= 0) {
         clearInterval(timerInterval);
         timerInterval = null;
-        revealStreamer();
+        isRoundActive = false;
+        secondsRemaining = 0;
+        updateTimerVisuals(0);
+
+        if (streamerStatusBadge) {
+          streamerStatusBadge.innerHTML = `<span class="pulse-dot" style="background:#FFD166; box-shadow:0 0 8px #FFD166;"></span> ⏳ ESPERANDO REVELACIÓN`;
+          streamerStatusBadge.style.color = '#FFD166';
+          streamerStatusBadge.style.borderColor = '#FFD166';
+        }
+
+        if (timerStatusLabel) {
+          timerStatusLabel.textContent = 'TIEMPO AGOTADO - ESPERANDO REVELACIÓN';
+        }
+
+        if (btnRevealStreamer) {
+          btnRevealStreamer.disabled = false;
+        }
+
+        appendRadarTerminalLine('SISTEMA', '⏱️ ¡TIEMPO AGOTADO! Votaciones del chat cerradas. Pulsa "👁️ Revelar Streamer" para mostrar la identidad.', 'sys');
+        playSound('warning');
       }
     }, 100);
   }
@@ -605,7 +650,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btnRevealStreamer.disabled = true;
     }
 
-    appendRadarTerminalLine('SISTEMA', `⭐ ¡TIEMPO AGOTADO! El creador era: ${sData.nombre}. Acertantes: ${roundHits.size}`, 'sys');
+    appendRadarTerminalLine('SISTEMA', `⭐ ¡STREAMER REVELADO! El creador es: ${sData.nombre}. Acertantes: ${roundHits.size}`, 'sys');
     playSound('reveal');
 
     // Auto open podium on last streamer
@@ -1142,10 +1187,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (btnSimulateChat) {
-    btnSimulateChat.addEventListener('click', simulateMockChat);
-  }
-
   if (btnShowPodium) {
     btnShowPodium.addEventListener('click', openPodiumModal);
   }
@@ -1188,9 +1229,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (e.code === 'Space' || e.code === 'Enter') {
       e.preventDefault();
-      if (!isRoundActive && !isRevealed) {
+      if (!isRoundActive && !isRevealed && secondsRemaining === ROUND_DURATION_SEC) {
         startRound();
-      } else if (isRoundActive) {
+      } else if (!isRevealed) {
         revealStreamer();
       }
     } else if (e.key === 'n' || e.key === 'N' || e.key === 'ArrowRight') {
