@@ -1164,32 +1164,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ========================================================================
-  // 14. MOCK SIMULATOR FOR TESTING
-  // ========================================================================
-  function simulateMockChat() {
-    if (!isRoundActive) {
-      startRound();
-    }
-
-    const mockViewers = [
-      'Jaratos', 'Vivi', 'SitoGamerz', 'Neus_Art', 'RubenDev', 'ArixuFan99',
-      'TwitchUser12', 'GalaKing', 'PeelyPro', 'NinjaFan', 'GrefgArmy', 'IbaiLover'
-    ];
-
-    const currentS = STREAMERS_DATA[currentStreamerIndex];
-
-    mockViewers.forEach((viewer, idx) => {
-      setTimeout(() => {
-        if (!isRoundActive) return;
-        // 70% probability of saying the correct name
-        const msg = Math.random() < 0.7 ? currentS.nombre : 'quien sera ese??';
-        processIncomingChatMessage(viewer, msg);
-      }, (idx + 1) * 400);
-    });
-  }
-
-  // ========================================================================
-  // 15. EVENT LISTENERS & CONTROLS
+  // 14. EVENT LISTENERS & CONTROLS
   // ========================================================================
   if (btnStartRound) {
     btnStartRound.addEventListener('click', startRound);
