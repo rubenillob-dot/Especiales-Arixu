@@ -2,9 +2,9 @@
    ESPECIALES ARIXU - DÍA 4: TRIVIAL HISTORIA DE FORTNITE (KAHOOT ENGINE)
    Features:
    1. 30 Historically accurate questions covering Events, Mythics, Vehicles & Lore.
-   2. Kahoot Speed Scoring Formula: Puntos = Round( 1000 * (SegundosRestantes / 40) ).
+   2. Kahoot Speed Scoring Formula: Puntos = Round( 1000 * (SegundosRestantes / 20) ).
    3. Real-time Twitch IRC Chat integration (#imarixu) with first-vote filtering.
-   4. High-precision 40s Circular & Linear Countdown Timer.
+   4. High-precision 20s Circular & Linear Countdown Timer.
    5. Dynamic 2x2 Answer Grid with Reveal highlights and dimming.
    6. Live Top 10 Leaderboard & Top 3 Epic Podium Transition.
    7. Web Audio API Synthesizer & Canvas Confetti Engine.
@@ -443,7 +443,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ========================================================================
   // 2. ESTADO DEL JUEGO & PUNTUACIÓN KAHOOT
   // ========================================================================
-  const ROUND_DURATION_SEC = 40;
+  const ROUND_DURATION_SEC = 20;
   let currentQuestionIndex = 0;
   let isRoundActive = false;
   let isRevealed = false;
@@ -801,7 +801,7 @@ document.addEventListener('DOMContentLoaded', () => {
       radarWsBadge.style.borderColor = '#FFB703';
     }
 
-    appendRadarTerminalLine('SISTEMA', `📌 Pregunta #${index + 1} lista. Pulsa 'Empezar Ronda' para abrir votación de 40s.`, 'sys');
+    appendRadarTerminalLine('SISTEMA', `📌 Pregunta #${index + 1} lista. Pulsa 'Empezar Ronda' para abrir votación de 20s.`, 'sys');
     updateLiveLeaderboard();
   }
 
@@ -851,7 +851,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (btnStartRound) {
       btnStartRound.classList.add('is-active');
-      btnStartRound.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 🟢 Ronda en Curso (40s)';
+      btnStartRound.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 🟢 Ronda en Curso (20s)';
       btnStartRound.disabled = true;
     }
     if (btnCloseRound) {
@@ -868,7 +868,7 @@ document.addEventListener('DOMContentLoaded', () => {
       radarWsBadge.style.borderColor = '#00FA9A';
     }
 
-    appendRadarTerminalLine('SISTEMA', `🚀 ¡RONDA INICIADA! Tienes 40 segundos para responder A, B, C o D en el chat de Twitch.`, 'sys');
+    appendRadarTerminalLine('SISTEMA', `🚀 ¡RONDA INICIADA! Tienes 20 segundos para responder A, B, C o D en el chat de Twitch.`, 'sys');
     playSound('start');
 
     const startTime = performance.now();
@@ -924,7 +924,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const qData = PREGUNTAS_TRIVIAL[currentQuestionIndex];
     const isCorrect = (opt === qData.correcta);
 
-    // KAHOOT FORMULA: Puntos = Round( 1000 * (SegundosRestantes / 40) )
+    // KAHOOT FORMULA: Puntos = Round( 1000 * (SegundosRestantes / 20) )
     let pointsEarned = isCorrect ? Math.round(1000 * (currentSecsLeft / ROUND_DURATION_SEC)) : 0;
 
     // FASE DE MUERTE SÚBITA (Rondas 31 a 35 -> Puntos x2)
