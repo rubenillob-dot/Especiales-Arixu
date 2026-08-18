@@ -893,7 +893,7 @@ document.addEventListener('DOMContentLoaded', () => {
       'VicRoyale', 'LootMaster', 'ChatLover', 'ArixuSub', 'ClipGod',
       'Builder99', 'NoBuildKing', 'SniperGhost', 'TiltedResident', 'ZeusFan',
       'PedroGamer', 'LauraTwitch', 'CarlosFN', 'MartaArixu', 'NicoPro',
-      'SitoGamerz', 'NeusArtist', 'Jaratos', 'Vivi', 'TwitchGod', 'FortniteQueen'
+      'SitoGamerz', 'NeusArtist', 'Jaratos', 'Vivi', 'Jesulito', 'TwitchGod', 'FortniteQueen'
     ];
 
     for (let i = 0; i < totalSimulated; i++) {

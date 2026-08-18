@@ -25,8 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     3: {
       title: "Día 3: Qué Prefieres: Edición ImArixu",
-      status: "¡EN VIVO AHORA!",
-      statusClass: "tag-active",
+      status: '<i class="fas fa-check"></i> COMPLETADO',
+      statusClass: "tag-completed",
       link: "dia3.html",
       badge: "DILEMAS & DEBATE EN DIRECTO",
       desc: "35 dilemas interactivos sobre Fortnite, la vida del streamer en Twitch y salseo sano. ¡Votación en vivo con el chat de Twitch!"
