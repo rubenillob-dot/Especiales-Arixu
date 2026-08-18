@@ -1230,6 +1230,49 @@ body::before {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(145, 70, 255, 0.25);
 }
 
+/* Extra Minigames (En Construcción / Bloqueado) */
+.day-card.extra-minigames-card {
+  opacity: 0.6;
+  border: 2px dashed rgba(255, 255, 255, 0.22);
+  background: radial-gradient(circle at 50% 50%, rgba(145, 70, 255, 0.05) 0%, rgba(14, 14, 22, 0.8) 100%);
+  filter: grayscale(0.2);
+  transition: all 0.35s ease;
+}
+
+.day-card.extra-minigames-card:hover {
+  opacity: 0.85;
+  border-color: rgba(145, 70, 255, 0.45);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(145, 70, 255, 0.2);
+  transform: translateY(-5px);
+  filter: grayscale(0);
+}
+
+.day-status-tag.tag-construction {
+  background: rgba(255, 183, 3, 0.15);
+  color: #FFD166;
+  border: 1px solid rgba(255, 183, 3, 0.35);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.construction-status-pill {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
 .day-card-body {
   margin-bottom: 1.5rem;
 }

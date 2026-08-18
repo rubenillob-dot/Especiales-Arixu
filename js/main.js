@@ -56,12 +56,12 @@ document.addEventListener('DOMContentLoaded', () => {
       desc: "Agudiza el oído. 20 rondas de efectos de sonido de armas, consumibles, bailes y eventos míticos de Fortnite con votación interactiva A, B o C en el chat."
     },
     7: {
-      title: "Día 7: Elimina una Opción",
-      status: "PRÓXIMAMENTE - EVENTO FINAL",
-      statusClass: "tag-locked",
-      link: "#",
-      badge: "GALA FINAL & TORNEO DE OPCIONES",
-      desc: "Rondas eliminatorias extremas de objetos, mecánicas o skins del juego. ¡Votación en directo hasta coronar al ganador supremo!"
+      title: "Día 7: El Precio Justo: Edición PaVos",
+      status: '<i class="fas fa-coins"></i> ¡DISPONIBLE AHORA! - GRAN FINAL',
+      statusClass: "tag-active",
+      link: "dia7.html",
+      badge: "ECONOMÍA FORTNITE & PAVOS",
+      desc: "Adivina el precio exacto en PaVos de las skins y cosméticos clásicos. ¡El que más se acerque sin pasarse se lleva la victoria!"
     }
   };
 

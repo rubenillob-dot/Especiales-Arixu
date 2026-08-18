@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Día 7: El Precio Justo - Edición PaVos | Especiales ImArixu</title>
+  <meta name="description" content="Día 7: Adivina el precio exacto en PaVos de las skins y cosméticos clásicos de Fortnite con votación en directo en el chat de Twitch de ImArixu.">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/dia7.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body class="dia7-theme">
+
+  <!-- Background Luxury & Floating Coins / Cash -->
+  <div class="luxury-background-layer" aria-hidden="true">
+    <div class="luxury-vault-glow"></div>
+    <div class="floating-cash-item cash-1"><i class="fas fa-coins"></i></div>
+    <div class="floating-cash-item cash-2"><i class="fas fa-gem"></i></div>
+    <div class="floating-cash-item cash-3"><i class="fas fa-money-bill-wave"></i></div>
+    <div class="floating-cash-item cash-4"><i class="fas fa-coins"></i></div>
+    <div class="floating-cash-item cash-5"><i class="fas fa-gem"></i></div>
+  </div>
+
+  <!-- Fullscreen Confetti Canvas for Winners -->
+  <canvas id="confettiCanvas" aria-hidden="true"></canvas>
+
+  <!-- Flash Overlay for Price Reveal -->
+  <div id="flashOverlay" class="flash-overlay"></div>
+
+  <!-- ======================================================================
+       1. TOP STICKY HUD HEADER
+       ====================================================================== -->
+  <header class="dia7-sticky-header">
+    
+    <!-- Brand & Hub Navigation -->
+    <div class="header-brand-group">
+      <a href="index.html" class="btn-nav-hub" title="Volver a la portada de Especiales">
+        <i class="fas fa-arrow-left"></i> Hub
+      </a>
+      <img src="assets/arixu_avatar.png" alt="ImArixu Avatar" class="brand-mini-avatar">
+      <div class="brand-title-badge">
+        ARIXU <span>• EL PRECIO JUSTO (PAVOS)</span>
+      </div>
+    </div>
+
+    <!-- Theme Category Badge -->
+    <div class="theme-category-badge" id="headerCategoryTag">
+      <i class="fas fa-coins"></i>
+      <span>ECONOMÍA FORTNITE • PAVOS</span>
+    </div>
+
+    <!-- Round / Item Counter -->
+    <div class="sticky-round-counter">
+      <i class="fas fa-gem" style="color: #00F0FF;"></i>
+      <span>COSMÉTICO: <strong class="counter-highlight" id="headerRoundNum">1</strong> / 20</span>
+    </div>
+
+    <!-- Header Actions -->
+    <div class="header-actions-group">
+      <button class="hud-tool-btn" id="btnAudioToggle" title="Activar/Desactivar efectos de sonido">
+        <i class="fas fa-volume-up"></i> FX: ON
+      </button>
+
+      <button class="hud-tool-btn" id="btnFullscreenToggle" title="Modo Pantalla Completa">
+        <i class="fas fa-expand"></i> Fullscreen
+      </button>
+
+      <a href="ruleta.html" class="hud-tool-btn" title="Ir a la Ruleta Oficial">
+        <i class="fas fa-dice"></i> Ruleta
+      </a>
+    </div>
+
+  </header>
+
+  <!-- ======================================================================
+       2. CENTRAL FLOATING CONSOLE PANEL (75% / 25%)
+       ====================================================================== -->
+  <main class="dashboard-panel" id="dashboardPanel">
+
+    <!-- LEFT 75%: GAME ARENA -->
+    <div class="dia7-game-area" id="gameArea">
+
+      <!-- TOP: Meta row & Category -->
+      <section class="game-meta-container">
+        <div class="game-meta-row">
+          <span class="round-pill" id="roundNumberBadge">ARTÍCULO #1 / 20</span>
+          <span class="category-pill" id="categoryBadge">
+            <i class="fas fa-tag"></i> CATEGORÍA: SKIN
+          </span>
+          <span class="urn-status-badge urn-closed" id="urnStatusBadge">
+            <span class="pulse-dot"></span> <span id="urnStatusText">URNA CERRADA</span>
+          </span>
+        </div>
+        <h1 class="challenge-main-title" id="challengeTitleText">
+          <i class="fas fa-shopping-bag"></i> ¿Cuánto cuesta este cosmético en la tienda de Fortnite? ¡El que más se acerque sin pasarse gana!
+        </h1>
+      </section>
+
+      <!-- CENTER: COSMETIC SHOWCASE STAGE -->
+      <section class="showcase-stage-container">
+        
+        <!-- Left: Image Viewer -->
+        <div class="cosmetic-visual-box" id="cosmeticVisualBox">
+          <div class="cosmetic-img-wrapper">
+            <img src="PrecioJusto/Raven.jpg" alt="Cosmético de Fortnite" class="cosmetic-img" id="cosmeticImg">
+          </div>
+          <div class="cosmetic-info-footer">
+            <h2 class="cosmetic-name-text" id="cosmeticName">Skin Raven (Cuervo)</h2>
+            <p class="cosmetic-desc-text" id="cosmeticDesc">Uno de los atuendos más legendarios e icónicos de la Temporada 3 de Fortnite.</p>
+          </div>
+        </div>
+
+        <!-- Right: Vault & Live Metrics -->
+        <div class="showcase-control-box">
+          
+          <!-- Price Display Vault -->
+          <div class="price-display-vault" id="priceDisplayVault">
+            <div class="vault-header-tag">PRECIO OFICIAL EN TIENDA</div>
+            <div class="vault-price-value hidden-price" id="vaultPriceValue">
+              <i class="fas fa-coins vbucks-symbol-icon"></i>
+              <span id="priceNumberText">???</span> <span style="font-size: 1.4rem;">PAVOS</span>
+            </div>
+          </div>
+
+          <!-- Round Live Metrics -->
+          <div class="round-metrics-grid">
+            <div class="metric-chip">
+              <div class="metric-chip-label">👥 Estimaciones</div>
+              <div class="metric-chip-value" id="roundBidsCount">0</div>
+            </div>
+            <div class="metric-chip">
+              <div class="metric-chip-label">📊 Rango</div>
+              <div class="metric-chip-value" id="roundBidRange">---</div>
+            </div>
+            <div class="metric-chip">
+              <div class="metric-chip-label">🎯 Media Chat</div>
+              <div class="metric-chip-value" id="roundBidAverage">---</div>
+            </div>
+          </div>
+
+          <!-- Winner Announcement Card -->
+          <div class="round-winner-card" id="roundWinnerCard">
+            <div class="winner-headline" id="winnerHeadline">
+              <i class="fas fa-trophy"></i> GANADOR DE LA RONDA
+            </div>
+            <div class="winner-user-row" id="winnerUserRow">
+              @usuario con 1.500 PaVos
+            </div>
+            <div class="winner-stats-row" id="winnerStatsRow">
+              Diferencia respecto al precio real: 0 PaVos (¡PLENO EXACTO!)
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- LIVE BIDS TICKER FEED -->
+      <section class="live-bids-section">
+        <div class="live-bids-header">
+          <span><i class="fas fa-list-ol"></i> ESTIMACIONES REGISTRADAS EN ESTA RONDA (<span id="bidsFeedCountBadge">0</span>)</span>
+          <span style="font-size: 0.74rem; color: #64748B;">*1 estimación por usuario</span>
+        </div>
+        <div class="bids-chips-feed" id="bidsFeedChips">
+          <span class="empty-bids-hint" id="emptyBidsHint">Abre la urna para empezar a recibir estimaciones en directo del chat de Twitch.</span>
+        </div>
+      </section>
+
+      <!-- STREAMER DOCK CONTROLS -->
+      <footer class="dia7-dock">
+        <div class="dock-controls-group">
+          <button class="btn-dock btn-dock-start" id="btnStartUrn">
+            <i class="fas fa-unlock-alt"></i> Abrir Urna (Votación)
+          </button>
+          <button class="btn-dock btn-dock-calculate" id="btnCloseUrn" disabled>
+            <i class="fas fa-calculator"></i> Cerrar Urna / Calcular
+          </button>
+          <button class="btn-dock btn-dock-nav" id="btnPrevRound" title="Cosmético Anterior">
+            <i class="fas fa-step-backward"></i>
+          </button>
+          <button class="btn-dock btn-dock-nav" id="btnNextRound" title="Siguiente Cosmético">
+            <i class="fas fa-step-forward"></i> Siguiente
+          </button>
+          <button class="btn-dock btn-dock-nav" id="btnResetRound" title="Reiniciar Ronda">
+            <i class="fas fa-redo-alt"></i>
+          </button>
+        </div>
+
+        <div class="dock-secondary-group">
+          <button class="btn-dock btn-dock-simulate" id="btnSimulateBids" title="Simular estimaciones aleatorias de chat para pruebas">
+            <i class="fas fa-flask"></i> Simular Chat
+          </button>
+          <button class="btn-dock btn-dock-nav" id="btnAddManualBid" title="Añadir estimación manual de un espectador">
+            <i class="fas fa-plus-circle"></i> Puja Manual
+          </button>
+          <button class="btn-dock btn-dock-podium" id="btnShowPodium">
+            <i class="fas fa-trophy"></i> Ver Podio
+          </button>
+        </div>
+      </footer>
+
+    </div>
+
+    <!-- RIGHT 25%: CHAT RADAR & LEADERBOARD -->
+    <aside class="dia7-radar-area" id="radarArea">
+      
+      <!-- Radar Navigation Tabs -->
+      <div class="radar-header-tabs">
+        <button class="radar-tab-btn active" id="tabChatBtn">
+          <i class="fas fa-satellite-dish"></i> Radar Chat (<span id="chatCountBadge">0</span>)
+        </button>
+        <button class="radar-tab-btn" id="tabLeaderboardBtn">
+          <i class="fas fa-trophy"></i> Ranking (<span id="lbTotalUsers">0</span>)
+        </button>
+      </div>
+
+      <!-- Tab 1: Live Chat Feed & Terminal -->
+      <div class="radar-tab-content active" id="tabChatContent">
+        <div class="chat-terminal-header">
+          <div class="status-indicator-live">
+            <span class="radar-live-dot"></span>
+            <span class="terminal-title">CANAL: <strong>#imarixu</strong></span>
+          </div>
+          <span class="ws-connected-tag" id="radarWsTag" style="color: #00FA9A; font-weight: 700;">IRC CONECTADO</span>
+        </div>
+
+        <div class="regex-badge-info">
+          <i class="fas fa-filter"></i>
+          <span>Filtro Regex: Solo números enteros (ej. 800, 1500, 2000)</span>
+        </div>
+
+        <div class="radar-chat-feed" id="radarChatMessages">
+          <div class="radar-log-msg system-msg">
+            <div class="log-meta">
+              <span class="log-time">[SISTEMA]</span>
+              <span class="log-author">RADAR TWITCH</span>
+            </div>
+            <span class="log-text">Conectando con el chat de Twitch... Escribe el precio estimado en números al abrirse la urna.</span>
+          </div>
+        </div>
+
+        <div class="radar-footer-stats">
+          <span class="footer-stat" id="radarActiveUrnStatus">Urna: <strong>CERRADA</strong></span>
+          <span class="footer-stat" id="radarRoundEstimatesBadge">💰 Estimaciones: <strong>0</strong></span>
+        </div>
+      </div>
+
+      <!-- Tab 2: Live Leaderboard Rankings -->
+      <div class="radar-tab-content" id="tabLeaderboardContent">
+        <div class="leaderboard-panel-header">
+          <span class="lb-title">🏆 Top Aciertos y Precisión</span>
+          <span class="lb-points-rule" style="color: #FFD700; font-size: 0.72rem;">+1 Pto Ganar • +3 Ptos Pleno</span>
+        </div>
+
+        <div class="radar-leaderboard-list" id="radarLeaderboardFeed">
+          <div class="lb-empty-placeholder">
+            <i class="fas fa-info-circle"></i> Las puntuaciones aparecerán en cuanto se calcule la primera ronda.
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- ======================================================================
+       3. TOP 3 PODIUM MODAL DIALOG
+       ====================================================================== -->
+  <div class="podium-modal-overlay" id="podiumModalOverlay">
+    <div class="podium-modal-card" role="dialog" aria-modal="true">
+      
+      <button class="podium-close-btn" id="btnClosePodiumModal" aria-label="Cerrar modal">
+        <i class="fas fa-times"></i>
+      </button>
+
+      <div class="podium-header-banner">
+        <div class="podium-trophy-icon">🏆</div>
+        <h2 class="podium-main-title">¡CAMPEONES DE EL PRECIO JUSTO!</h2>
+        <p class="podium-subtitle">Top 3 maestros de la economía de Fortnite y los PaVos</p>
+      </div>
+
+      <!-- 3D Top 3 Podium Columns -->
+      <div class="podium-3d-stage">
+        
+        <!-- 2nd Place (Silver) -->
+        <div class="podium-column rank-2">
+          <div class="podium-user-badge">
+            <div class="podium-rank-icon">🥈</div>
+            <div class="podium-user-name" id="podiumSecondUser">---</div>
+            <div class="podium-user-points" id="podiumSecondPoints">0 PTS</div>
+          </div>
+          <div class="podium-pedestal">2</div>
+        </div>
+
+        <!-- 1st Place (Gold - Tallest) -->
+        <div class="podium-column rank-1">
+          <div class="podium-user-badge">
+            <div class="podium-rank-icon">🥇</div>
+            <div class="podium-user-name" id="podiumFirstUser">---</div>
+            <div class="podium-user-points" id="podiumFirstPoints">0 PTS</div>
+          </div>
+          <div class="podium-pedestal">1</div>
+        </div>
+
+        <!-- 3rd Place (Bronze) -->
+        <div class="podium-column rank-3">
+          <div class="podium-user-badge">
+            <div class="podium-rank-icon">🥉</div>
+            <div class="podium-user-name" id="podiumThirdUser">---</div>
+            <div class="podium-user-points" id="podiumThirdPoints">0 PTS</div>
+          </div>
+          <div class="podium-pedestal">3</div>
+        </div>
+
+      </div>
+
+      <!-- Podium Modal Actions -->
+      <div class="podium-modal-actions">
+        <button class="btn-podium-download" id="btnDownloadTxtReport">
+          <i class="fas fa-download"></i> Descargar Informe TXT (.txt)
+        </button>
+        <button class="btn-podium-restart" id="btnRestartGame">
+          <i class="fas fa-redo"></i> Volver a Jugar
+        </button>
+        <button class="btn-podium-close" id="btnModalDismiss">
+          Cerrar
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/dia7.js"></script>
+</body>
+</html>
