@@ -33,8 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     4: {
       title: "Día 4: Trivial: Historia de Fortnite",
-      status: "¡DISPONIBLE AHORA!",
-      statusClass: "tag-active",
+      status: '<i class="fas fa-check"></i> COMPLETADO',
+      statusClass: "tag-completed",
       link: "dia4.html",
       badge: "TRIVIAL & LORE FORTNITE",
       desc: "Cultura general de la isla. 35 preguntas de eventos, armas míticas, vehículos y fase final de Muerte Súbita (Puntos x2) con sistema Kahoot y chat de Twitch."

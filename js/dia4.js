@@ -1597,7 +1597,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const mockViewers = [
-      'Jaratos', 'Vivi', 'Jesulito', 'SitoGamerz', 'Neus_Art', 'RubenDev', 'ArixuFan99',
+      'Jaratos', 'Vivi', 'Jesulito', 'rflexmon_', 'SitoGamerz', 'Neus_Art', 'RubenDev', 'ArixuFan99',
       'FortniteGod', 'PeelyKing', 'SloneAgent', 'ZeroPointHero', 'TwitchViewer42',
       'KevTheCube', 'MidasTouch', 'OmegaPro', 'DefaultSkinPro'
     ];
