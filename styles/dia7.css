@@ -1190,6 +1190,21 @@ body.dia7-theme {
   margin-top: 0.15rem;
 }
 
+.podium-user-speed {
+  font-weight: 700;
+  font-size: 0.76rem;
+  color: var(--vbucks-cyan);
+  margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.podium-column.rank-1 .podium-user-speed {
+  color: #FFE866;
+}
+
 .podium-pedestal {
   width: 100%;
   display: flex;

@@ -264,12 +264,39 @@ document.addEventListener('DOMContentLoaded', () => {
         C: "Misión Semanal Completada"
       },
       correcta: "B"
+    },
+    {
+      id: 21,
+      titulo: "¿Qué fusil de ráfaga pesado y explosivo resuena en la distancia?",
+      categoria: "ARMA / FUSIL DE REPETICIÓN",
+      audioSrc: "assets/sonidos dia6/FUSIL DE REPETICIÓN EXPLOSIVO.MP3",
+      fallbackSrc: "sonidos dia6/FUSIL DE REPETICIÓN EXPLOSIVO.MP3",
+      opciones: {
+        A: "Lanzacohetes Guiado",
+        B: "Fusil de Repetición Explosivo",
+        C: "Arco Mecánico Explosivo"
+      },
+      correcta: "B"
+    },
+    {
+      id: 22,
+      titulo: "¿Qué arma exótica de alta precisión y cadencia estás escuchando?",
+      categoria: "ARMA / EXÓTICA",
+      audioSrc: "assets/sonidos dia6/HOLOTORNADO EXÓTICO.MP3",
+      fallbackSrc: "sonidos dia6/HOLOTORNADO EXÓTICO.MP3",
+      opciones: {
+        A: "Fusil Holotornado Exótico",
+        B: "Subfusil de Disparo Rápido Exótico",
+        C: "Pistola Rastreadora de Sombras"
+      },
+      correcta: "A"
     }
   ];
 
   // ========================================================================
-  // 2. ESTADO DEL JUEGO
+  // 2. ESTADO DEL JUEGO (22 RONDAS)
   // ========================================================================
+  const TOTAL_ROUNDS = 22;
   const ROUND_DURATION_SEC = 20;
   let currentRoundIndex = 0;
   let isRoundActive = false;
@@ -278,12 +305,13 @@ document.addEventListener('DOMContentLoaded', () => {
   let timerInterval = null;
   let isAudioEnabled = true;
   let totalChatMessages = 0;
+  let roundStartTimestamp = 0;
 
   // Votes in the CURRENT round: { A: Set(usernames), B: Set(usernames), C: Set(usernames) }
   let currentRoundVotes = { A: new Set(), B: new Set(), C: new Set() };
-  let usersVotedInRound = new Map(); // username -> option
+  let usersVotedInRound = new Map(); // username -> { option, reactionTimeMs, username }
 
-  // Cumulative Leaderboard: { [username]: { displayName, score, correctCount } }
+  // Cumulative Leaderboard: { [username]: { displayName, puntos, score, correctCount, tiempoTotalRespuesta } }
   let userScores = {};
 
   // Audio Synthesizer
@@ -576,6 +604,7 @@ document.addEventListener('DOMContentLoaded', () => {
     currentRoundVotes = { A: new Set(), B: new Set(), C: new Set() };
     usersVotedInRound.clear();
     updateVoteCountsDisplay();
+    roundStartTimestamp = Date.now();
 
     // Play secret audio clip
     if (secretAudioPlayer) {
@@ -693,13 +722,24 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Score 1 point for each correct voter
+    // Score 1 point and accumulate reaction time for each correct voter
     correctVoters.forEach(username => {
       if (!userScores[username]) {
-        userScores[username] = { displayName: username, score: 0, correctCount: 0 };
+        userScores[username] = {
+          displayName: username,
+          puntos: 0,
+          score: 0,
+          correctCount: 0,
+          tiempoTotalRespuesta: 0
+        };
       }
+      userScores[username].puntos += 1;
       userScores[username].score += 1;
       userScores[username].correctCount += 1;
+
+      const voteData = usersVotedInRound.get(username.toLowerCase());
+      const reactionTime = (voteData && typeof voteData.reactionTimeMs === 'number') ? voteData.reactionTimeMs : 0;
+      userScores[username].tiempoTotalRespuesta += reactionTime;
     });
 
     // Show Reveal Banner
@@ -791,7 +831,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (detectedVote) {
-      usersVotedInRound.set(userKey, detectedVote);
+      const msgTimestamp = Date.now();
+      const reactionTimeMs = Math.max(0, msgTimestamp - roundStartTimestamp);
+
+      usersVotedInRound.set(userKey, {
+        option: detectedVote,
+        reactionTimeMs: reactionTimeMs,
+        username: username
+      });
       currentRoundVotes[detectedVote].add(username);
       updateVoteCountsDisplay();
       appendRadarTerminalLine(username, `Votó por la opción [${detectedVote}]`, 'vote', detectedVote);
@@ -827,15 +874,36 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ========================================================================
-  // 8. LIVE LEADERBOARD
+  // 8. LIVE LEADERBOARD & TIE-BREAKING LOGIC
   // ========================================================================
+  function getSortedUsers() {
+    return Object.values(userScores).sort((a, b) => {
+      const pointsA = a.puntos !== undefined ? a.puntos : (a.score || 0);
+      const pointsB = b.puntos !== undefined ? b.puntos : (b.score || 0);
+
+      // Criterio principal: Puntos (aciertos) de mayor a menor
+      if (pointsB !== pointsA) {
+        return pointsB - pointsA;
+      }
+
+      // Criterio de desempate: Menor tiempo acumulado de respuesta
+      const timeA = a.tiempoTotalRespuesta !== undefined ? a.tiempoTotalRespuesta : 0;
+      const timeB = b.tiempoTotalRespuesta !== undefined ? b.tiempoTotalRespuesta : 0;
+      return timeA - timeB;
+    });
+  }
+
+  function formatAvgSpeed(user) {
+    if (!user || (!user.puntos && !user.score)) return 'Velocidad media: 0.0s';
+    const totalPts = user.puntos || user.score || 1;
+    const avgSec = ((user.tiempoTotalRespuesta || 0) / totalPts / 1000).toFixed(1);
+    return `Velocidad media: ${avgSec}s`;
+  }
+
   function updateLiveLeaderboard() {
     if (!radarLeaderboardFeed) return;
 
-    const sortedUsers = Object.values(userScores).sort((a, b) => {
-      if (b.score !== a.score) return b.score - a.score;
-      return b.correctCount - a.correctCount;
-    });
+    const sortedUsers = getSortedUsers();
 
     if (lbTotalUsers) lbTotalUsers.textContent = sortedUsers.length;
 
@@ -859,12 +927,14 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (rank === 2) medal = '🥈';
       else if (rank === 3) medal = '🥉';
 
+      const userPts = u.puntos !== undefined ? u.puntos : u.score;
+
       item.innerHTML = `
         <div class="lb-user-info">
           <span class="lb-rank-badge">${medal}</span>
           <span class="lb-username">${escapeHtml(u.displayName)}</span>
         </div>
-        <span class="lb-score-pill">${u.score} pt${u.score === 1 ? 'o' : 's'}</span>
+        <span class="lb-score-pill">${userPts} pt${userPts === 1 ? 'o' : 's'}</span>
       `;
       radarLeaderboardFeed.appendChild(item);
     });
@@ -876,26 +946,32 @@ document.addEventListener('DOMContentLoaded', () => {
   function openPodiumModal() {
     if (!podiumModalOverlay) return;
 
-    const sortedUsers = Object.values(userScores).sort((a, b) => {
-      if (b.score !== a.score) return b.score - a.score;
-      return b.correctCount - a.correctCount;
-    });
+    const sortedUsers = getSortedUsers();
 
-    const top1 = sortedUsers[0] || { displayName: 'Sin Ganador', score: 0, correctCount: 0 };
-    const top2 = sortedUsers[1] || { displayName: 'Sin Ganador', score: 0, correctCount: 0 };
-    const top3 = sortedUsers[2] || { displayName: 'Sin Ganador', score: 0, correctCount: 0 };
+    const top1 = sortedUsers[0] || { displayName: 'Sin Ganador', puntos: 0, score: 0, correctCount: 0, tiempoTotalRespuesta: 0 };
+    const top2 = sortedUsers[1] || { displayName: 'Sin Ganador', puntos: 0, score: 0, correctCount: 0, tiempoTotalRespuesta: 0 };
+    const top3 = sortedUsers[2] || { displayName: 'Sin Ganador', puntos: 0, score: 0, correctCount: 0, tiempoTotalRespuesta: 0 };
 
     if (podiumFirstUser) podiumFirstUser.textContent = top1.displayName;
-    if (podiumFirstPoints) podiumFirstPoints.textContent = `${top1.score} PTS`;
-    if (podiumFirstAccuracy) podiumFirstAccuracy.textContent = `${top1.correctCount}/${SOUNDS_DATA.length} aciertos`;
+    if (podiumFirstPoints) {
+      const pts = top1.puntos !== undefined ? top1.puntos : top1.score;
+      podiumFirstPoints.innerHTML = `${pts} PTS<div class="podium-user-speed" style="font-size: 0.72rem; color: #00E5FF; margin-top: 4px; font-weight: 700;">${formatAvgSpeed(top1)}</div>`;
+    }
+    if (podiumFirstAccuracy) podiumFirstAccuracy.textContent = `${top1.puntos || top1.correctCount || 0}/${SOUNDS_DATA.length} aciertos`;
 
     if (podiumSecondUser) podiumSecondUser.textContent = top2.displayName;
-    if (podiumSecondPoints) podiumSecondPoints.textContent = `${top2.score} PTS`;
-    if (podiumSecondAccuracy) podiumSecondAccuracy.textContent = `${top2.correctCount}/${SOUNDS_DATA.length} aciertos`;
+    if (podiumSecondPoints) {
+      const pts = top2.puntos !== undefined ? top2.puntos : top2.score;
+      podiumSecondPoints.innerHTML = `${pts} PTS<div class="podium-user-speed" style="font-size: 0.72rem; color: #00E5FF; margin-top: 4px; font-weight: 700;">${formatAvgSpeed(top2)}</div>`;
+    }
+    if (podiumSecondAccuracy) podiumSecondAccuracy.textContent = `${top2.puntos || top2.correctCount || 0}/${SOUNDS_DATA.length} aciertos`;
 
     if (podiumThirdUser) podiumThirdUser.textContent = top3.displayName;
-    if (podiumThirdPoints) podiumThirdPoints.textContent = `${top3.score} PTS`;
-    if (podiumThirdAccuracy) podiumThirdAccuracy.textContent = `${top3.correctCount}/${SOUNDS_DATA.length} aciertos`;
+    if (podiumThirdPoints) {
+      const pts = top3.puntos !== undefined ? top3.puntos : top3.score;
+      podiumThirdPoints.innerHTML = `${pts} PTS<div class="podium-user-speed" style="font-size: 0.72rem; color: #00E5FF; margin-top: 4px; font-weight: 700;">${formatAvgSpeed(top3)}</div>`;
+    }
+    if (podiumThirdAccuracy) podiumThirdAccuracy.textContent = `${top3.puntos || top3.correctCount || 0}/${SOUNDS_DATA.length} aciertos`;
 
     podiumModalOverlay.classList.add('active');
     triggerConfetti();
@@ -907,7 +983,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function downloadPodiumTxtReport() {
-    const sortedUsers = Object.values(userScores).sort((a, b) => b.score - a.score);
+    const sortedUsers = getSortedUsers();
     const dateStr = new Date().toLocaleString('es-ES');
 
     let report = `====================================================================\n`;
@@ -915,23 +991,25 @@ document.addEventListener('DOMContentLoaded', () => {
     report += `   INFORME OFICIAL DE RESULTADOS Y CLASIFICACIÓN DEL CHAT\n`;
     report += `   Fecha: ${dateStr}\n`;
     report += `   Total de Rondas Auditivas: ${SOUNDS_DATA.length}\n`;
+    report += `   Sistema de Desempate: Velocidad de Respuesta (Menor Tiempo Total)\n`;
     report += `====================================================================\n\n`;
 
-    report += `🏆 TOP 3 CAMPEONES DEL DIRECTO:\n`;
-    report += `  🥇 1º PUESTO: ${sortedUsers[0]?.displayName || 'N/A'} - ${sortedUsers[0]?.score || 0} Puntos (${sortedUsers[0]?.correctCount || 0}/${SOUNDS_DATA.length} aciertos)\n`;
-    report += `  🥈 2º PUESTO: ${sortedUsers[1]?.displayName || 'N/A'} - ${sortedUsers[1]?.score || 0} Puntos (${sortedUsers[1]?.correctCount || 0}/${SOUNDS_DATA.length} aciertos)\n`;
-    report += `  🥉 3º PUESTO: ${sortedUsers[2]?.displayName || 'N/A'} - ${sortedUsers[2]?.score || 0} Puntos (${sortedUsers[2]?.correctCount || 0}/${SOUNDS_DATA.length} aciertos)\n\n`;
+    report += `🏆 TOP 3 CAMPEONES DEL DIRECTO (CON DESEMPATE POR VELOCIDAD):\n`;
+    report += `  🥇 1º PUESTO: ${sortedUsers[0]?.displayName || 'N/A'} - ${sortedUsers[0]?.puntos || sortedUsers[0]?.score || 0} Puntos (${sortedUsers[0]?.correctCount || 0}/${SOUNDS_DATA.length} aciertos) - ${formatAvgSpeed(sortedUsers[0])}\n`;
+    report += `  🥈 2º PUESTO: ${sortedUsers[1]?.displayName || 'N/A'} - ${sortedUsers[1]?.puntos || sortedUsers[1]?.score || 0} Puntos (${sortedUsers[1]?.correctCount || 0}/${SOUNDS_DATA.length} aciertos) - ${formatAvgSpeed(sortedUsers[1])}\n`;
+    report += `  🥉 3º PUESTO: ${sortedUsers[2]?.displayName || 'N/A'} - ${sortedUsers[2]?.puntos || sortedUsers[2]?.score || 0} Puntos (${sortedUsers[2]?.correctCount || 0}/${SOUNDS_DATA.length} aciertos) - ${formatAvgSpeed(sortedUsers[2])}\n\n`;
 
     report += `📋 CLASIFICACIÓN GENERAL COMPLETA:\n`;
-    report += `Pos | Nombre de Usuario           | Puntos | Aciertos\n`;
+    report += `Pos | Nombre de Usuario           | Puntos | Aciertos | Vel. Media\n`;
     report += `--------------------------------------------------------------------\n`;
 
     sortedUsers.forEach((u, idx) => {
       const rank = String(idx + 1).padEnd(3);
       const name = String(u.displayName).padEnd(28);
-      const pts = String(u.score).padStart(4);
-      const hits = String(u.correctCount).padStart(4);
-      report += `${rank} | ${name} | ${pts} pts | ${hits}/${SOUNDS_DATA.length}\n`;
+      const pts = String(u.puntos || u.score || 0).padStart(4);
+      const hits = String(u.correctCount || u.puntos || 0).padStart(4);
+      const avg = u.puntos > 0 ? `${(u.tiempoTotalRespuesta / u.puntos / 1000).toFixed(1)}s` : '0.0s';
+      report += `${rank} | ${name} | ${pts} pts | ${hits}/${SOUNDS_DATA.length} | ${avg}\n`;
     });
 
     report += `\n====================================================================\n`;

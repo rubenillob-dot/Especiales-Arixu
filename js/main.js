@@ -481,4 +481,51 @@ document.addEventListener('DOMContentLoaded', () => {
     executeIdle();
     scheduleNextBehavior();
   }
+
+  // Extract Hero Names to Clipboard
+  const btnCopyHeroes = document.getElementById('btnCopyHeroes');
+  if (btnCopyHeroes) {
+    btnCopyHeroes.addEventListener('click', async () => {
+      const heroCards = document.querySelectorAll('.heroes-section .hero-card');
+      const winnerNames = [];
+
+      heroCards.forEach(card => {
+        if (card.classList.contains('hero-locked')) return;
+        const nameEl = card.querySelector('.hero-card-name');
+        if (!nameEl) return;
+        const name = nameEl.textContent.trim();
+        if (name && !name.toLowerCase().includes('¿serás tú?') && !name.toLowerCase().includes('seras tu')) {
+          winnerNames.push(name);
+        }
+      });
+
+      const textToCopy = winnerNames.join('\n');
+
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(textToCopy);
+        } else {
+          const textarea = document.createElement('textarea');
+          textarea.value = textToCopy;
+          textarea.style.position = 'fixed';
+          textarea.style.opacity = '0';
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+        }
+
+        const originalContent = btnCopyHeroes.innerHTML;
+        btnCopyHeroes.innerHTML = '<i class="fas fa-check"></i> <span>¡Copiados! ✔️</span>';
+        btnCopyHeroes.classList.add('copied');
+
+        setTimeout(() => {
+          btnCopyHeroes.innerHTML = originalContent;
+          btnCopyHeroes.classList.remove('copied');
+        }, 2000);
+      } catch (err) {
+        console.error('Error al copiar al portapapeles:', err);
+      }
+    });
+  }
 });

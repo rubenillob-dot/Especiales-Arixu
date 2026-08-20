@@ -166,6 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let isUrnOpen = false;
   let isRevealed = false;
   let audioEnabled = true;
+  let urnOpenTimestamp = 0;
 
   const currentRoundBids = new Map();
   const userScores = new Map();
@@ -222,10 +223,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnRestartGame = document.getElementById('btnRestartGame');
   const podiumFirstUser = document.getElementById('podiumFirstUser');
   const podiumFirstPoints = document.getElementById('podiumFirstPoints');
+  const podiumFirstSpeed = document.getElementById('podiumFirstSpeed');
   const podiumSecondUser = document.getElementById('podiumSecondUser');
   const podiumSecondPoints = document.getElementById('podiumSecondPoints');
+  const podiumSecondSpeed = document.getElementById('podiumSecondSpeed');
   const podiumThirdUser = document.getElementById('podiumThirdUser');
   const podiumThirdPoints = document.getElementById('podiumThirdPoints');
+  const podiumThirdSpeed = document.getElementById('podiumThirdSpeed');
   const flashOverlay = document.getElementById('flashOverlay');
   const confettiCanvas = document.getElementById('confettiCanvas');
 
@@ -407,6 +411,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function openUrn() {
     if (isUrnOpen || isRevealed) return;
     isUrnOpen = true;
+    urnOpenTimestamp = Date.now();
 
     urnStatusBadge.className = 'urn-status-badge urn-open';
     urnStatusText.textContent = '🟢 URNA ABIERTA';
@@ -435,9 +440,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const item = COSMETICOS_PRECIO_JUSTO[currentItemIndex];
     const realPrice = item.precio;
 
-    const bidsArray = Array.from(currentRoundBids.entries()).map(([user, bid]) => ({
+    const bidsArray = Array.from(currentRoundBids.entries()).map(([user, data]) => ({
       user,
-      bid
+      bid: typeof data === 'object' ? data.bid : data,
+      reactionTimeMs: typeof data === 'object' ? data.reactionTimeMs : 0
     }));
 
     const validBids = [];
@@ -459,18 +465,36 @@ document.addEventListener('DOMContentLoaded', () => {
     if (validBids.length === 0) {
       isAllOver = true;
     } else {
-      validBids.sort((a, b) => a.diff - b.diff);
-      const minDiff = validBids[0].diff;
-      roundWinners = validBids.filter(b => b.diff === minDiff);
-      isExactHit = minDiff === 0;
+      // Ordenar por diferencia (más cercano) y desempatar por menor tiempo de reacción
+      validBids.sort((a, b) => {
+        if (a.diff !== b.diff) {
+          return a.diff - b.diff;
+        }
+        return (a.reactionTimeMs || 0) - (b.reactionTimeMs || 0);
+      });
+
+      const winner = validBids[0];
+      roundWinners = [winner];
+      isExactHit = winner.diff === 0;
 
       roundWinners.forEach(w => {
-        const currentScore = userScores.get(w.user) || { points: 0, exactHits: 0, closestHits: 0, wins: 0 };
+        const currentScore = userScores.get(w.user) || {
+          points: 0,
+          exactHits: 0,
+          closestHits: 0,
+          wins: 0,
+          totalAciertos: 0,
+          tiempoTotalRespuesta: 0,
+          totalReactionTime: 0
+        };
         const addedPoints = isExactHit ? 3 : 1;
         currentScore.points += addedPoints;
         currentScore.wins += 1;
+        currentScore.totalAciertos = (currentScore.totalAciertos || 0) + 1;
         if (isExactHit) currentScore.exactHits += 1;
         else currentScore.closestHits += 1;
+        currentScore.totalReactionTime = (currentScore.totalReactionTime || 0) + (w.reactionTimeMs || 0);
+        currentScore.tiempoTotalRespuesta = (currentScore.tiempoTotalRespuesta || 0) + (w.reactionTimeMs || 0);
         userScores.set(w.user, currentScore);
       });
     }
@@ -480,7 +504,7 @@ document.addEventListener('DOMContentLoaded', () => {
       itemName: item.nombre,
       realPrice,
       totalBids: bidsArray.length,
-      winners: roundWinners.map(w => ({ user: w.user, bid: w.bid, diff: w.diff })),
+      winners: roundWinners.map(w => ({ user: w.user, bid: w.bid, diff: w.diff, reactionTimeMs: w.reactionTimeMs })),
       isAllOver,
       isExactHit
     });
@@ -497,11 +521,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (isAllOver) {
         appendRadarLog('SISTEMA', `💥 ¡TODOS SE HAN PASADO! El precio real era ${realPrice.toLocaleString()} PaVos.`, 'sys');
       } else if (isExactHit) {
-        const winnerNames = roundWinners.map(w => `@${w.user}`).join(', ');
-        appendRadarLog('SISTEMA', `💎 ¡PLENO EXACTO! ${winnerNames} acertó exactamente ${realPrice.toLocaleString()} PaVos (+3 PTS).`, 'sys');
+        const winner = roundWinners[0];
+        const speedSec = ((winner.reactionTimeMs || 0) / 1000).toFixed(1);
+        appendRadarLog('SISTEMA', `💎 ¡PLENO EXACTO! @${winner.user} acertó ${realPrice.toLocaleString()} PaVos en ${speedSec}s (+3 PTS).`, 'sys');
       } else {
-        const winnerNames = roundWinners.map(w => `@${w.user} (${w.bid.toLocaleString()} PaVos)`).join(', ');
-        appendRadarLog('SISTEMA', `🎉 GANADOR: ${winnerNames} a sólo ${roundWinners[0].diff.toLocaleString()} PaVos (+1 PTO).`, 'sys');
+        const winner = roundWinners[0];
+        const speedSec = ((winner.reactionTimeMs || 0) / 1000).toFixed(1);
+        appendRadarLog('SISTEMA', `🎉 GANADOR: @${winner.user} (${winner.bid.toLocaleString()} PaVos) en ${speedSec}s (+1 PTO).`, 'sys');
       }
     });
   }
@@ -540,17 +566,19 @@ document.addEventListener('DOMContentLoaded', () => {
       winnerStatsRow.textContent = `Ningún espectador apostó una cifra menor o igual. Ningún punto otorgado.`;
     } else if (isExactHit) {
       roundWinnerCard.classList.add('exact-hit');
-      const winnerNames = winners.map(w => `@${w.user}`).join(', ');
+      const winner = winners[0];
+      const speedSec = ((winner.reactionTimeMs || 0) / 1000).toFixed(1);
       winnerHeadline.innerHTML = `<i class="fas fa-gem"></i> ¡PLENO CLAVADO AL PRECIO EXACTO! (+3 PUNTOS)`;
-      winnerUserRow.textContent = `${winnerNames} con ${realPrice.toLocaleString()} PaVos`;
-      winnerStatsRow.textContent = `¡Precisión milimétrica! Acierto 100% exacto en la tienda.`;
+      winnerUserRow.innerHTML = `@${winner.user} con ${realPrice.toLocaleString()} PaVos <span class="winner-speed-badge" style="display: inline-flex; align-items: center; gap: 5px; background: rgba(0, 240, 255, 0.18); border: 1px solid #00F0FF; color: #00F0FF; padding: 3px 10px; border-radius: 9999px; font-size: 0.8rem; font-weight: 800; margin-left: 8px;"><i class="fas fa-bolt"></i> ¡Respuesta rápida: ${speedSec}s!</span>`;
+      winnerStatsRow.textContent = `¡Precisión milimétrica! Acierto 100% exacto en la tienda en ${speedSec} segundos.`;
     } else {
-      const winnerNames = winners.map(w => `@${w.user}`).join(', ');
-      const bestBid = winners[0].bid;
-      const diff = winners[0].diff;
+      const winner = winners[0];
+      const bestBid = winner.bid;
+      const diff = winner.diff;
+      const speedSec = ((winner.reactionTimeMs || 0) / 1000).toFixed(1);
       winnerHeadline.innerHTML = `<i class="fas fa-trophy"></i> GANADOR DE LA RONDA (+1 PUNTO)`;
-      winnerUserRow.textContent = `${winnerNames} con ${bestBid.toLocaleString()} PaVos`;
-      winnerStatsRow.textContent = `Diferencia con el precio real (${realPrice.toLocaleString()} PaVos): -${diff.toLocaleString()} PaVos sin pasarse.`;
+      winnerUserRow.innerHTML = `@${winner.user} con ${bestBid.toLocaleString()} PaVos <span class="winner-speed-badge" style="display: inline-flex; align-items: center; gap: 5px; background: rgba(255, 215, 0, 0.18); border: 1px solid #FFD700; color: #FFD700; padding: 3px 10px; border-radius: 9999px; font-size: 0.8rem; font-weight: 800; margin-left: 8px;"><i class="fas fa-bolt"></i> ¡Respuesta rápida: ${speedSec}s!</span>`;
+      winnerStatsRow.textContent = `Diferencia con el precio real (${realPrice.toLocaleString()} PaVos): -${diff.toLocaleString()} PaVos en ${speedSec}s.`;
     }
   }
 
@@ -582,11 +610,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function registerBid(username, bidVal) {
     if (!isUrnOpen || isRevealed) return;
-    currentRoundBids.set(username, bidVal);
+    if (currentRoundBids.has(username)) return;
+
+    const msgTimestamp = Date.now();
+    const reactionTimeMs = Math.max(0, msgTimestamp - urnOpenTimestamp);
+
+    currentRoundBids.set(username, {
+      bid: bidVal,
+      reactionTimeMs: reactionTimeMs,
+      timestamp: msgTimestamp
+    });
+
     updateMetricsUI();
     renderBidsFeed();
     playSound('coin');
-    appendRadarLog(username, `Registró puja: <span class="log-bid-highlight">${bidVal.toLocaleString()} PaVos</span>`, 'bid');
+    const speedSec = (reactionTimeMs / 1000).toFixed(1);
+    appendRadarLog(username, `Registró puja: <span class="log-bid-highlight">${bidVal.toLocaleString()} PaVos</span> <span style="font-size: 0.7rem; color: #94A3B8;">(${speedSec}s)</span>`, 'bid');
   }
 
   function updateMetricsUI() {
@@ -601,7 +640,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const values = Array.from(currentRoundBids.values());
+    const values = Array.from(currentRoundBids.values()).map(v => typeof v === 'object' ? v.bid : v);
     const minVal = Math.min(...values);
     const maxVal = Math.max(...values);
     const sum = values.reduce((acc, v) => acc + v, 0);
@@ -620,7 +659,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const winnerSet = new Set((roundWinners || []).map(w => w.user));
 
-    currentRoundBids.forEach((bid, user) => {
+    currentRoundBids.forEach((data, user) => {
+      const bid = typeof data === 'object' ? data.bid : data;
+      const reactionTimeMs = typeof data === 'object' ? data.reactionTimeMs : 0;
       const chip = document.createElement('div');
       chip.className = 'bid-bubble-chip';
 
@@ -634,17 +675,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      chip.innerHTML = `<span class="bid-user">@${user}:</span> <span class="bid-val">${bid.toLocaleString()}</span>`;
+      const speedSec = (reactionTimeMs / 1000).toFixed(1);
+      chip.innerHTML = `<span class="bid-user">@${user}:</span> <span class="bid-val">${bid.toLocaleString()}</span> <span style="font-size: 0.68rem; opacity: 0.75; font-family: var(--font-mono); margin-left: 4px;">(${speedSec}s)</span>`;
       bidsFeedChips.appendChild(chip);
     });
   }
 
-  function updateLeaderboardUI() {
-    const sortedUsers = Array.from(userScores.entries()).sort((a, b) => {
+  function getSortedLeaderboardUsers() {
+    return Array.from(userScores.entries()).sort((a, b) => {
       if (b[1].points !== a[1].points) return b[1].points - a[1].points;
       if (b[1].exactHits !== a[1].exactHits) return b[1].exactHits - a[1].exactHits;
-      return b[1].wins - a[1].wins;
+      if (b[1].wins !== a[1].wins) return b[1].wins - a[1].wins;
+      return (a[1].totalReactionTime || 0) - (b[1].totalReactionTime || 0);
     });
+  }
+
+  function updateLeaderboardUI() {
+    const sortedUsers = getSortedLeaderboardUsers();
 
     lbTotalUsers.textContent = sortedUsers.length;
     radarLeaderboardFeed.innerHTML = '';
@@ -808,24 +855,31 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function showPodiumModal() {
-    const sortedUsers = Array.from(userScores.entries()).sort((a, b) => {
-      if (b[1].points !== a[1].points) return b[1].points - a[1].points;
-      if (b[1].exactHits !== a[1].exactHits) return b[1].exactHits - a[1].exactHits;
-      return b[1].wins - a[1].wins;
-    });
+    const sortedUsers = getSortedLeaderboardUsers();
 
-    const first = sortedUsers[0] || ['---', { points: 0, exactHits: 0, wins: 0 }];
-    const second = sortedUsers[1] || ['---', { points: 0, exactHits: 0, wins: 0 }];
-    const third = sortedUsers[2] || ['---', { points: 0, exactHits: 0, wins: 0 }];
+    const first = sortedUsers[0] || ['---', { points: 0, exactHits: 0, wins: 0, totalAciertos: 0, tiempoTotalRespuesta: 0, totalReactionTime: 0 }];
+    const second = sortedUsers[1] || ['---', { points: 0, exactHits: 0, wins: 0, totalAciertos: 0, tiempoTotalRespuesta: 0, totalReactionTime: 0 }];
+    const third = sortedUsers[2] || ['---', { points: 0, exactHits: 0, wins: 0, totalAciertos: 0, tiempoTotalRespuesta: 0, totalReactionTime: 0 }];
+
+    function formatAvgSpeed(d) {
+      const aciertos = d.totalAciertos || d.wins || 0;
+      if (aciertos === 0) return '⏱️ Media: 0.0s';
+      const tiempoTotal = d.tiempoTotalRespuesta !== undefined ? d.tiempoTotalRespuesta : (d.totalReactionTime || 0);
+      const avgSec = (tiempoTotal / aciertos / 1000).toFixed(1);
+      return `⏱️ Media: ${avgSec}s`;
+    }
 
     podiumFirstUser.textContent = first[0] !== '---' ? `@${first[0]}` : '---';
     podiumFirstPoints.textContent = `${first[1].points} PTS (${first[1].exactHits}🎯 / ${first[1].wins}🏆)`;
+    if (podiumFirstSpeed) podiumFirstSpeed.textContent = formatAvgSpeed(first[1]);
 
     podiumSecondUser.textContent = second[0] !== '---' ? `@${second[0]}` : '---';
     podiumSecondPoints.textContent = `${second[1].points} PTS (${second[1].exactHits}🎯 / ${second[1].wins}🏆)`;
+    if (podiumSecondSpeed) podiumSecondSpeed.textContent = formatAvgSpeed(second[1]);
 
     podiumThirdUser.textContent = third[0] !== '---' ? `@${third[0]}` : '---';
     podiumThirdPoints.textContent = `${third[1].points} PTS (${third[1].exactHits}🎯 / ${third[1].wins}🏆)`;
+    if (podiumThirdSpeed) podiumThirdSpeed.textContent = formatAvgSpeed(third[1]);
 
     podiumModalOverlay.classList.add('active');
     launchConfetti(3500);
@@ -833,11 +887,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function downloadTxtReport() {
-    const sortedUsers = Array.from(userScores.entries()).sort((a, b) => b[1].points - a[1].points);
+    const sortedUsers = getSortedLeaderboardUsers();
     let content = `=====================================================\n`;
     content += `🏆 INFORME OFICIAL: EL PRECIO JUSTO (EDICIÓN PAVOS) 🏆\n`;
     content += `ESPECIALES IMARIXU - DÍA 7 (GRAN FINAL)\n`;
     content += `Fecha: ${new Date().toLocaleString()}\n`;
+    content += `Sistema de Desempate: Velocidad de Respuesta (Menor Tiempo)\n`;
     content += `=====================================================\n\n`;
 
     content += `🥇 CLASIFICACIÓN GENERAL TOP USUARIOS:\n`;
@@ -845,7 +900,8 @@ document.addEventListener('DOMContentLoaded', () => {
       content += `(No se registraron puntuaciones en esta sesión)\n`;
     } else {
       sortedUsers.forEach(([username, d], i) => {
-        content += `${i + 1}. @${username} -> ${d.points} Puntos (${d.exactHits} Plenos exactos, ${d.wins} Rondas ganadas)\n`;
+        const avg = d.wins > 0 ? `${(d.totalReactionTime / d.wins / 1000).toFixed(1)}s` : '0.0s';
+        content += `${i + 1}. @${username} -> ${d.points} Puntos (${d.exactHits} Plenos, ${d.wins} Rondas ganadas) - Vel. Media: ${avg}\n`;
       });
     }
 
@@ -859,9 +915,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (r.isAllOver) {
         content += `  - Resultado: Todos se pasaron de precio.\n`;
       } else if (r.isExactHit) {
-        content += `  - Resultado: ¡PLENO EXACTO! Ganador: ${r.winners.map(w => `@${w.user}`).join(', ')}\n`;
+        content += `  - Resultado: ¡PLENO EXACTO! Ganador: ${r.winners.map(w => `@${w.user} (${((w.reactionTimeMs || 0)/1000).toFixed(1)}s)`).join(', ')}\n`;
       } else {
-        content += `  - Ganador(es): ${r.winners.map(w => `@${w.user} con ${w.bid} PaVos (dif: -${w.diff})`).join(', ')}\n`;
+        content += `  - Ganador(es): ${r.winners.map(w => `@${w.user} con ${w.bid} PaVos (dif: -${w.diff}, en ${((w.reactionTimeMs || 0)/1000).toFixed(1)}s)`).join(', ')}\n`;
       }
       content += `\n`;
     });
