@@ -41,8 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     5: {
       title: "Día 5: ¿Quién es ese Streamer?",
-      status: "¡DISPONIBLE AHORA!",
-      statusClass: "tag-active",
+      status: '<i class="fas fa-check"></i> COMPLETADO',
+      statusClass: "tag-completed",
       link: "dia5.html",
       badge: "ADIVINA AL CREADOR (TWITCH x YOUTUBE)",
       desc: "Adivina al creador de contenido de Twitch y YouTube viendo solo una parte de su cuerpo, accesorios o tatuajes con el chat en directo."
