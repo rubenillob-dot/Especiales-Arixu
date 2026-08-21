@@ -363,6 +363,103 @@ body.dia7-theme {
   color: var(--gold-primary);
 }
 
+/* VAULT INSTRUCTIONS PANEL */
+.vault-instructions-panel {
+  background: linear-gradient(135deg, rgba(30, 24, 10, 0.95) 0%, rgba(20, 16, 8, 0.95) 100%);
+  border: 2px solid #FFB703;
+  border-radius: 14px;
+  padding: 0.9rem 1.25rem;
+  box-shadow: 0 0 25px rgba(255, 183, 3, 0.25), inset 0 0 15px rgba(255, 183, 3, 0.1);
+  position: relative;
+  overflow: hidden;
+  animation: pulseWarningBorder 3s infinite alternate;
+}
+
+@keyframes pulseWarningBorder {
+  0% {
+    border-color: #FFB703;
+    box-shadow: 0 0 15px rgba(255, 183, 3, 0.2), inset 0 0 10px rgba(255, 183, 3, 0.05);
+  }
+  100% {
+    border-color: #FFD166;
+    box-shadow: 0 0 30px rgba(255, 209, 102, 0.4), inset 0 0 20px rgba(255, 209, 102, 0.15);
+  }
+}
+
+.vault-instructions-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px dashed rgba(255, 183, 3, 0.4);
+  padding-bottom: 0.4rem;
+}
+
+.instructions-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #FFD166;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.warning-icon {
+  color: #FFB703;
+  font-size: 1rem;
+  animation: blinkWarning 1.5s infinite alternate;
+}
+
+@keyframes blinkWarning {
+  0% { opacity: 0.6; transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1.1); filter: drop-shadow(0 0 6px #FFB703); }
+}
+
+.vault-instructions-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: #F1F5F9;
+}
+
+.vault-instructions-content p {
+  margin: 0;
+}
+
+.instruction-lead {
+  color: #F8FAFC;
+}
+
+.instruction-rules {
+  color: #34D399;
+  background: rgba(16, 185, 129, 0.12);
+  border-left: 3px solid #10B981;
+  padding: 0.35rem 0.65rem;
+  border-radius: 0 6px 6px 0;
+  font-weight: 600;
+}
+
+.instruction-rules strong {
+  color: #A7F3D0;
+}
+
+.instruction-warning {
+  color: #FCA5A5;
+  background: rgba(239, 68, 68, 0.12);
+  border-left: 3px solid #EF4444;
+  padding: 0.35rem 0.65rem;
+  border-radius: 0 6px 6px 0;
+  font-weight: 600;
+}
+
+.instruction-warning strong {
+  color: #FECACA;
+}
+
 /* COSMETIC SHOWCASE STAGE */
 .showcase-stage-container {
   display: grid;
@@ -457,8 +554,8 @@ body.dia7-theme {
 .showcase-control-box {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 1rem;
+  justify-content: center;
+  gap: 1.25rem;
 }
 
 /* Price Box / Vault */
@@ -550,95 +647,12 @@ body.dia7-theme {
 
 /* Winner Banner Card */
 .round-winner-card {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(6, 78, 59, 0.35) 100%);
-  border: 1px solid rgba(16, 185, 129, 0.5);
-  border-radius: 12px;
-  padding: 0.9rem 1rem;
-  display: none;
-  animation: fadeInWinner 0.4s ease-out forwards;
-  box-shadow: 0 0 20px var(--emerald-glow);
+  display: none !important;
 }
 
-.round-winner-card.active {
-  display: block;
-}
-
-.round-winner-card.all-over {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(153, 27, 27, 0.35) 100%);
-  border-color: rgba(239, 68, 68, 0.6);
-  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
-}
-
-.round-winner-card.exact-hit {
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.25) 0%, rgba(184, 134, 11, 0.4) 100%);
-  border-color: var(--gold-primary);
-  box-shadow: 0 0 25px var(--gold-glow);
-}
-
-.winner-headline {
-  font-size: 0.85rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--emerald-light);
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-.round-winner-card.exact-hit .winner-headline {
-  color: var(--gold-light);
-}
-
-.round-winner-card.all-over .winner-headline {
-  color: #FCA5A5;
-}
-
-.winner-user-row {
-  margin-top: 0.35rem;
-  font-size: 1.15rem;
-  font-weight: 900;
-  color: #FFFFFF;
-}
-
-.winner-stats-row {
-  margin-top: 0.2rem;
-  font-size: 0.8rem;
-  color: #CBD5E1;
-}
-
-@keyframes fadeInWinner {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* LIVE BIDS TICKER FEED */
+/* LIVE BIDS TICKER FEED (HIDDEN AS REQUESTED) */
 .live-bids-section {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  background: rgba(8, 16, 32, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  padding: 0.75rem 1rem;
-}
-
-.live-bids-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #94A3B8;
-}
-
-.bids-chips-feed {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-  max-height: 95px;
-  overflow-y: auto;
-  padding-right: 0.3rem;
+  display: none !important;
 }
 
 .bid-bubble-chip {

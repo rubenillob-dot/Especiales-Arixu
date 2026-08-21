@@ -49,8 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     6: {
       title: "Día 6: El Sonido de la Batalla",
-      status: "¡DISPONIBLE AHORA!",
-      statusClass: "tag-active",
+      status: '<i class="fas fa-check"></i> COMPLETADO',
+      statusClass: "tag-completed",
       link: "dia6.html",
       badge: "DESAFÍO AUDITIVO A CIEGAS (20 RONDAS)",
       desc: "Agudiza el oído. 20 rondas de efectos de sonido de armas, consumibles, bailes y eventos míticos de Fortnite con votación interactiva A, B o C en el chat."

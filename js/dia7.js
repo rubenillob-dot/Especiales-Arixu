@@ -392,11 +392,10 @@ document.addEventListener('DOMContentLoaded', () => {
     cosmeticName.textContent = item.nombre;
     cosmeticDesc.textContent = item.descripcion;
 
-    vaultPriceValue.className = 'vault-price-value hidden-price';
-    priceNumberText.textContent = '???';
-
-    roundWinnerCard.classList.remove('active', 'all-over', 'exact-hit');
-    roundWinnerCard.style.display = 'none';
+    if (roundWinnerCard) {
+      roundWinnerCard.classList.remove('active', 'all-over', 'exact-hit');
+      roundWinnerCard.style.display = 'none';
+    }
 
     btnStartUrn.disabled = false;
     btnCloseUrn.disabled = true;
@@ -440,71 +439,52 @@ document.addEventListener('DOMContentLoaded', () => {
     const item = COSMETICOS_PRECIO_JUSTO[currentItemIndex];
     const realPrice = item.precio;
 
-    const bidsArray = Array.from(currentRoundBids.entries()).map(([user, data]) => ({
-      user,
-      bid: typeof data === 'object' ? data.bid : data,
-      reactionTimeMs: typeof data === 'object' ? data.reactionTimeMs : 0
+    const bidsArray = Array.from(currentRoundBids.values()).map(data => ({
+      user: data.user,
+      bid: data.bid,
+      reactionTimeMs: data.reactionTimeMs,
+      diff: Math.abs(data.bid - realPrice),
+      isExact: data.bid === realPrice,
+      inMargin: data.bid >= (realPrice - 100) && data.bid <= (realPrice + 100)
     }));
 
-    const validBids = [];
-    const overBids = [];
+    const roundWinners = bidsArray.filter(b => b.inMargin);
 
-    bidsArray.forEach(entry => {
-      if (entry.bid > realPrice) {
-        overBids.push({ ...entry, diff: entry.bid - realPrice, status: 'OVER' });
-      } else {
-        const diff = realPrice - entry.bid;
-        validBids.push({ ...entry, diff, isExact: diff === 0, status: 'VALID' });
-      }
+    roundWinners.sort((a, b) => {
+      if (a.diff !== b.diff) return a.diff - b.diff;
+      return (a.reactionTimeMs || 0) - (b.reactionTimeMs || 0);
     });
 
-    let roundWinners = [];
-    let isAllOver = false;
-    let isExactHit = false;
+    const isAllOver = (roundWinners.length === 0);
+    const isExactHit = roundWinners.some(w => w.isExact);
 
-    if (validBids.length === 0) {
-      isAllOver = true;
-    } else {
-      // Ordenar por diferencia (más cercano) y desempatar por menor tiempo de reacción
-      validBids.sort((a, b) => {
-        if (a.diff !== b.diff) {
-          return a.diff - b.diff;
-        }
-        return (a.reactionTimeMs || 0) - (b.reactionTimeMs || 0);
-      });
-
-      const winner = validBids[0];
-      roundWinners = [winner];
-      isExactHit = winner.diff === 0;
-
-      roundWinners.forEach(w => {
-        const currentScore = userScores.get(w.user) || {
-          points: 0,
-          exactHits: 0,
-          closestHits: 0,
-          wins: 0,
-          totalAciertos: 0,
-          tiempoTotalRespuesta: 0,
-          totalReactionTime: 0
-        };
-        const addedPoints = isExactHit ? 3 : 1;
-        currentScore.points += addedPoints;
-        currentScore.wins += 1;
-        currentScore.totalAciertos = (currentScore.totalAciertos || 0) + 1;
-        if (isExactHit) currentScore.exactHits += 1;
-        else currentScore.closestHits += 1;
-        currentScore.totalReactionTime = (currentScore.totalReactionTime || 0) + (w.reactionTimeMs || 0);
-        currentScore.tiempoTotalRespuesta = (currentScore.tiempoTotalRespuesta || 0) + (w.reactionTimeMs || 0);
-        userScores.set(w.user, currentScore);
-      });
-    }
+    roundWinners.forEach(w => {
+      const currentScore = userScores.get(w.user) || {
+        points: 0,
+        exactHits: 0,
+        closestHits: 0,
+        wins: 0,
+        totalAciertos: 0,
+        tiempoTotalRespuesta: 0,
+        totalReactionTime: 0
+      };
+      const addedPoints = w.isExact ? 3 : 1;
+      currentScore.points += addedPoints;
+      currentScore.wins += 1;
+      currentScore.totalAciertos = (currentScore.totalAciertos || 0) + 1;
+      if (w.isExact) currentScore.exactHits += 1;
+      else currentScore.closestHits += 1;
+      currentScore.totalReactionTime = (currentScore.totalReactionTime || 0) + (w.reactionTimeMs || 0);
+      currentScore.tiempoTotalRespuesta = (currentScore.tiempoTotalRespuesta || 0) + (w.reactionTimeMs || 0);
+      userScores.set(w.user, currentScore);
+    });
 
     roundHistory.push({
       itemNumber: currentItemIndex + 1,
       itemName: item.nombre,
       realPrice,
       totalBids: bidsArray.length,
-      winners: roundWinners.map(w => ({ user: w.user, bid: w.bid, diff: w.diff, reactionTimeMs: w.reactionTimeMs })),
+      winners: roundWinners.map(w => ({ user: w.user, bid: w.bid, diff: w.diff, isExact: w.isExact, reactionTimeMs: w.reactionTimeMs })),
       isAllOver,
       isExactHit
     });
@@ -519,15 +499,14 @@ document.addEventListener('DOMContentLoaded', () => {
       updateLeaderboardUI();
 
       if (isAllOver) {
-        appendRadarLog('SISTEMA', `💥 ¡TODOS SE HAN PASADO! El precio real era ${realPrice.toLocaleString()} PaVos.`, 'sys');
+        appendRadarLog('SISTEMA', `💥 ¡NINGÚN ACERTANTE! Precio oficial: ${realPrice.toLocaleString()} PaVos (Margen: ${(realPrice - 100).toLocaleString()} - ${(realPrice + 100).toLocaleString()}).`, 'sys');
       } else if (isExactHit) {
-        const winner = roundWinners[0];
-        const speedSec = ((winner.reactionTimeMs || 0) / 1000).toFixed(1);
-        appendRadarLog('SISTEMA', `💎 ¡PLENO EXACTO! @${winner.user} acertó ${realPrice.toLocaleString()} PaVos en ${speedSec}s (+3 PTS).`, 'sys');
+        const exactWinners = roundWinners.filter(w => w.isExact);
+        const names = exactWinners.map(w => `@${w.user}`).join(', ');
+        appendRadarLog('SISTEMA', `💎 ¡PLENO EXACTO! ${names} acertó ${realPrice.toLocaleString()} PaVos (+3 PTS). Total acertantes en margen (+/-100): ${roundWinners.length}.`, 'sys');
       } else {
-        const winner = roundWinners[0];
-        const speedSec = ((winner.reactionTimeMs || 0) / 1000).toFixed(1);
-        appendRadarLog('SISTEMA', `🎉 GANADOR: @${winner.user} (${winner.bid.toLocaleString()} PaVos) en ${speedSec}s (+1 PTO).`, 'sys');
+        const names = roundWinners.map(w => `@${w.user} (${w.bid.toLocaleString()} PaVos)`).join(', ');
+        appendRadarLog('SISTEMA', `🎉 ACERTANTES (+/-100 PaVos): ${names} (+1 PTO).`, 'sys');
       }
     });
   }
@@ -555,30 +534,46 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function displayWinnerBanner(winners, realPrice, isAllOver, isExactHit) {
+    if (!roundWinnerCard) return;
     roundWinnerCard.classList.remove('all-over', 'exact-hit');
-    roundWinnerCard.style.display = 'block';
-    roundWinnerCard.classList.add('active');
+    roundWinnerCard.style.display = 'none';
+
+    const minMargin = realPrice - 100;
+    const maxMargin = realPrice + 100;
 
     if (isAllOver) {
       roundWinnerCard.classList.add('all-over');
-      winnerHeadline.innerHTML = `<i class="fas fa-times-circle"></i> ¡TODOS SE HAN PASADO DE PRECIO!`;
-      winnerUserRow.textContent = `Precio oficial: ${realPrice.toLocaleString()} PaVos`;
-      winnerStatsRow.textContent = `Ningún espectador apostó una cifra menor o igual. Ningún punto otorgado.`;
-    } else if (isExactHit) {
-      roundWinnerCard.classList.add('exact-hit');
+      winnerHeadline.innerHTML = `<i class="fas fa-times-circle"></i> ¡NINGÚN ACERTANTE EN EL MARGEN (+/- 100 PAVOS)!`;
+      winnerUserRow.textContent = `Precio oficial: ${realPrice.toLocaleString()} PaVos (Margen: ${minMargin.toLocaleString()} - ${maxMargin.toLocaleString()} PaVos)`;
+      winnerStatsRow.textContent = `Ninguna estimación se situó en el margen de +/- 100 PaVos. Ningún punto otorgado en esta ronda.`;
+    } else if (winners.length === 1) {
       const winner = winners[0];
       const speedSec = ((winner.reactionTimeMs || 0) / 1000).toFixed(1);
-      winnerHeadline.innerHTML = `<i class="fas fa-gem"></i> ¡PLENO CLAVADO AL PRECIO EXACTO! (+3 PUNTOS)`;
-      winnerUserRow.innerHTML = `@${winner.user} con ${realPrice.toLocaleString()} PaVos <span class="winner-speed-badge" style="display: inline-flex; align-items: center; gap: 5px; background: rgba(0, 240, 255, 0.18); border: 1px solid #00F0FF; color: #00F0FF; padding: 3px 10px; border-radius: 9999px; font-size: 0.8rem; font-weight: 800; margin-left: 8px;"><i class="fas fa-bolt"></i> ¡Respuesta rápida: ${speedSec}s!</span>`;
-      winnerStatsRow.textContent = `¡Precisión milimétrica! Acierto 100% exacto en la tienda en ${speedSec} segundos.`;
+      if (winner.isExact) {
+        roundWinnerCard.classList.add('exact-hit');
+        winnerHeadline.innerHTML = `<i class="fas fa-gem"></i> ¡PLENO CLAVADO AL PRECIO EXACTO! (+3 PUNTOS)`;
+        winnerUserRow.innerHTML = `@${winner.user} con ${realPrice.toLocaleString()} PaVos <span class="winner-speed-badge" style="display: inline-flex; align-items: center; gap: 5px; background: rgba(0, 240, 255, 0.18); border: 1px solid #00F0FF; color: #00F0FF; padding: 3px 10px; border-radius: 9999px; font-size: 0.8rem; font-weight: 800; margin-left: 8px;"><i class="fas fa-bolt"></i> ¡Respuesta rápida: ${speedSec}s!</span>`;
+        winnerStatsRow.textContent = `¡Precisión milimétrica! Acierto 100% exacto en la tienda en ${speedSec} segundos.`;
+      } else {
+        const diffSign = winner.bid >= realPrice ? `+${winner.diff}` : `-${winner.diff}`;
+        winnerHeadline.innerHTML = `<i class="fas fa-trophy"></i> ¡GANADOR DE LA RONDA! (MARGEN +/- 100 PAVOS) (+1 PUNTO)`;
+        winnerUserRow.innerHTML = `@${winner.user} con ${winner.bid.toLocaleString()} PaVos <span class="winner-speed-badge" style="display: inline-flex; align-items: center; gap: 5px; background: rgba(255, 215, 0, 0.18); border: 1px solid #FFD700; color: #FFD700; padding: 3px 10px; border-radius: 9999px; font-size: 0.8rem; font-weight: 800; margin-left: 8px;"><i class="fas fa-bolt"></i> ¡Respuesta: ${speedSec}s!</span>`;
+        winnerStatsRow.textContent = `Precio oficial: ${realPrice.toLocaleString()} PaVos (Diferencia: ${diffSign} PaVos dentro del margen de victoria).`;
+      }
     } else {
-      const winner = winners[0];
-      const bestBid = winner.bid;
-      const diff = winner.diff;
-      const speedSec = ((winner.reactionTimeMs || 0) / 1000).toFixed(1);
-      winnerHeadline.innerHTML = `<i class="fas fa-trophy"></i> GANADOR DE LA RONDA (+1 PUNTO)`;
-      winnerUserRow.innerHTML = `@${winner.user} con ${bestBid.toLocaleString()} PaVos <span class="winner-speed-badge" style="display: inline-flex; align-items: center; gap: 5px; background: rgba(255, 215, 0, 0.18); border: 1px solid #FFD700; color: #FFD700; padding: 3px 10px; border-radius: 9999px; font-size: 0.8rem; font-weight: 800; margin-left: 8px;"><i class="fas fa-bolt"></i> ¡Respuesta rápida: ${speedSec}s!</span>`;
-      winnerStatsRow.textContent = `Diferencia con el precio real (${realPrice.toLocaleString()} PaVos): -${diff.toLocaleString()} PaVos en ${speedSec}s.`;
+      if (isExactHit) {
+        roundWinnerCard.classList.add('exact-hit');
+        winnerHeadline.innerHTML = `<i class="fas fa-gem"></i> ¡${winners.length} ACERTANTES EN EL MARGEN (+/- 100 PAVOS)!`;
+      } else {
+        winnerHeadline.innerHTML = `<i class="fas fa-trophy"></i> ¡${winners.length} ACERTANTES EN EL MARGEN (+/- 100 PAVOS)!`;
+      }
+      const winnersHtml = winners.map(w => {
+        const speedSec = ((w.reactionTimeMs || 0) / 1000).toFixed(1);
+        const icon = w.isExact ? '🎯 +3pts' : '+1pt';
+        return `<span style="display: inline-block; margin: 3px 6px;">@${w.user} (<strong>${w.bid.toLocaleString()}</strong> PaVos - <span style="color:#00F0FF;">${icon}</span>)</span>`;
+      }).join('');
+      winnerUserRow.innerHTML = winnersHtml;
+      winnerStatsRow.textContent = `Precio oficial: ${realPrice.toLocaleString()} PaVos (Margen válido: ${minMargin.toLocaleString()} - ${maxMargin.toLocaleString()} PaVos).`;
     }
   }
 
@@ -610,12 +605,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function registerBid(username, bidVal) {
     if (!isUrnOpen || isRevealed) return;
-    if (currentRoundBids.has(username)) return;
+    const userKey = username.toLowerCase().trim();
+    if (currentRoundBids.has(userKey)) return;
 
     const msgTimestamp = Date.now();
     const reactionTimeMs = Math.max(0, msgTimestamp - urnOpenTimestamp);
 
-    currentRoundBids.set(username, {
+    currentRoundBids.set(userKey, {
+      user: username,
       bid: bidVal,
       reactionTimeMs: reactionTimeMs,
       timestamp: msgTimestamp
@@ -625,18 +622,18 @@ document.addEventListener('DOMContentLoaded', () => {
     renderBidsFeed();
     playSound('coin');
     const speedSec = (reactionTimeMs / 1000).toFixed(1);
-    appendRadarLog(username, `Registró puja: <span class="log-bid-highlight">${bidVal.toLocaleString()} PaVos</span> <span style="font-size: 0.7rem; color: #94A3B8;">(${speedSec}s)</span>`, 'bid');
+    appendRadarLog(username, `Registró estimación: <span class="log-bid-highlight">${bidVal.toLocaleString()} PaVos</span> <span style="font-size: 0.7rem; color: #94A3B8;">(${speedSec}s)</span>`, 'bid');
   }
 
   function updateMetricsUI() {
     const total = currentRoundBids.size;
-    roundBidsCount.textContent = total;
-    bidsFeedCountBadge.textContent = total;
-    radarRoundEstimatesBadge.innerHTML = `💰 Estimaciones: <strong>${total}</strong>`;
+    if (roundBidsCount) roundBidsCount.textContent = total;
+    if (bidsFeedCountBadge) bidsFeedCountBadge.textContent = total;
+    if (radarRoundEstimatesBadge) radarRoundEstimatesBadge.innerHTML = `💰 Estimaciones: <strong>${total}</strong>`;
 
     if (total === 0) {
-      roundBidRange.textContent = '---';
-      roundBidAverage.textContent = '---';
+      if (roundBidRange) roundBidRange.textContent = '---';
+      if (roundBidAverage) roundBidAverage.textContent = '---';
       return;
     }
 
@@ -646,30 +643,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const sum = values.reduce((acc, v) => acc + v, 0);
     const avg = Math.round(sum / total);
 
-    roundBidRange.textContent = `${minVal.toLocaleString()} - ${maxVal.toLocaleString()}`;
-    roundBidAverage.textContent = `${avg.toLocaleString()} PaVos`;
+    if (roundBidRange) roundBidRange.textContent = `${minVal.toLocaleString()} - ${maxVal.toLocaleString()}`;
+    if (roundBidAverage) roundBidAverage.textContent = `${avg.toLocaleString()} PaVos`;
   }
 
   function renderBidsFeed(roundWinners = [], realPrice = null) {
+    if (!bidsFeedChips) return;
     bidsFeedChips.innerHTML = '';
     if (currentRoundBids.size === 0) {
-      bidsFeedChips.appendChild(emptyBidsHint);
+      if (emptyBidsHint) bidsFeedChips.appendChild(emptyBidsHint);
       return;
     }
 
-    const winnerSet = new Set((roundWinners || []).map(w => w.user));
+    const winnerMap = new Map((roundWinners || []).map(w => [w.user.toLowerCase().trim(), w]));
 
-    currentRoundBids.forEach((data, user) => {
-      const bid = typeof data === 'object' ? data.bid : data;
-      const reactionTimeMs = typeof data === 'object' ? data.reactionTimeMs : 0;
+    currentRoundBids.forEach((data) => {
+      const user = data.user;
+      const bid = data.bid;
+      const reactionTimeMs = data.reactionTimeMs || 0;
+      const userKey = user.toLowerCase().trim();
       const chip = document.createElement('div');
       chip.className = 'bid-bubble-chip';
 
       if (isRevealed && realPrice !== null) {
-        if (winnerSet.has(user)) {
-          chip.classList.add(bid === realPrice ? 'evaluated-exact' : 'evaluated-winner');
-        } else if (bid <= realPrice) {
-          chip.classList.add('evaluated-valid');
+        if (winnerMap.has(userKey)) {
+          const w = winnerMap.get(userKey);
+          chip.classList.add(w.isExact ? 'evaluated-exact' : 'evaluated-winner');
         } else {
           chip.classList.add('evaluated-over');
         }
@@ -730,7 +729,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const d = new Date();
     const timeStr = d.toTimeString().split(' ')[0];
     const logItem = document.createElement('div');
-    logItem.className = `radar-log-msg ${type === 'sys' ? 'system-msg' : (type === 'bid' ? 'valid-bid' : '')}`;
+    logItem.className = `radar-log-msg ${type === 'sys' ? 'system-msg' : (type === 'bid' ? 'valid-bid' : (type === 'ignored' ? 'ignored-msg' : ''))}`;
 
     logItem.innerHTML = `
       <div class="log-meta">
@@ -817,8 +816,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const bidVal = parseBidNumber(message);
       if (bidVal !== null) {
+        const userKey = displayName.toLowerCase().trim();
         if (isUrnOpen) {
-          registerBid(displayName, bidVal);
+          if (currentRoundBids.has(userKey)) {
+            appendRadarLog(displayName, `${message} <span style="font-size: 0.7rem; color: #64748B;">(Ya votó en esta ronda)</span>`, 'ignored');
+          } else {
+            registerBid(displayName, bidVal);
+          }
         } else {
           appendRadarLog(displayName, `${message} <span style="font-size: 0.7rem; color: #94A3B8;">(Urna cerrada)</span>`, 'chat');
         }
@@ -834,7 +838,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const mockChatters = [
-      'Jaratos', 'Vivi', 'Jesulito', 'rflexmon_', 'SitoGamerz', 'Neus_Art',
+      'Jaratos', 'Vivi', 'Jesulito', 'rflexmon_', 'Urian_1012', 'Noopo', 'SitoGamerz', 'Neus_Art',
       'RubenDev', 'ArixuFan99', 'FortniteGod', 'PeelyKing', 'SloneAgent',
       'ZeroPointHero', 'TwitchViewer42', 'KevTheCube', 'MidasTouch'
     ];
@@ -845,10 +849,18 @@ document.addEventListener('DOMContentLoaded', () => {
     mockChatters.forEach((user, idx) => {
       setTimeout(() => {
         if (!isUrnOpen) return;
-        const variance = (Math.random() - 0.45) * 0.5;
-        let generatedBid = Math.round((realPrice * (1 + variance)) / 50) * 50;
-        if (Math.random() < 0.15) generatedBid = realPrice;
-        if (generatedBid <= 0) generatedBid = 200;
+        const rand = Math.random();
+        let generatedBid;
+        if (rand < 0.25) {
+          generatedBid = realPrice; // Pleno exacto
+        } else if (rand < 0.50) {
+          generatedBid = realPrice + (Math.random() < 0.5 ? 50 : -50); // Margen +/- 50
+        } else if (rand < 0.70) {
+          generatedBid = realPrice + (Math.random() < 0.5 ? 100 : -100); // Margen +/- 100
+        } else {
+          const offset = (Math.random() < 0.5 ? 1 : -1) * (150 + Math.floor(Math.random() * 6) * 50);
+          generatedBid = Math.max(100, realPrice + offset);
+        }
         registerBid(user, generatedBid);
       }, (idx + 1) * 220);
     });
@@ -892,7 +904,8 @@ document.addEventListener('DOMContentLoaded', () => {
     content += `🏆 INFORME OFICIAL: EL PRECIO JUSTO (EDICIÓN PAVOS) 🏆\n`;
     content += `ESPECIALES IMARIXU - DÍA 7 (GRAN FINAL)\n`;
     content += `Fecha: ${new Date().toLocaleString()}\n`;
-    content += `Sistema de Desempate: Velocidad de Respuesta (Menor Tiempo)\n`;
+    content += `Regla de Victoria: Margen de +/- 100 PaVos (+1 Pto) • Pleno Exacto (+3 Pts)\n`;
+    content += `Sistema de Desempate: Velocidad de Respuesta (Menor Tiempo Total)\n`;
     content += `=====================================================\n\n`;
 
     content += `🥇 CLASIFICACIÓN GENERAL TOP USUARIOS:\n`;
@@ -901,7 +914,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       sortedUsers.forEach(([username, d], i) => {
         const avg = d.wins > 0 ? `${(d.totalReactionTime / d.wins / 1000).toFixed(1)}s` : '0.0s';
-        content += `${i + 1}. @${username} -> ${d.points} Puntos (${d.exactHits} Plenos, ${d.wins} Rondas ganadas) - Vel. Media: ${avg}\n`;
+        content += `${i + 1}. @${username} -> ${d.points} Puntos (${d.exactHits} Plenos, ${d.wins} Rondas ganadas en margen) - Vel. Media: ${avg}\n`;
       });
     }
 
@@ -910,14 +923,12 @@ document.addEventListener('DOMContentLoaded', () => {
     content += `-----------------------------------------------------\n`;
     roundHistory.forEach(r => {
       content += `Ronda #${r.itemNumber}: ${r.itemName}\n`;
-      content += `  - Precio Real: ${r.realPrice} PaVos\n`;
+      content += `  - Precio Real: ${r.realPrice} PaVos (Margen de victoria: ${r.realPrice - 100} a ${r.realPrice + 100} PaVos)\n`;
       content += `  - Estimaciones totales: ${r.totalBids}\n`;
       if (r.isAllOver) {
-        content += `  - Resultado: Todos se pasaron de precio.\n`;
-      } else if (r.isExactHit) {
-        content += `  - Resultado: ¡PLENO EXACTO! Ganador: ${r.winners.map(w => `@${w.user} (${((w.reactionTimeMs || 0)/1000).toFixed(1)}s)`).join(', ')}\n`;
+        content += `  - Resultado: Ningún acertante en el margen de +/- 100 PaVos.\n`;
       } else {
-        content += `  - Ganador(es): ${r.winners.map(w => `@${w.user} con ${w.bid} PaVos (dif: -${w.diff}, en ${((w.reactionTimeMs || 0)/1000).toFixed(1)}s)`).join(', ')}\n`;
+        content += `  - Acertante(s): ${r.winners.map(w => `@${w.user} con ${w.bid} PaVos (${w.isExact ? 'PLENO EXACTO' : 'Dif: ' + (w.bid >= r.realPrice ? '+' : '-') + w.diff + ' PaVos'}, en ${((w.reactionTimeMs || 0)/1000).toFixed(1)}s)`).join(', ')}\n`;
       }
       content += `\n`;
     });
